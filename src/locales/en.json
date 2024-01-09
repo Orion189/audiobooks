@@ -1,0 +1,215 @@
+{
+    "app": {
+        "tabs": {
+            "lists": "Lists",
+            "items": "Items",
+            "settings": "Settings"
+        },
+        "items": {
+            "index": {
+                "title": "Items",
+                "subheader": "Active items"
+            },
+            "add": {
+                "title": "Create item"
+            },
+            "edit": {
+                "title": "Edit item",
+                "fields": {
+                    "title": {
+                        "label": "Item title",
+                        "placeholder": "Enter item title here"
+                    },
+                    "description": {
+                        "label": "Item description",
+                        "placeholder": "Enter item description here"
+                    },
+                    "url": {
+                        "label": "Item url",
+                        "placeholder": "Enter item url here, e.g. example.com/item"
+                    }
+                },
+                "buttons": {
+                    "save": "Save"
+                }
+            }
+        },
+        "lists": {
+            "index": {
+                "title": "Lists",
+                "subheader": "Active lists"
+            },
+            "add": {
+                "title": "Create list"
+            },
+            "edit": {
+                "title": "Edit list",
+                "fields": {
+                    "title": {
+                        "label": "Title",
+                        "placeholder": "Enter list title here"
+                    },
+                    "description": {
+                        "label": "Description",
+                        "placeholder": "Enter list description here"
+                    }
+                },
+                "buttons": {
+                    "save": "Save"
+                }
+            },
+            "list": {
+                "index": {
+                    "title": "List items"
+                },
+                "edit": {
+                    "title": "Edit list items",
+                    "search": "Search"
+                }
+            }
+        },
+        "settings": {
+            "index": {
+                "title": "Settings",
+                "subheader": "User preferences",
+                "account": {
+                    "title": "Account",
+                    "description": "Sign Up / Sign In / Edit Profile data"
+                }
+            },
+            "account": {
+                "index": {
+                    "title": "Account",
+                    "logout": "Logout"
+                },
+                "register": {
+                    "title": "Registration",
+                    "messages": {
+                        "helperMsg1": "Already have an account?",
+                        "helperMsg2": "Log in",
+                        "success": "You have been successfully registered. Check your email and confirm account",
+                        "confirmed": "You have successfully confirmed your email"
+                    },
+                    "fields": {
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Email"
+                        },
+                        "password": {
+                            "label": "Password",
+                            "placeholder": "Password"
+                        },
+                        "verifyPassword": {
+                            "label": "Verify Password",
+                            "placeholder": "Verify Password"
+                        }
+                    },
+                    "buttons": {
+                        "save": "Save",
+                        "goToLogin": "Go to Log in"
+                    }
+                },
+                "login": {
+                    "title": "Login",
+                    "messages": {
+                        "helperMsg1": "Don't have account yet?",
+                        "helperMsg2": "Register"
+                    },
+                    "fields": {
+                        "email": {
+                            "label": "Email",
+                            "placeholder": "Email"
+                        },
+                        "password": {
+                            "label": "Password",
+                            "placeholder": "Password"
+                        }
+                    },
+                    "buttons": {
+                        "save": "Save"
+                    }
+                }
+            },
+            "privacy": {
+                "link": {
+                    "msg": "Privacy Policy"
+                }
+            }
+        },
+        "errors": {
+            "list": {
+                "title": {
+                    "required": "'Title' is mandatory field"
+                },
+                "insert": "Create list error",
+                "update": "Update list error",
+                "delete": "Delete list error",
+                "noIdProvided": "Missing list ID",
+                "listNotFound": "List not found"
+            },
+            "item": {
+                "title": {
+                    "required": "'Title' is mandatory field"
+                },
+                "url": {
+                    "regex": "Invalid URL"
+                },
+                "insert": "Create item error",
+                "update": "Update item error",
+                "delete": "Delete item error",
+                "noIdProvided": "Missing item ID",
+                "itemNotFound": "Item not found"
+            },
+            "login": {
+                "email": {
+                    "required": "'Email' field is required",
+                    "regex": "Invalid email"
+                },
+                "password": {
+                    "required": "'Password' field is required"
+                }
+            },
+            "logout": {
+                "deleteSession": "User session has not been removed"
+            },
+            "register": {
+                "email": {
+                    "required": "'Email' field is required",
+                    "regex": "Invalid email",
+                    "unavailable": "This email has already in use",
+                    "confirm": "Email confirmation error"
+                },
+                "password": {
+                    "required": "'Password' field is required"
+                },
+                "verifyPassword": {
+                    "required": "'Verify password' field is required",
+                    "dontMatch": "'Password' and 'Verify password' fields don't match"
+                }
+            },
+            "common": {
+                "offline": "Connection has been lost",
+                "loggedIn": "You are already logged in"
+            }
+        }
+    },
+    "src": {
+        "components": {
+            "shared": {
+                "ConfirmationPopup": {
+                    "title1": "Remove items",
+                    "description1": "Are you sure you want to remove these items from the list?",
+                    "title2": "Remove list",
+                    "description2": "Are you sure you want to remove this list?",
+                    "title3": "Remove item",
+                    "description3": "Are you sure you want to remove this item?",
+                    "cancelBtnLabel": "Cancel",
+                    "okBtnLabel": "OK"
+                },
+                "ItemInfoPopup": {
+                    "title": "Item info"
+                }
+            }
+        }
+    }
+}
