@@ -1,0 +1,38 @@
+name: Build
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        types: [opened, synchronize, reopened]
+env:
+    NEXT_PUBLIC_HOST: ${{ secrets.NEXT_PUBLIC_HOST }}
+    API_URL: ${{ secrets.API_URL }}
+    API_KEY: ${{ secrets.API_KEY }}
+    DEFAULT_DATA_URL: ${{ secrets.DEFAULT_DATA_URL }}
+    LS_ITEM_NAME: ${{ secrets.LS_ITEM_NAME }}
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Install dependencies
+              run: npm ci
+            - name: Lint
+              run: npm run lint
+    test:
+        needs: [lint]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v3
+            - name: Install dependencies
+              run: npm ci
+            - name: Test
+              run: npm run test:coverage
+            - name: SonarCloud Scan
+              uses: sonarsource/sonarcloud-github-action@master
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

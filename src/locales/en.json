@@ -1,14 +1,13 @@
 {
     "app": {
         "tabs": {
-            "lists": "Lists",
-            "items": "Items",
+            "home": "Home",
+            "library": "Library",
             "settings": "Settings"
         },
-        "items": {
+        "home": {
             "index": {
-                "title": "Items",
-                "subheader": "Active items"
+                "title": "Home"
             },
             "add": {
                 "title": "Create item"
@@ -34,7 +33,7 @@
                 }
             }
         },
-        "lists": {
+        "library": {
             "index": {
                 "title": "Lists",
                 "subheader": "Active lists"
