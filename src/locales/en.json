@@ -70,68 +70,49 @@
         "settings": {
             "index": {
                 "title": "Settings",
-                "subheader": "User preferences",
-                "account": {
-                    "title": "Account",
-                    "description": "Sign Up / Sign In / Edit Profile data"
-                }
-            },
-            "account": {
-                "index": {
-                    "title": "Account",
-                    "logout": "Logout"
-                },
-                "register": {
-                    "title": "Registration",
-                    "messages": {
-                        "helperMsg1": "Already have an account?",
-                        "helperMsg2": "Log in",
-                        "success": "You have been successfully registered. Check your email and confirm account",
-                        "confirmed": "You have successfully confirmed your email"
-                    },
-                    "fields": {
-                        "email": {
-                            "label": "Email",
-                            "placeholder": "Email"
-                        },
-                        "password": {
-                            "label": "Password",
-                            "placeholder": "Password"
-                        },
-                        "verifyPassword": {
-                            "label": "Verify Password",
-                            "placeholder": "Verify Password"
+                "sections": {
+                    "general": {
+                        "title": "General",
+                        "items": {
+                            "account": {
+                                "title": "Account"
+                            },
+                            "language": {
+                                "title": "Language"
+                            },
+                            "theme": {
+                                "title": "Theme"
+                            }
                         }
                     },
-                    "buttons": {
-                        "save": "Save",
-                        "goToLogin": "Go to Log in"
-                    }
-                },
-                "login": {
-                    "title": "Login",
-                    "messages": {
-                        "helperMsg1": "Don't have account yet?",
-                        "helperMsg2": "Register"
-                    },
-                    "fields": {
-                        "email": {
-                            "label": "Email",
-                            "placeholder": "Email"
-                        },
-                        "password": {
-                            "label": "Password",
-                            "placeholder": "Password"
+                    "downloading": {
+                        "title": "Books downloading",
+                        "items": {
+                            "downloaded": {
+                                "title": "Downloaded books"
+                            },
+                            "preferences": {
+                                "title": "Downloading preferences"
+                            }
                         }
                     },
-                    "buttons": {
-                        "save": "Save"
+                    "support": {
+                        "title": "Support",
+                        "items": {
+                            "techSupport": {
+                                "title": "Technical support"
+                            },
+                            "rateApp": {
+                                "title": "Rate application"
+                            },
+                            "about": {
+                                "title": "About"
+                            },
+                            "privacy": {
+                                "title": "Privacy Policy"
+                            }
+                        }
                     }
-                }
-            },
-            "privacy": {
-                "link": {
-                    "msg": "Privacy Policy"
                 }
             }
         },

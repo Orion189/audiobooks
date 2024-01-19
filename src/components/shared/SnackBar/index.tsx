@@ -1,41 +1,58 @@
-import { Text } from '@rneui/themed';
+import { Text, Dialog, Button, Icon, useTheme } from '@rneui/themed';
 import { SnackBarVariantType } from '@src/@types';
 import { SNACKBAR_DURATION } from '@src/constants';
 import { SnackBarVariant } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
-//import Snackbar from 'react-native-snackbar';
 
-const SnackbarBare = observer(() => {
+const Snackbar = observer(() => {
+    const {
+        theme: {
+            colors: { primary, success, error, warning, greyOutline }
+        }
+    } = useTheme();
+    const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
     const getSnackbarStyle = (type: SnackBarVariantType = SnackBarVariant.DEFAULT) => {
         switch (type) {
             case SnackBarVariant.DEFAULT:
-                return styles.default;
+                return { backgroundColor: greyOutline };
             case SnackBarVariant.ERROR:
-                return styles.error;
+                return { backgroundColor: error };
             case SnackBarVariant.INFO:
-                return styles.info;
+                return { backgroundColor: primary };
             case SnackBarVariant.SUCCESS:
-                return styles.success;
+                return { backgroundColor: success };
             case SnackBarVariant.WARNING:
-                return styles.warning;
+                return { backgroundColor: warning };
         }
     };
     const dismissMsg = useCallback(() => store.set('app', { ...store.app, snackbar: null }), []);
 
-    return null;/*(
-        <Snackbar
-            testID="snackBar"
-            onDismiss={dismissMsg}
-            visible={!!store.app.snackbar}
-            style={getSnackbarStyle(store.app.snackbar?.type)}
-            duration={store.app.snackbar?.duration ?? SNACKBAR_DURATION}
+    useEffect(() => {
+        if (store.app.snackbar) {
+            clearTimeout(timeoutRef.current);
+
+            timeoutRef.current = setTimeout(dismissMsg, SNACKBAR_DURATION);
+        } else {
+            clearTimeout(timeoutRef.current);
+        }
+    }, [store.app.snackbar]);
+
+    return (
+        <Dialog
+            onBackdropPress={dismissMsg}
+            isVisible={!!store.app.snackbar}
+            backdropStyle={{ opacity: 0 }}
+            overlayStyle={{ ...styles.snackbarCont, ...getSnackbarStyle(store.app.snackbar?.type) }}
         >
             <Text style={styles.msg}>{store.app.snackbar?.message}</Text>
-        </Snackbar>
-    );*/
+            <Button onPress={dismissMsg} type="clear">
+                <Icon name="close" color="white" />
+            </Button>
+        </Dialog>
+    );
 });
 
 const styles = StyleSheet.create({
@@ -43,21 +60,17 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16
     },
-    default: {
-        backgroundColor: '#102445'
-    },
-    error: {
-        backgroundColor: '#fa383e'
-    },
-    info: {
-        backgroundColor: '#54c7ec'
-    },
-    success: {
-        backgroundColor: '#00a400'
-    },
-    warning: {
-        backgroundColor: '#ffba00'
+    snackbarCont: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderRadius: 10,
+        padding: 10,
+        paddingLeft: 20,
+        position: 'absolute',
+        left: 20,
+        bottom: 120
     }
 });
 
-export default SnackbarBare;
+export default Snackbar;

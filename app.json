@@ -16,13 +16,15 @@
     ],
     "scheme": "audiobooks",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.orion189.audiobooks"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.orion189.audiobooks"
     },
     "web": {
       "favicon": "./assets/favicon.png"

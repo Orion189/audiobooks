@@ -2,9 +2,8 @@ import { useTheme, Text, Icon, Button, Header as HeaderRNE } from '@rneui/themed
 import ProgressBar from '@src/components/shared/ProgressBar';
 import commonStyles from '@src/styles/common';
 import { Stack } from 'expo-router';
-import { useCallback, useEffect, memo } from 'react';
+import { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import Snackbar from 'react-native-snackbar';
 
 const Header = memo(() => {
     const {
@@ -37,18 +36,6 @@ const Header = memo(() => {
 
 const HomePage = memo(() => {
     const header = useCallback(() => <Header />, []);
-
-    useEffect(() => {
-        Snackbar.show({
-            text: 'Hello world',
-            duration: 1000,
-            action: {
-                text: 'CLOSE',
-                textColor: 'white',
-                onPress: () => Snackbar.dismiss()
-            }
-        });
-    }, []);
 
     return (
         <>

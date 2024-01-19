@@ -5,14 +5,14 @@ import { observer } from 'mobx-react-lite';
 const ProgressBarBare = observer(() => {
     const {
         theme: {
-            colors: { primary }
+            colors: { primary, white }
         }
     } = useTheme();
 
     return (
         <LinearProgress
             color={primary}
-            trackColor="#fff"
+            trackColor={white}
             testID="progressBar"
             variant="indeterminate"
             style={{

@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { Text } from '@rneui/themed';
-//import SnackBar from '@src/components/shared/SnackBar';
+import SnackBar from '@src/components/shared/SnackBar';
 import { TAB_BAR_HEIGHT } from '@src/constants';
 import * as Device from 'expo-device';
 import { Tabs } from 'expo-router';
@@ -63,10 +63,11 @@ const Layout = memo(() => {
                     }}
                 />
             </Tabs>
+            <SnackBar />
         </>
     );
 });
-//<SnackBar />
+
 const styles = StyleSheet.create({
     tabBarIconStyle: {
         marginRight: Device.deviceType === Device.DeviceType.TABLET ? 20 : 0
