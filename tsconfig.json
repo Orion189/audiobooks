@@ -6,7 +6,8 @@
         "sourceMap": true,
         "noImplicitAny": true,
         "paths": {
-            "@src/*": ["./src/*"]
+            "@src/*": ["./src/*"],
+            "@assets/*": ["./assets/*"]
         }
     },
     "exclude": ["node_modules", "babel.config.js", "metro.config.js", "jest.config.js", "dist"]

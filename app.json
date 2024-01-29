@@ -17,14 +17,16 @@
     "scheme": "audiobooks",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.orion189.audiobooks"
+      "bundleIdentifier": "com.orion189.audiobooks",
+      "appStoreUrl": "https://apps.apple.com/app/my-common-lists/id6469620691" // TODO: change it to correct link
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.orion189.audiobooks"
+      "package": "com.orion189.audiobooks",
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.orion189.shopping" // TODO: change it to correct link
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +35,9 @@
       "expo-localization",
       "expo-router"
     ],
+    "experiments": {
+      "tsconfigPaths": true
+    },
     "extra": {
       "router": {
         "origin": false

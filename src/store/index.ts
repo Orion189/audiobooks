@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BookType, SettingsType, UserType, AppType, StoreValuesType } from '@src/@types';
+import { LOCALE, THEME } from '@src/enums';
 import { makeObservable, observable, action } from 'mobx';
 import { makePersistable, stopPersisting } from 'mobx-persist-store';
 
@@ -28,7 +29,9 @@ const defaultState: {
         isFocused: true,
         isOnline: false,
         isProgressBarVisible: false,
-        snackbar: null
+        snackbar: null,
+        language: LOCALE.EN,
+        theme: THEME.LIGHT
     }
 };
 
@@ -41,12 +44,13 @@ const store = makeObservable(
             });
         },
         reset() {
-            const { books, book, user } = defaultState;
+            const { books, book, user, app } = defaultState;
 
             Object.assign(this, {
                 books,
                 book,
-                user
+                user,
+                app
             });
         },
         getListById(id: string | undefined): BookType | undefined {

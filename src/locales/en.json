@@ -69,112 +69,92 @@
         },
         "settings": {
             "index": {
-                "title": "Settings",
-                "sections": {
-                    "general": {
-                        "title": "General",
-                        "items": {
-                            "account": {
-                                "title": "Account"
-                            },
-                            "language": {
-                                "title": "Language"
-                            },
-                            "theme": {
-                                "title": "Theme"
-                            }
-                        }
-                    },
-                    "downloading": {
-                        "title": "Books downloading",
-                        "items": {
-                            "downloaded": {
-                                "title": "Downloaded books"
-                            },
-                            "preferences": {
-                                "title": "Downloading preferences"
-                            }
-                        }
-                    },
-                    "support": {
-                        "title": "Support",
-                        "items": {
-                            "techSupport": {
-                                "title": "Technical support"
-                            },
-                            "rateApp": {
-                                "title": "Rate application"
-                            },
-                            "about": {
-                                "title": "About"
-                            },
-                            "privacy": {
-                                "title": "Privacy Policy"
-                            }
-                        }
-                    }
-                }
+                "title": "Settings"
+            },
+            "language": {
+                "title": "Language"
+            },
+            "theme": {
+                "title": "Theme"
             }
         },
         "errors": {
-            "list": {
-                "title": {
-                    "required": "'Title' is mandatory field"
-                },
-                "insert": "Create list error",
-                "update": "Update list error",
-                "delete": "Delete list error",
-                "noIdProvided": "Missing list ID",
-                "listNotFound": "List not found"
-            },
-            "item": {
-                "title": {
-                    "required": "'Title' is mandatory field"
-                },
-                "url": {
-                    "regex": "Invalid URL"
-                },
-                "insert": "Create item error",
-                "update": "Update item error",
-                "delete": "Delete item error",
-                "noIdProvided": "Missing item ID",
-                "itemNotFound": "Item not found"
-            },
-            "login": {
-                "email": {
-                    "required": "'Email' field is required",
-                    "regex": "Invalid email"
-                },
-                "password": {
-                    "required": "'Password' field is required"
-                }
-            },
-            "logout": {
-                "deleteSession": "User session has not been removed"
-            },
-            "register": {
-                "email": {
-                    "required": "'Email' field is required",
-                    "regex": "Invalid email",
-                    "unavailable": "This email has already in use",
-                    "confirm": "Email confirmation error"
-                },
-                "password": {
-                    "required": "'Password' field is required"
-                },
-                "verifyPassword": {
-                    "required": "'Verify password' field is required",
-                    "dontMatch": "'Password' and 'Verify password' fields don't match"
-                }
-            },
-            "common": {
-                "offline": "Connection has been lost",
-                "loggedIn": "You are already logged in"
-            }
+            "emailClientNotConfigured": "Default email setup is missing"
         }
     },
     "src": {
         "components": {
+            "main": {
+                "Settings": {
+                    "sections": {
+                        "general": {
+                            "title": "General",
+                            "items": {
+                                "account": {
+                                    "title": "Account"
+                                },
+                                "language": {
+                                    "title": "Language",
+                                    "locales": {
+                                        "en": "English",
+                                        "uk": "Ukrainian",
+                                        "ru": "Russian"
+                                    }
+                                },
+                                "theme": {
+                                    "title": "Theme",
+                                    "themes": {
+                                        "light": "Light",
+                                        "dark": "Dark"
+                                    }
+                                }
+                            }
+                        },
+                        "downloading": {
+                            "title": "Books downloading",
+                            "items": {
+                                "downloaded": {
+                                    "title": "Downloaded books"
+                                },
+                                "preferences": {
+                                    "title": "Downloading preferences"
+                                }
+                            }
+                        },
+                        "support": {
+                            "title": "Support",
+                            "items": {
+                                "techSupport": {
+                                    "title": "Technical support",
+                                    "mailTitle": "Feedback"
+                                },
+                                "rateApp": {
+                                    "title": "Rate application"
+                                },
+                                "about": {
+                                    "title": "About"
+                                },
+                                "privacy": {
+                                    "title": "Privacy Policy"
+                                }
+                            }
+                        }
+                    }
+                },
+                "Language": {
+                    "locales": {
+                        "en": "English",
+                        "uk": "Ukrainian",
+                        "ru": "Russian"
+                    }
+                },
+                "Theme": {
+                    "themes": {
+                        "light": "Light",
+                        "dark": "Dark"
+                    }
+                }
+            },
             "shared": {
                 "ConfirmationPopup": {
                     "title1": "Remove items",

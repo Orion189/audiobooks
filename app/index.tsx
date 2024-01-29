@@ -3,12 +3,20 @@ import { Redirect } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useCallback, memo } from 'react';
 
+if (!process.env.EXPO_PUBLIC_SERVER_HOSTNAME) {
+    console.error('Environment variable SERVER_HOSTNAME is not defined');
+}
+
+if (!process.env.EXPO_PUBLIC_SERVER_EMAIL) {
+    console.error('Environment variable SERVER_EMAIL is not defined');
+}
+
 SplashScreen.preventAutoHideAsync();
 
 const Index = memo(() => {
     const [fontsLoaded, fontError] = useFonts({
-        'SuisseIntl-Regular': require('../assets/fonts/SuisseIntl-Regular.otf'),
-        'SuisseIntl-Bold': require('../assets/fonts/SuisseIntl-Bold.otf')
+        'SuisseIntl-Regular': require('@assets/fonts/SuisseIntl-Regular.otf'),
+        'SuisseIntl-Bold': require('@assets/fonts/SuisseIntl-Bold.otf')
     });
     const onFontLoaded = useCallback(async () => {
         if (fontsLoaded || fontError) {

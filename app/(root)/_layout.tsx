@@ -1,5 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { Text } from '@rneui/themed';
+import useAppTheme from '@src/components/hooks/useAppTheme';
 import SnackBar from '@src/components/shared/SnackBar';
 import { TAB_BAR_HEIGHT } from '@src/constants';
 import * as Device from 'expo-device';
@@ -29,6 +30,8 @@ const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
 const Layout = memo(() => {
     const { t } = useTranslation();
     const { bottom } = useSafeAreaInsets();
+
+    useAppTheme();
 
     return (
         <>

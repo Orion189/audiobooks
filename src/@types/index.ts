@@ -1,4 +1,4 @@
-import { SnackBarVariant } from '@src/enums';
+import { SnackBarVariant, THEME, LOCALE } from '@src/enums';
 
 export type BookType = {
     id: string;
@@ -27,6 +27,8 @@ export type AppType = {
     isFocused: boolean;
     isProgressBarVisible: boolean;
     snackbar: SnackBarType | null;
+    language: LOCALE;
+    theme: THEME;
 };
 
 export type StoreValuesType = BookType | BookType[] | SettingsType | UserType | Partial<AppType>;
