@@ -3,11 +3,8 @@ import ProgressBar from '@src/components/shared/ProgressBar';
 import commonStyles from '@src/styles/common';
 import { Stack } from 'expo-router';
 import { useCallback, memo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 const Header = memo(() => {
-    const { t } = useTranslation();
-
     return (
         <>
             <HeaderRNE

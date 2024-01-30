@@ -18,7 +18,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.orion189.audiobooks",
-      "appStoreUrl": "https://apps.apple.com/app/my-common-lists/id6469620691" // TODO: change it to correct link
+      "appStoreUrl": "https://apps.apple.com/app/my-common-lists/id6469620691"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +26,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.orion189.audiobooks",
-      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.orion189.shopping" // TODO: change it to correct link
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.orion189.shopping"
     },
     "web": {
       "favicon": "./assets/favicon.png"
