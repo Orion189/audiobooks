@@ -231,8 +231,8 @@ const Settings = observer(() => {
                         {settingSection.sectionItems.map((settingItem) => (
                             <Item
                                 key={settingItem.title}
-                                link={settingItem.link}
                                 title={settingItem.title}
+                                onPress={settingItem.onPress}
                                 subTitle={settingItem.subTitle}
                                 hasChevron={settingItem.hasChevron}
                             />
