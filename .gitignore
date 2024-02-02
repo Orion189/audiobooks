@@ -39,3 +39,6 @@ eas.json
 /coverage
 /ios
 /android
+
+google-services.json
+GoogleService-Info.plist
