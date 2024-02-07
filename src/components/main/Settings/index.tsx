@@ -1,16 +1,16 @@
 import { useTheme, ListItem, Icon } from '@rneui/themed';
+import { SnackBarVariant } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
+import * as Application from 'expo-application';
+import * as Device from 'expo-device';
 import * as MailComposer from 'expo-mail-composer';
 import { useRouter } from 'expo-router';
+import * as StoreReview from 'expo-store-review';
 import * as WebBrowser from 'expo-web-browser';
 import { observer } from 'mobx-react-lite';
 import { useCallback, memo, FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as Device from 'expo-device';
-import * as Application from 'expo-application';
-import * as StoreReview from 'expo-store-review';
-import { SnackBarVariant } from '@src/enums';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 type SettingItemLink = {
@@ -105,7 +105,7 @@ const Settings = observer(() => {
             await MailComposer.composeAsync({
                 subject,
                 recipients: [SERVER_EMAIL || ''],
-                ccRecipients: [store.user.email],
+                ccRecipients: [store.userInfo.user.email],
                 body
             });
         } else {
@@ -117,7 +117,7 @@ const Settings = observer(() => {
                 }
             });
         }
-    }, [store.user.email]);
+    }, [store.userInfo.user.email]);
     const reviewApp = useCallback(async () => {
         const isHasAction = await StoreReview.hasAction();
         const isAvailable = await StoreReview.isAvailableAsync();
@@ -132,7 +132,7 @@ const Settings = observer(() => {
             sectionItems: [
                 {
                     title: t('src.components.main.Settings.sections.general.items.account.title'),
-                    subTitle: 'orion189@gmail.com',
+                    subTitle: store.userInfo.user.email,
                     hasChevron: true,
                     onPress: () =>
                         gotToLink({

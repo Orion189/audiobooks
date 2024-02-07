@@ -76,6 +76,9 @@
             },
             "theme": {
                 "title": "Theme"
+            },
+            "account": {
+                "title": "Account"
             }
         },
         "errors": {
@@ -153,6 +156,13 @@
                         "light": "Light",
                         "dark": "Dark"
                     }
+                },
+                "Account": {
+                    "signIn": {
+                        "error": "Log in error"
+                    },
+                    "logInBtnLabel": "Log in",
+                    "logOutBtnLabel": "Log out"
                 }
             },
             "shared": {

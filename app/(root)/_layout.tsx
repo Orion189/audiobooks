@@ -1,4 +1,4 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from '@rneui/themed';
 import useAppTheme from '@src/components/hooks/useAppTheme';
 import SnackBar from '@src/components/shared/SnackBar';
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type IconType = keyof typeof MaterialIcons.glyphMap;
+type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
 type TabBarItemProps = {
     color: string;
@@ -18,7 +18,7 @@ type TabBarItemProps = {
 };
 
 const getTabBarIcon = ({ color, size }: TabBarItemProps, iconName: IconType) => (
-    <MaterialIcons name={iconName} size={size} color={color} />
+    <MaterialCommunityIcons name={iconName} size={size} color={color} />
 );
 
 const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
@@ -54,14 +54,14 @@ const Layout = memo(() => {
                 <Tabs.Screen
                     name="library"
                     options={{
-                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'local-library'),
+                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'library'),
                         tabBarLabel: ({ color }) => getTabBarLabel({ color }, t('app.tabs.library'))
                     }}
                 />
                 <Tabs.Screen
                     name="settings"
                     options={{
-                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'settings'),
+                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'cog'),
                         tabBarLabel: ({ color }) => getTabBarLabel({ color }, t('app.tabs.settings'))
                     }}
                 />

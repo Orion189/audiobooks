@@ -1,14 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BookType, SettingsType, UserType, AppType, StoreValuesType } from '@src/@types';
+import { BookType, SettingsType, UserInfoType, AppType, StoreValuesType } from '@src/@types';
 import { LOCALE, THEME } from '@src/enums';
 import { makeObservable, observable, action } from 'mobx';
 import { makePersistable, stopPersisting } from 'mobx-persist-store';
 
-const defaultState: {
+export const defaultState: {
     books: BookType[];
     book: BookType;
     settings: SettingsType;
-    user: UserType;
+    userInfo: UserInfoType;
     app: AppType;
 } = {
     books: [],
@@ -19,11 +19,18 @@ const defaultState: {
     settings: {
         isDarkMode: false
     },
-    user: {
-        id: null,
-        email: '',
-        isLoggedIn: false,
-        accessToken: null
+    userInfo: {
+        idToken: '',
+        serverAuthCode: '',
+        scopes: [],
+        user: {
+            email: '',
+            id: '',
+            givenName: '',
+            familyName: '',
+            photo: '',
+            name: ''
+        }
     },
     app: {
         isFocused: true,
@@ -44,12 +51,12 @@ const store = makeObservable(
             });
         },
         reset() {
-            const { books, book, user, app } = defaultState;
+            const { books, book, userInfo, app } = defaultState;
 
             Object.assign(this, {
                 books,
                 book,
-                user,
+                userInfo,
                 app
             });
         },
@@ -61,7 +68,7 @@ const store = makeObservable(
         books: observable,
         book: observable,
         settings: observable,
-        user: observable,
+        userInfo: observable,
         app: observable,
         set: action,
         reset: action
@@ -75,7 +82,7 @@ makePersistable(
     {
         storage: AsyncStorage,
         name: 'AudiobooksStore',
-        properties: ['books', 'book', 'settings', 'user', 'app'],
+        properties: ['books', 'book', 'settings', 'userInfo', 'app'],
         debugMode: process.env.EXPO_PUBLIC_MOBX_DEBUG_MODE === 'true'
     } /*, { delay: 200 }*/
 );

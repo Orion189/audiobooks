@@ -1,8 +1,23 @@
 import { DefaultTheme } from '@react-navigation/native';
-import { createTheme } from '@rneui/themed';
+import { createTheme, lightColors, darkColors } from '@rneui/themed';
+import { Platform } from 'react-native';
 
 export const theme = createTheme({
-    mode: 'light'
+    mode: 'light',
+    lightColors: {
+        ...Platform.select({
+            default: lightColors.platform.default,
+            ios: lightColors.platform.ios,
+            android: lightColors.platform.android
+        })
+    },
+    darkColors: {
+        ...Platform.select({
+            default: darkColors.platform.default,
+            ios: darkColors.platform.ios,
+            android: darkColors.platform.android
+        })
+    }
 });
 
 export const navigationTheme = {

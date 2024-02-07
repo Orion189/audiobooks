@@ -10,10 +10,19 @@ export type SettingsType = {
 };
 
 export type UserType = {
-    id: string | null;
+    id: string;
+    name: string | null;
     email: string;
-    isLoggedIn: boolean;
-    accessToken: string | null;
+    photo: string | null;
+    familyName: string | null;
+    givenName: string | null;
+};
+
+export type UserInfoType = {
+    scopes?: string[];
+    idToken: string | null;
+    serverAuthCode: string | null;
+    user: UserType;
 };
 
 export type SnackBarType = {
@@ -31,9 +40,9 @@ export type AppType = {
     theme: THEME;
 };
 
-export type StoreValuesType = BookType | BookType[] | SettingsType | UserType | Partial<AppType>;
+export type StoreValuesType = BookType | BookType[] | SettingsType | UserInfoType | Partial<AppType>;
 
-export type StoreKeysType = 'books' | 'settings' | 'user';
+export type StoreKeysType = 'books' | 'settings' | 'userInfo';
 
 export type SnackBarVariantType =
     | SnackBarVariant.DEFAULT
