@@ -1,4 +1,4 @@
-import { useTheme, Icon, Button, Text, Header as HeaderRNE } from '@rneui/themed';
+import { useTheme, Text, Header as HeaderRNE } from '@rneui/themed';
 import Settings from '@src/components/main/Settings';
 import ProgressBar from '@src/components/shared/ProgressBar';
 import { Stack } from 'expo-router';
@@ -15,26 +15,13 @@ const Header = memo(() => {
 
     return (
         <>
-            <HeaderRNE
-                leftComponent={
-                    <Button type="clear">
-                        <Icon name="menu" color="white" />
-                    </Button>
-                }
-                rightComponent={
-                    <Button type="clear">
-                        <Icon name="add" color="white" />
-                    </Button>
-                }
-                centerComponent={<Text h3>{t('app.settings.index.title')}</Text>}
-                backgroundColor={primary}
-            />
+            <HeaderRNE centerComponent={<Text h3>{t('app.settings.index.title')}</Text>} backgroundColor={primary} />
             <ProgressBar />
         </>
     );
 });
 
-const HomePage = memo(() => {
+const SettingsPage = memo(() => {
     const header = useCallback(() => <Header />, []);
 
     return (
@@ -49,4 +36,4 @@ const HomePage = memo(() => {
     );
 });
 
-export default HomePage;
+export default SettingsPage;

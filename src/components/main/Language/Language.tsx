@@ -49,16 +49,14 @@ const LocaleItem: FC<LocaleItemProps> = observer(({ locale, changeLanguage }) =>
     );
 });
 
-const Language: FC<LanguageProps> = memo(({ changeLanguage }) => {
-    return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
-            <ScrollView>
-                {[LOCALE.EN, LOCALE.UK, LOCALE.RU].map((locale) => (
-                    <LocaleItem key={locale} locale={locale} changeLanguage={changeLanguage} />
-                ))}
-            </ScrollView>
-        </SafeAreaView>
-    );
-});
+const Language: FC<LanguageProps> = memo(({ changeLanguage }) => (
+    <SafeAreaView style={commonStyles.safeAreaView}>
+        <ScrollView>
+            {[LOCALE.EN, LOCALE.UK, LOCALE.RU].map((locale) => (
+                <LocaleItem key={locale} locale={locale} changeLanguage={changeLanguage} />
+            ))}
+        </ScrollView>
+    </SafeAreaView>
+));
 
 export default Language;

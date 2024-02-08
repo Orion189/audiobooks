@@ -1,7 +1,7 @@
 import { GoogleSignin, statusCodes, NativeModuleError } from '@react-native-google-signin/google-signin';
 import AccountView from '@src/components/main/Account/Account';
 import { SnackBarVariant } from '@src/enums';
-import store, { defaultState } from '@src/store';
+import store from '@src/store';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,12 @@ const Account = observer(() => {
 
             if (userInfo) {
                 store.set('userInfo', { ...store.userInfo, ...userInfo });
+            }
+
+            const authInfo = await GoogleSignin.getTokens();
+
+            if (authInfo) {
+                store.set('authInfo', { ...store.authInfo, ...authInfo });
             }
         } catch (error) {
             switch ((error as NativeModuleError).code) {
@@ -41,13 +47,17 @@ const Account = observer(() => {
                     message: t('src.components.main.Account.signIn.error')
                 }
             });
+            store.reset('userInfo');
+            store.reset('authInfo');
         }
     }, [store.userInfo]);
     const signOut = useCallback(async () => {
         try {
             await GoogleSignin.signOut();
+            await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
 
-            store.set('userInfo', { ...defaultState.userInfo });
+            store.reset('userInfo');
+            store.reset('authInfo');
         } catch (error) {
             console.error(error);
         }

@@ -35,36 +35,7 @@
         },
         "library": {
             "index": {
-                "title": "Lists",
-                "subheader": "Active lists"
-            },
-            "add": {
-                "title": "Create list"
-            },
-            "edit": {
-                "title": "Edit list",
-                "fields": {
-                    "title": {
-                        "label": "Title",
-                        "placeholder": "Enter list title here"
-                    },
-                    "description": {
-                        "label": "Description",
-                        "placeholder": "Enter list description here"
-                    }
-                },
-                "buttons": {
-                    "save": "Save"
-                }
-            },
-            "list": {
-                "index": {
-                    "title": "List items"
-                },
-                "edit": {
-                    "title": "Edit list items",
-                    "search": "Search"
-                }
+                "title": "Library"
             }
         },
         "settings": {

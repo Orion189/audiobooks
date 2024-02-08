@@ -7,47 +7,61 @@ import { useTranslation } from 'react-i18next';
 const useAuth = () => {
     const { t } = useTranslation();
     const signInCheck = useCallback(async () => {
-        const isSignedIn = await GoogleSignin.isSignedIn();
+        try {
+            await GoogleSignin.hasPlayServices();
 
-        if (isSignedIn) {
-            const userInfo = await GoogleSignin.getCurrentUser();
+            const isSignedIn = await GoogleSignin.isSignedIn();
 
-            if (userInfo) {
-                store.set('userInfo', { ...store.userInfo, ...userInfo });
-            }
-        } else {
-            try {
-                const userInfo = await GoogleSignin.signInSilently();
+            if (isSignedIn) {
+                const userInfo = await GoogleSignin.getCurrentUser();
 
                 if (userInfo) {
                     store.set('userInfo', { ...store.userInfo, ...userInfo });
-                }
-            } catch (error) {
-                switch ((error as NativeModuleError).code) {
-                    case statusCodes.SIGN_IN_REQUIRED:
-                        console.log('SIGN_IN_REQUIRED');
-                        break;
-                    case statusCodes.SIGN_IN_CANCELLED:
-                        console.log('SIGN_IN_CANCELLED');
-                        break;
-                    case statusCodes.IN_PROGRESS:
-                        console.log('IN_PROGRESS');
-                        break;
-                    case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-                        console.log('PLAY_SERVICES_NOT_AVAILABLE');
-                        break;
-                    default:
-                        console.log('sign in error');
-                }
+                } else {
+                    const userInfo = await GoogleSignin.signInSilently();
 
-                store.set('app', {
-                    ...store.app,
-                    snackbar: {
-                        type: SnackBarVariant.SUCCESS,
-                        message: t('src.components.main.Account.signIn.error')
+                    if (userInfo) {
+                        store.set('userInfo', { ...store.userInfo, ...userInfo });
                     }
-                });
+
+                    const authInfo = await GoogleSignin.getTokens();
+
+                    if (authInfo) {
+                        store.set('authInfo', { ...store.authInfo, ...authInfo });
+                    }
+                }
+            } else {
+                await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
+
+                store.reset('userInfo');
+                store.reset('authInfo');
             }
+        } catch (error) {
+            switch ((error as NativeModuleError).code) {
+                case statusCodes.SIGN_IN_CANCELLED:
+                    console.log('SIGN_IN_CANCELLED');
+                    break;
+                case statusCodes.IN_PROGRESS:
+                    console.log('IN_PROGRESS');
+                    break;
+                case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+                    console.log('PLAY_SERVICES_NOT_AVAILABLE');
+                    break;
+                default:
+                    console.log('sign in error');
+            }
+
+            await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
+
+            store.set('app', {
+                ...store.app,
+                snackbar: {
+                    type: SnackBarVariant.SUCCESS,
+                    message: t('src.components.main.Account.signIn.error')
+                }
+            });
+            store.reset('userInfo');
+            store.reset('authInfo');
         }
     }, []);
 

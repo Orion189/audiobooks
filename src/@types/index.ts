@@ -25,6 +25,11 @@ export type UserInfoType = {
     user: UserType;
 };
 
+export type AuthInfoType = {
+    idToken: string;
+    accessToken: string;
+};
+
 export type SnackBarType = {
     type: SnackBarVariantType;
     message: string;
@@ -40,9 +45,9 @@ export type AppType = {
     theme: THEME;
 };
 
-export type StoreValuesType = BookType | BookType[] | SettingsType | UserInfoType | Partial<AppType>;
+export type StoreValuesType = BookType | BookType[] | SettingsType | UserInfoType | AuthInfoType | Partial<AppType>;
 
-export type StoreKeysType = 'books' | 'settings' | 'userInfo';
+export type StoreKeysType = 'book' | 'books' | 'settings' | 'userInfo' | 'authInfo' | 'app';
 
 export type SnackBarVariantType =
     | SnackBarVariant.DEFAULT

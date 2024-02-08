@@ -15,6 +15,10 @@ if (!process.env.EXPO_PUBLIC_WEB_CLIENT_ID) {
     console.error('Environment variable EXPO_PUBLIC_WEB_CLIENT_ID is not defined');
 }
 
+if (!process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME) {
+    console.error('Environment variable EXPO_PUBLIC_API_SERVER_HOSTNAME is not defined');
+}
+
 SplashScreen.preventAutoHideAsync();
 
 const Index = memo(() => {

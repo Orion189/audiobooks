@@ -1,34 +1,27 @@
-import { Text, Header as HeaderRNE } from '@rneui/themed';
+import { useTheme, Text, Header as HeaderRNE } from '@rneui/themed';
+import Library from '@src/components/main/Library';
 import ProgressBar from '@src/components/shared/ProgressBar';
-import commonStyles from '@src/styles/common';
 import { Stack } from 'expo-router';
 import { useCallback, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Header = memo(() => {
+    const {
+        theme: {
+            colors: { primary }
+        }
+    } = useTheme();
+    const { t } = useTranslation();
+
     return (
         <>
-            <HeaderRNE
-                leftComponent={{
-                    icon: 'menu',
-                    color: '#fff'
-                }}
-                rightComponent={{
-                    icon: 'add',
-                    color: '#fff'
-                }}
-                centerComponent={{ text: 'Library', style: commonStyles.appBarHeaderTitle }}
-                linearGradientProps={{
-                    colors: ['red', 'pink'],
-                    start: { x: 0, y: 0.5 },
-                    end: { x: 1, y: 0.5 }
-                }}
-            />
+            <HeaderRNE centerComponent={<Text h3>{t('app.library.index.title')}</Text>} backgroundColor={primary} />
             <ProgressBar />
         </>
     );
 });
 
-const HomePage = memo(() => {
+const LibraryPage = memo(() => {
     const header = useCallback(() => <Header />, []);
 
     return (
@@ -38,9 +31,9 @@ const HomePage = memo(() => {
                     header
                 }}
             />
-            <Text h3>Library</Text>
+            <Library />
         </>
     );
 });
 
-export default HomePage;
+export default LibraryPage;

@@ -38,16 +38,14 @@ const ThemeItem: FC<ThemeItemProps> = observer(({ theme, changeTheme }) => {
     );
 });
 
-const Theme: FC<ThemeProps> = memo(({ changeTheme }) => {
-    return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
-            <ScrollView>
-                {[THEME.LIGHT, THEME.DARK].map((theme) => (
-                    <ThemeItem key={theme} theme={theme} changeTheme={changeTheme} />
-                ))}
-            </ScrollView>
-        </SafeAreaView>
-    );
-});
+const Theme: FC<ThemeProps> = memo(({ changeTheme }) => (
+    <SafeAreaView style={commonStyles.safeAreaView}>
+        <ScrollView>
+            {[THEME.LIGHT, THEME.DARK].map((theme) => (
+                <ThemeItem key={theme} theme={theme} changeTheme={changeTheme} />
+            ))}
+        </ScrollView>
+    </SafeAreaView>
+));
 
 export default Theme;
