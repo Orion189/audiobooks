@@ -9,7 +9,7 @@ import { Platform } from 'react-native';
 const Header = memo(() => {
     const {
         theme: {
-            colors: { primary }
+            colors: { primary, white }
         }
     } = useTheme();
     const router = useRouter();
@@ -21,7 +21,7 @@ const Header = memo(() => {
             <HeaderRNE
                 leftComponent={
                     <Button type="clear" onPress={goToBackUrl}>
-                        <Icon name={Platform.OS === 'android' ? 'arrow-back' : 'arrow-back-ios'} color="white" />
+                        <Icon name={Platform.OS === 'android' ? 'arrow-back' : 'arrow-back-ios'} color={white} />
                     </Button>
                 }
                 centerComponent={<Text h3>{t('app.settings.account.title')}</Text>}

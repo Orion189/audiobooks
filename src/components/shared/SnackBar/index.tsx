@@ -10,7 +10,7 @@ import { StyleSheet } from 'react-native';
 const Snackbar = observer(() => {
     const {
         theme: {
-            colors: { primary, success, error, warning, greyOutline }
+            colors: { primary, white, success, error, warning, greyOutline }
         }
     } = useTheme();
     const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
@@ -49,7 +49,7 @@ const Snackbar = observer(() => {
         >
             <Text style={styles.msg}>{store.app.snackbar?.message}</Text>
             <Button onPress={dismissMsg} type="clear">
-                <Icon name="close" color="white" />
+                <Icon name="close" color={white} />
             </Button>
         </Dialog>
     );

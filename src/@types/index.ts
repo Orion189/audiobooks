@@ -1,4 +1,4 @@
-import { SnackBarVariant, THEME, LOCALE } from '@src/enums';
+import { SnackBarVariant, THEME, LOCALE, LIB_TYPE, LIB_ORDER } from '@src/enums';
 
 export type BookType = {
     id: string;
@@ -45,9 +45,22 @@ export type AppType = {
     theme: THEME;
 };
 
-export type StoreValuesType = BookType | BookType[] | SettingsType | UserInfoType | AuthInfoType | Partial<AppType>;
+export type LibType = {
+    curLib: LIB_TYPE;
+    order: LIB_ORDER;
+    isChangeLibPopupVisible: boolean;
+};
 
-export type StoreKeysType = 'book' | 'books' | 'settings' | 'userInfo' | 'authInfo' | 'app';
+export type StoreValuesType =
+    | BookType
+    | BookType[]
+    | LibType
+    | SettingsType
+    | UserInfoType
+    | AuthInfoType
+    | Partial<AppType>;
+
+export type StoreKeysType = 'book' | 'books' | 'lib' | 'settings' | 'userInfo' | 'authInfo' | 'app';
 
 export type SnackBarVariantType =
     | SnackBarVariant.DEFAULT

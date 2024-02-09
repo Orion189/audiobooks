@@ -134,6 +134,14 @@
                     },
                     "logInBtnLabel": "Log in",
                     "logOutBtnLabel": "Log out"
+                },
+                "ChangeLibPopup": {
+                    "title": "Change Library",
+                    "libTypes": {
+                        "none": "None",
+                        "local": "Local",
+                        "remote": "Remote"
+                    }
                 }
             },
             "shared": {

@@ -48,7 +48,9 @@ export const about = async (params: RequestParamsType = {}) => {
             return response?.data;
         })
         .catch((error) => {
-            console.error(error.toJSON());
+            console.error('Error status code:', error?.response?.status);
+            console.error('Error message:', error?.message);
+            console.error('Error detailed message:', error?.response?.data?.error?.message);
         })
         .finally(() => onEnd && onEnd());
 };

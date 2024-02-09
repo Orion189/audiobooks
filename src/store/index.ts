@@ -1,12 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BookType, SettingsType, UserInfoType, AuthInfoType, AppType, StoreValuesType } from '@src/@types';
-import { LOCALE, THEME } from '@src/enums';
+import { BookType, SettingsType, UserInfoType, AuthInfoType, AppType, StoreValuesType, LibType } from '@src/@types';
+import { LOCALE, THEME, LIB_TYPE, LIB_ORDER } from '@src/enums';
 import { makeObservable, observable, action } from 'mobx';
 import { makePersistable, stopPersisting } from 'mobx-persist-store';
 
 export const defaultState: {
     books: BookType[];
     book: BookType;
+    lib: LibType;
     settings: SettingsType;
     userInfo: UserInfoType;
     authInfo: AuthInfoType;
@@ -16,6 +17,11 @@ export const defaultState: {
     book: {
         id: '',
         title: ''
+    },
+    lib: {
+        curLib: LIB_TYPE.NONE,
+        order: LIB_ORDER.DEFAULT,
+        isChangeLibPopupVisible: false
     },
     settings: {
         isDarkMode: false
@@ -63,14 +69,12 @@ const store = makeObservable(
             } else {
                 Object.assign(this, defaultState);
             }
-        },
-        getListById(id: string | undefined): BookType | undefined {
-            return this.books?.find((book) => book.id === id);
         }
     },
     {
         books: observable,
         book: observable,
+        lib: observable,
         settings: observable,
         userInfo: observable,
         authInfo: observable,
@@ -87,7 +91,7 @@ makePersistable(
     {
         storage: AsyncStorage,
         name: 'AudiobooksStore',
-        properties: ['books', 'book', 'settings', 'userInfo', 'authInfo', 'app'],
+        properties: ['books', 'book', 'lib','settings', 'userInfo', 'authInfo', 'app'],
         debugMode: process.env.EXPO_PUBLIC_MOBX_DEBUG_MODE === 'true'
     } /*, { delay: 200 }*/
 );
