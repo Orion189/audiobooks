@@ -31,8 +31,6 @@ const useAuth = () => {
                     }
                 }
             } else {
-                await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
-
                 store.reset('userInfo');
                 store.reset('authInfo');
             }
@@ -50,8 +48,6 @@ const useAuth = () => {
                 default:
                     console.log('sign in error');
             }
-
-            await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
 
             store.set('app', {
                 ...store.app,

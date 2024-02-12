@@ -8,9 +8,9 @@ import { useCallback, useEffect } from 'react';
 const Library = observer(() => {
     const changeTheme = useCallback(async () => {
         if (store.authInfo.accessToken) {
-            const aboutData = await remoteService.about();
+            const drivesData = await remoteService.apiRequest({ path: '/drives', fields: '' });
 
-            console.log('aboutData:', aboutData);
+            console.log('drivesData:', drivesData);
         }
     }, [store.authInfo.accessToken]);
 

@@ -4,18 +4,22 @@ import store from '@src/store';
 import axios, { AxiosRequestConfig } from 'axios';
 import i18n from 'i18next';
 
+//console.error('Error message:', error?.message);
+//console.error('Error detailed message:', error?.response?.data?.error?.message);
+
 type DefaultParamsType = {
     onStart?: () => void;
     onEnd?: () => void;
     onError?: (error: string) => void;
 };
 
-type AboutParams = {
-    storageQuota: string;
+type APIParams = {
+    path: string;
+    fields: string;
 };
 
 type RequestParamsType = DefaultParamsType & AxiosRequestConfig;
-type AboutParamsType = DefaultParamsType & AboutParams & AxiosRequestConfig;
+type APIParamsType = DefaultParamsType & APIParams & AxiosRequestConfig;
 
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
@@ -24,7 +28,7 @@ const invalidateAccessToken = async () => {
         await GoogleSignin.hasPlayServices();
 
         const isSignedIn = await GoogleSignin.isSignedIn();
-console.log('isSignedIn:', isSignedIn);
+
         if (isSignedIn) {
             const userInfo = await GoogleSignin.getCurrentUser();
 
@@ -44,8 +48,6 @@ console.log('isSignedIn:', isSignedIn);
                 }
             }
         } else {
-            await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
-
             store.reset('userInfo');
             store.reset('authInfo');
         }
@@ -64,8 +66,6 @@ console.log('isSignedIn:', isSignedIn);
                 console.log('sign in error');
         }
 
-        await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
-
         store.set('app', {
             ...store.app,
             snackbar: {
@@ -77,11 +77,18 @@ console.log('isSignedIn:', isSignedIn);
         store.reset('authInfo');
     }
 };
-//console.error('Error message:', error?.message);
-//console.error('Error detailed message:', error?.response?.data?.error?.message);
-export const about = async (params: RequestParamsType = {}) => {
-    const { onStart, onEnd } = params;
-    const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/about`;
+const handleAuthError = async (response: any, fn: (params: APIParams) => Promise<any>, params: APIParamsType) => {
+    if (response?.status === ERROR_STATUS_CODE.AUTH_ERROR) {
+        await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
+        await invalidateAccessToken();
+
+        return fn(params);
+    }
+};
+
+export const apiRequest = async (params: APIParamsType = { path: '', fields: '' }) => {
+    const { path, fields, onStart, onEnd } = params;
+    const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}${path}`;
     const access_token = store.authInfo.accessToken;
 
     onStart && onStart();
@@ -90,16 +97,10 @@ export const about = async (params: RequestParamsType = {}) => {
         .get(url, {
             params: {
                 access_token,
-                fields: 'storageQuota,maxUploadSize'
+                fields
             }
         })
         .then(({ data }) => data)
-        .catch(async ({ response }) => {
-            if (response?.status === ERROR_STATUS_CODE.AUTH_ERROR) {
-                await invalidateAccessToken();
-
-                about(params);
-            }
-        })
+        .catch(({ response }) => handleAuthError(response, apiRequest, params))
         .finally(() => onEnd && onEnd());
 };
