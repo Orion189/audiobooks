@@ -41,3 +41,7 @@ export const enum ORDER_ICON {
     ASC = 'order-alphabetical-ascending',
     DESC = 'order-alphabetical-descending'
 }
+
+export const enum ERROR_STATUS_CODE {
+    AUTH_ERROR = 401
+}

@@ -56,7 +56,7 @@ const useAuth = () => {
             store.set('app', {
                 ...store.app,
                 snackbar: {
-                    type: SnackBarVariant.SUCCESS,
+                    type: SnackBarVariant.ERROR,
                     message: t('src.components.main.Account.signIn.error')
                 }
             });
