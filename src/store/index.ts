@@ -1,28 +1,43 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BookType, SettingsType, UserInfoType, AuthInfoType, AppType, StoreValuesType, LibType } from '@src/@types';
-import { LOCALE, THEME, LIB_TYPE, LIB_ORDER } from '@src/enums';
+import {
+    SettingsType,
+    RemoteLibType,
+    UserInfoType,
+    AuthInfoType,
+    AppType,
+    StoreValuesType,
+    LibType
+} from '@src/@types';
+import { LOCALE, THEME, LIB_TYPE, LIB_ORDER, REMOTE_LIB_ITEM_TYPE } from '@src/enums';
 import { makeObservable, observable, action } from 'mobx';
 import { makePersistable, stopPersisting } from 'mobx-persist-store';
 
 export const defaultState: {
-    books: BookType[];
-    book: BookType;
     lib: LibType;
+    [LIB_TYPE.REMOTE]: RemoteLibType;
+    [LIB_TYPE.LOCAL]: [];
     settings: SettingsType;
     userInfo: UserInfoType;
     authInfo: AuthInfoType;
     app: AppType;
 } = {
-    books: [],
-    book: {
-        id: '',
-        title: ''
-    },
     lib: {
         curLib: LIB_TYPE.NONE,
         order: LIB_ORDER.DEFAULT,
         isChangeLibPopupVisible: false
     },
+    [LIB_TYPE.REMOTE]: {
+        root: undefined,
+        curItem: {
+            id: '',
+            name: '',
+            type: undefined,
+            parent: undefined,
+            size: undefined,
+            items: []
+        }
+    },
+    [LIB_TYPE.LOCAL]: [],
     settings: {
         isDarkMode: false
     },
@@ -72,9 +87,9 @@ const store = makeObservable(
         }
     },
     {
-        books: observable,
-        book: observable,
         lib: observable,
+        [LIB_TYPE.REMOTE]: observable,
+        [LIB_TYPE.LOCAL]: observable,
         settings: observable,
         userInfo: observable,
         authInfo: observable,
@@ -91,7 +106,7 @@ makePersistable(
     {
         storage: AsyncStorage,
         name: 'AudiobooksStore',
-        properties: ['books', 'book', 'lib','settings', 'userInfo', 'authInfo', 'app'],
+        properties: ['lib', 'settings', 'userInfo', 'authInfo', 'app', LIB_TYPE.REMOTE, LIB_TYPE.LOCAL],
         debugMode: process.env.EXPO_PUBLIC_MOBX_DEBUG_MODE === 'true'
     } /*, { delay: 200 }*/
 );

@@ -1,24 +1,47 @@
-import LibraryView from '@src/components/main/Library/Library';
-//import { THEME } from '@src/enums';
-import * as remoteService from '@src/services/remote.service';
+import { Text } from '@rneui/themed';
+import LocalLibrary from '@src/components/main/LocalLibrary';
+import RemoteLibrary from '@src/components/main/RemoteLibrary';
+import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
+import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useEffect } from 'react';
+import { useCallback, memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+
+const ChooseLib = memo(() => {
+    const { t } = useTranslation();
+
+    return (
+        <SafeAreaView style={commonStyles.safeAreaView}>
+            <ScrollView contentContainerStyle={styles.mainCont}>
+                <Text>{t('src.components.main.Library.chooseLibMsg')}</Text>
+            </ScrollView>
+        </SafeAreaView>
+    );
+});
 
 const Library = observer(() => {
-    const changeTheme = useCallback(async () => {
-        if (store.authInfo.accessToken) {
-            const drivesData = await remoteService.apiRequest({ path: '/drives', fields: '' });
-
-            console.log('drivesData:', drivesData);
+    const getLibComponent = useCallback(() => {
+        switch (store.lib.curLib) {
+            case LIB_TYPE.LOCAL:
+                return <LocalLibrary />;
+            case LIB_TYPE.REMOTE:
+                return <RemoteLibrary />;
+            case LIB_TYPE.NONE:
+                return <ChooseLib />;
         }
-    }, [store.authInfo.accessToken]);
+    }, [store.lib.curLib]);
 
-    useEffect(() => {
-        changeTheme();
-    }, [store.authInfo.accessToken]);
+    return getLibComponent();
+});
 
-    return <LibraryView changeTheme={changeTheme} />;
+const styles = StyleSheet.create({
+    mainCont: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });
 
 export default Library;

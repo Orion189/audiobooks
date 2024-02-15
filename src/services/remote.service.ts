@@ -4,9 +4,6 @@ import store from '@src/store';
 import axios, { AxiosRequestConfig } from 'axios';
 import i18n from 'i18next';
 
-//console.error('Error message:', error?.message);
-//console.error('Error detailed message:', error?.response?.data?.error?.message);
-
 type DefaultParamsType = {
     onStart?: () => void;
     onEnd?: () => void;
@@ -15,7 +12,9 @@ type DefaultParamsType = {
 
 type APIParams = {
     path: string;
-    fields: string;
+    pageSize?: number;
+    q?: string;
+    fields?: string;
 };
 
 type RequestParamsType = DefaultParamsType & AxiosRequestConfig;
@@ -34,18 +33,12 @@ const invalidateAccessToken = async () => {
 
             if (userInfo) {
                 store.set('userInfo', { ...store.userInfo, ...userInfo });
-            } else {
-                const userInfo = await GoogleSignin.signInSilently();
+            }
 
-                if (userInfo) {
-                    store.set('userInfo', { ...store.userInfo, ...userInfo });
-                }
+            const authInfo = await GoogleSignin.getTokens();
 
-                const authInfo = await GoogleSignin.getTokens();
-
-                if (authInfo) {
-                    store.set('authInfo', { ...store.authInfo, ...authInfo });
-                }
+            if (authInfo) {
+                store.set('authInfo', { ...store.authInfo, ...authInfo });
             }
         } else {
             store.reset('userInfo');
@@ -77,17 +70,19 @@ const invalidateAccessToken = async () => {
         store.reset('authInfo');
     }
 };
-const handleAuthError = async (response: any, fn: (params: APIParams) => Promise<any>, params: APIParamsType) => {
+const handleError = async (response: any) => {
     if (response?.status === ERROR_STATUS_CODE.AUTH_ERROR) {
         await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
         await invalidateAccessToken();
-
-        return fn(params);
     }
+
+    console.error('Error status:', response?.status);
+    console.error('Error message:', response?.data?.error?.message);
+    console.error('Error detailed message:', response?.data?.error?.errors);
 };
 
-export const apiRequest = async (params: APIParamsType = { path: '', fields: '' }) => {
-    const { path, fields, onStart, onEnd } = params;
+export const apiRequest = async (params: APIParamsType) => {
+    const { path = '', pageSize = 100, q = '', fields = '', onStart, onEnd } = params;
     const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}${path}`;
     const access_token = store.authInfo.accessToken;
 
@@ -97,10 +92,12 @@ export const apiRequest = async (params: APIParamsType = { path: '', fields: '' 
         .get(url, {
             params: {
                 access_token,
+                pageSize,
+                q,
                 fields
             }
         })
         .then(({ data }) => data)
-        .catch(({ response }) => handleAuthError(response, apiRequest, params))
+        .catch(({ response }) => handleError(response))
         .finally(() => onEnd && onEnd());
 };

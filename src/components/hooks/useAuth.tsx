@@ -17,18 +17,12 @@ const useAuth = () => {
 
                 if (userInfo) {
                     store.set('userInfo', { ...store.userInfo, ...userInfo });
-                } else {
-                    const userInfo = await GoogleSignin.signInSilently();
+                }
 
-                    if (userInfo) {
-                        store.set('userInfo', { ...store.userInfo, ...userInfo });
-                    }
+                const authInfo = await GoogleSignin.getTokens();
 
-                    const authInfo = await GoogleSignin.getTokens();
-
-                    if (authInfo) {
-                        store.set('authInfo', { ...store.authInfo, ...authInfo });
-                    }
+                if (authInfo) {
+                    store.set('authInfo', { ...store.authInfo, ...authInfo });
                 }
             } else {
                 store.reset('userInfo');

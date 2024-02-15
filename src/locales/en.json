@@ -142,6 +142,9 @@
                         "local": "Local",
                         "remote": "Remote"
                     }
+                },
+                "Library": {
+                    "chooseLibMsg": "Choose library (local or remote)"
                 }
             },
             "shared": {

@@ -40,7 +40,7 @@ const commonStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignContent: 'center',
-        backgroundColor: '#fff'
+        backgroundColor: themeColors?.white
     },
     scrollView: {
         paddingTop: 20,
@@ -64,7 +64,7 @@ const commonStyles = StyleSheet.create({
         height: 44,
         paddingTop: 10,
         paddingBottom: 10,
-        backgroundColor: '#FFF',
+        backgroundColor: themeColors?.white,
         borderBottomWidth: 1,
         borderBottomColor: '#EBEBEB',
         borderStyle: 'solid'
@@ -73,7 +73,7 @@ const commonStyles = StyleSheet.create({
         height: 44,
         paddingTop: 10,
         paddingBottom: 10,
-        backgroundColor: '#fff'
+        backgroundColor: themeColors?.white
     },
     appBarHeaderTitle: {
         fontFamily: 'SuisseIntl-Bold',

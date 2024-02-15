@@ -11,12 +11,12 @@ type ThemeProps = {
     changeTheme: (theme: THEME) => void;
 };
 
-const Library: FC<ThemeProps> = memo(({ changeTheme }) => (
+const LocalLibrary: FC<ThemeProps> = memo(() => (
     <SafeAreaView style={commonStyles.safeAreaView}>
         <ScrollView>
-            <Text>{'Library'}</Text>
+            <Text>{'LocalLibrary'}</Text>
         </ScrollView>
     </SafeAreaView>
 ));
 
-export default Library;
+export default LocalLibrary;

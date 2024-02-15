@@ -1,4 +1,4 @@
-import { SnackBarVariant, THEME, LOCALE, LIB_TYPE, LIB_ORDER } from '@src/enums';
+import { SnackBarVariant, THEME, LOCALE, LIB_TYPE, LIB_ORDER, REMOTE_LIB_ITEM_TYPE } from '@src/enums';
 
 export type BookType = {
     id: string;
@@ -51,16 +51,23 @@ export type LibType = {
     isChangeLibPopupVisible: boolean;
 };
 
-export type StoreValuesType =
-    | BookType
-    | BookType[]
-    | LibType
-    | SettingsType
-    | UserInfoType
-    | AuthInfoType
-    | Partial<AppType>;
+export type RemoteLibType = {
+    root: string | undefined;
+    curItem: RemoteLibItemType | undefined;
+};
 
-export type StoreKeysType = 'book' | 'books' | 'lib' | 'settings' | 'userInfo' | 'authInfo' | 'app';
+export type RemoteLibItemType = {
+    id: string;
+    name: string;
+    type: REMOTE_LIB_ITEM_TYPE | undefined;
+    parent: string | undefined;
+    size: string | undefined;
+    items: RemoteLibItemType[];
+};
+
+export type StoreValuesType = LibType | RemoteLibType | SettingsType | UserInfoType | AuthInfoType | Partial<AppType>;
+
+export type StoreKeysType = 'lib' | 'settings' | 'userInfo' | 'authInfo' | 'app' | LIB_TYPE.REMOTE | LIB_TYPE.LOCAL;
 
 export type SnackBarVariantType =
     | SnackBarVariant.DEFAULT

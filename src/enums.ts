@@ -45,3 +45,8 @@ export const enum ORDER_ICON {
 export const enum ERROR_STATUS_CODE {
     AUTH_ERROR = 401
 }
+
+export const enum REMOTE_LIB_ITEM_TYPE {
+    G_FOLDER = 'application/vnd.google-apps.folder',
+    MPEG = 'audio/mpeg'
+}
