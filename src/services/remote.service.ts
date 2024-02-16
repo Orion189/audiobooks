@@ -15,6 +15,7 @@ type APIParams = {
     pageSize?: number;
     q?: string;
     fields?: string;
+    orderBy?: string;
 };
 
 type RequestParamsType = DefaultParamsType & AxiosRequestConfig;
@@ -25,6 +26,7 @@ const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTN
 const invalidateAccessToken = async () => {
     try {
         await GoogleSignin.hasPlayServices();
+        await GoogleSignin.signInSilently();
 
         const isSignedIn = await GoogleSignin.isSignedIn();
 
@@ -82,7 +84,7 @@ const handleError = async (response: any) => {
 };
 
 export const apiRequest = async (params: APIParamsType) => {
-    const { path = '', pageSize = 100, q = '', fields = '', onStart, onEnd } = params;
+    const { path = '', pageSize = 100, orderBy = '', q = '', fields = '', onStart, onEnd } = params;
     const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}${path}`;
     const access_token = store.authInfo.accessToken;
 
@@ -94,6 +96,7 @@ export const apiRequest = async (params: APIParamsType) => {
                 access_token,
                 pageSize,
                 q,
+                orderBy,
                 fields
             }
         })

@@ -52,17 +52,16 @@ export type LibType = {
 };
 
 export type RemoteLibType = {
-    root: string | undefined;
     curItem: RemoteLibItemType | undefined;
+    subItems?: RemoteLibItemType[];
 };
 
 export type RemoteLibItemType = {
     id: string;
     name: string;
-    type: REMOTE_LIB_ITEM_TYPE | undefined;
-    parent: string | undefined;
+    mimeType: REMOTE_LIB_ITEM_TYPE | undefined;
+    parents: string[] | undefined;
     size: string | undefined;
-    items: RemoteLibItemType[];
 };
 
 export type StoreValuesType = LibType | RemoteLibType | SettingsType | UserInfoType | AuthInfoType | Partial<AppType>;

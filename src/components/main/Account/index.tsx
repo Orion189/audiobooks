@@ -18,12 +18,12 @@ const Account = observer(() => {
 
             if (userInfo) {
                 store.set('userInfo', { ...store.userInfo, ...userInfo });
-            }
 
-            const authInfo = await GoogleSignin.getTokens();
+                const authInfo = await GoogleSignin.getTokens();
 
-            if (authInfo) {
-                store.set('authInfo', { ...store.authInfo, ...authInfo });
+                if (authInfo) {
+                    store.set('authInfo', { ...store.authInfo, ...authInfo });
+                }
             }
         } catch (error) {
             switch ((error as NativeModuleError).code) {

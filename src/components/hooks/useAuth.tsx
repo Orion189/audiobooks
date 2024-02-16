@@ -9,6 +9,7 @@ const useAuth = () => {
     const signInCheck = useCallback(async () => {
         try {
             await GoogleSignin.hasPlayServices();
+            await GoogleSignin.signInSilently();
 
             const isSignedIn = await GoogleSignin.isSignedIn();
 
@@ -40,7 +41,7 @@ const useAuth = () => {
                     console.log('PLAY_SERVICES_NOT_AVAILABLE');
                     break;
                 default:
-                    console.log('sign in error');
+                    console.log('sign in error:', error);
             }
 
             store.set('app', {

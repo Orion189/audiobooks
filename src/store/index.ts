@@ -8,7 +8,7 @@ import {
     StoreValuesType,
     LibType
 } from '@src/@types';
-import { LOCALE, THEME, LIB_TYPE, LIB_ORDER, REMOTE_LIB_ITEM_TYPE } from '@src/enums';
+import { LOCALE, THEME, LIB_TYPE, LIB_ORDER } from '@src/enums';
 import { makeObservable, observable, action } from 'mobx';
 import { makePersistable, stopPersisting } from 'mobx-persist-store';
 
@@ -27,15 +27,14 @@ export const defaultState: {
         isChangeLibPopupVisible: false
     },
     [LIB_TYPE.REMOTE]: {
-        root: undefined,
         curItem: {
             id: '',
             name: '',
-            type: undefined,
-            parent: undefined,
-            size: undefined,
-            items: []
-        }
+            mimeType: undefined,
+            parents: [],
+            size: undefined
+        },
+        subItems: []
     },
     [LIB_TYPE.LOCAL]: [],
     settings: {

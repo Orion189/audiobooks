@@ -1,4 +1,5 @@
 import { useTheme, Text, Icon, Button, Header as HeaderRNE } from '@rneui/themed';
+import useRemote from '@src/components/hooks/useRemote';
 import ChangeLibPopup from '@src/components/main/ChangeLibPopup';
 import Library from '@src/components/main/Library';
 import ProgressBar from '@src/components/shared/ProgressBar';
@@ -8,7 +9,7 @@ import { Stack } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 
 const Header = observer(() => {
     const {
@@ -17,6 +18,8 @@ const Header = observer(() => {
         }
     } = useTheme();
     const { t } = useTranslation();
+    const { getItem } = useRemote();
+    const parentFolderId = store[LIB_TYPE.REMOTE].curItem?.parents?.toString();
     const openChangeLibPopup = useCallback(
         () => store.set('lib', { ...store.lib, isChangeLibPopupVisible: true }),
         [store.lib.isChangeLibPopupVisible]
@@ -49,11 +52,23 @@ const Header = observer(() => {
             return LIB_ICON.LOCK;
         }
     }, [store.authInfo.accessToken, store.lib.curLib]); // TODO: add permissions depedency
+    const openBackBtnPress = useCallback(() => {
+        if (store.authInfo.accessToken && parentFolderId) {
+            getItem(parentFolderId);
+        }
+    }, [store.authInfo.accessToken, parentFolderId, getItem]);
 
     return (
         <>
             <HeaderRNE
                 backgroundColor={primary}
+                leftComponent={
+                    parentFolderId ? (
+                        <Button type="clear" onPress={openBackBtnPress}>
+                            <Icon name={Platform.OS === 'android' ? 'arrow-back' : 'arrow-back-ios'} color={white} />
+                        </Button>
+                    ) : undefined
+                }
                 centerComponent={<Text h3>{t('app.library.index.title')}</Text>}
                 rightComponent={
                     <View style={styles.rightComponentCont}>
