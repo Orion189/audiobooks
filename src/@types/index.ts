@@ -40,6 +40,7 @@ export type AppType = {
     isOnline: boolean;
     isFocused: boolean;
     isProgressBarVisible: boolean;
+    isLoadingVisible: boolean;
     snackbar: SnackBarType | null;
     language: LOCALE;
     theme: THEME;

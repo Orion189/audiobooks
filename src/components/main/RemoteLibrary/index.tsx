@@ -1,13 +1,25 @@
 import { RemoteLibItemType } from '@src/@types';
-import useRemote from '@src/components/hooks/useRemote';
+import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import RemoteLibraryView from '@src/components/main/RemoteLibrary/RemoteLibrary';
+import Loading from '@src/components/shared/Loading';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 const RemoteLibrary = observer(() => {
-    const { getItem, getSubItems } = useRemote();
+    const { getItem, getSubItems } = useRemoteLib();
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const onStart = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: true }), []);
+    const onEnd = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: false }), []);
+    const onRefreshStart = useCallback(() => setIsRefreshing(true), []);
+    const onRefreshEnd = useCallback(() => setIsRefreshing(false), []);
+    const onRefresh = useCallback(() => {
+        getSubItems({
+            onStart: onRefreshStart,
+            onEnd: onRefreshEnd
+        });
+    }, [getSubItems]);
     const openFolder = useCallback(
         (item: RemoteLibItemType) => {
             store.set(LIB_TYPE.REMOTE, {
@@ -15,8 +27,6 @@ const RemoteLibrary = observer(() => {
                 curItem: item,
                 subItems: []
             });
-
-            getSubItems();
         },
         [getSubItems]
     );
@@ -25,18 +35,29 @@ const RemoteLibrary = observer(() => {
     }, []);
 
     useEffect(() => {
-        if (store.authInfo.accessToken) {
-            getItem('root');
-        }
-    }, [store.authInfo.accessToken]);
+        getItem('root', {
+            onStart,
+            onEnd
+        });
+    }, [getItem, onStart, onEnd]);
 
     useEffect(() => {
-        if (store[LIB_TYPE.REMOTE].curItem?.id) {
-            getSubItems();
-        }
-    }, [store[LIB_TYPE.REMOTE].curItem]);
+        getSubItems({
+            onStart,
+            onEnd
+        });
+    }, [getSubItems, onStart, onEnd]);
 
-    return <RemoteLibraryView openFolder={openFolder} openFile={openFile} />;
+    return store.app.isLoadingVisible ? (
+        <Loading />
+    ) : (
+        <RemoteLibraryView
+            openFile={openFile}
+            onRefresh={onRefresh}
+            openFolder={openFolder}
+            isRefreshing={isRefreshing}
+        />
+    );
 });
 
 export default RemoteLibrary;

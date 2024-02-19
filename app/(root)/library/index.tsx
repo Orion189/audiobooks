@@ -1,7 +1,8 @@
 import { useTheme, Text, Icon, Button, Header as HeaderRNE } from '@rneui/themed';
-import useRemote from '@src/components/hooks/useRemote';
+import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import ChangeLibPopup from '@src/components/main/ChangeLibPopup';
 import Library from '@src/components/main/Library';
+import Loading from '@src/components/shared/Loading';
 import ProgressBar from '@src/components/shared/ProgressBar';
 import { LIB_TYPE, LIB_ICON, LIB_ORDER, ORDER_ICON } from '@src/enums';
 import store from '@src/store';
@@ -18,7 +19,7 @@ const Header = observer(() => {
         }
     } = useTheme();
     const { t } = useTranslation();
-    const { getItem } = useRemote();
+    const { getItem } = useRemoteLib();
     const parentFolderId = store[LIB_TYPE.REMOTE].curItem?.parents?.toString();
     const openChangeLibPopup = useCallback(
         () => store.set('lib', { ...store.lib, isChangeLibPopupVisible: true }),
@@ -52,11 +53,16 @@ const Header = observer(() => {
             return LIB_ICON.LOCK;
         }
     }, [store.authInfo.accessToken, store.lib.curLib]); // TODO: add permissions depedency
+    const onStart = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: true }), []);
+    const onEnd = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: false }), []);
     const openBackBtnPress = useCallback(() => {
-        if (store.authInfo.accessToken && parentFolderId) {
-            getItem(parentFolderId);
+        if (parentFolderId) {
+            getItem(parentFolderId, {
+                onStart,
+                onEnd
+            });
         }
-    }, [store.authInfo.accessToken, parentFolderId, getItem]);
+    }, [parentFolderId, getItem]);
 
     return (
         <>
