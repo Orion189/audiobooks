@@ -8,7 +8,7 @@ import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect, useState } from 'react';
 
 const RemoteLibrary = observer(() => {
-    const { getItem, getSubItems } = useRemoteLib();
+    const { getItem, getSubItems, downloadFile } = useRemoteLib();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const onStart = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: true }), []);
     const onEnd = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: false }), []);
@@ -33,6 +33,13 @@ const RemoteLibrary = observer(() => {
     const openFile = useCallback((item: RemoteLibItemType) => {
         console.log(item);
     }, []);
+    const donwloadFile = useCallback(async (item: RemoteLibItemType) => {
+        console.log(item.id);
+
+        const file = await downloadFile(item.id);
+
+        console.log('file:', file);
+    }, []);
 
     useEffect(() => {
         getItem('root', {
@@ -55,6 +62,7 @@ const RemoteLibrary = observer(() => {
             openFile={openFile}
             onRefresh={onRefresh}
             openFolder={openFolder}
+            donwloadFile={donwloadFile}
             isRefreshing={isRefreshing}
         />
     );

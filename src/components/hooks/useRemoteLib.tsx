@@ -58,10 +58,27 @@ const useRemoteLib = () => {
         },
         [store[LIB_TYPE.REMOTE].curItem]
     );
+    const downloadFile = useCallback(
+        async (id: string, config: ConfigType = {}) => {
+            if (store.authInfo.accessToken) {
+                const { onStart, onEnd } = config;
+                const fileData = await remoteService.apiRequest({
+                    path: `/files/${id}`,
+                    alt: 'media',
+                    onStart,
+                    onEnd
+                });
+
+                return fileData;
+            }
+        },
+        [store.authInfo.accessToken]
+    );
 
     return {
         getItem,
-        getSubItems
+        getSubItems,
+        downloadFile
     };
 };
 

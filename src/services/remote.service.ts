@@ -16,6 +16,7 @@ type APIParams = {
     q?: string;
     fields?: string;
     orderBy?: string;
+    alt?: string;
 };
 
 type RequestParamsType = DefaultParamsType & AxiosRequestConfig;
@@ -78,13 +79,14 @@ const handleError = async (response: any) => {
         await invalidateAccessToken();
     }
 
-    console.error('Error status:', response?.status);
+    console.error('Response:', response);
+    console.error('Status:', response?.status);
     console.error('Error message:', response?.data?.error?.message);
     console.error('Error detailed message:', response?.data?.error?.errors);
 };
 
 export const apiRequest = async (params: APIParamsType) => {
-    const { path = '', pageSize = 100, orderBy = '', q = '', fields = '', onStart, onEnd } = params;
+    const { path = '', pageSize = 100, orderBy = '', q = '', fields = '', alt = '', onStart, onEnd } = params;
     const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}${path}`;
     const access_token = store.authInfo.accessToken;
 
@@ -92,10 +94,15 @@ export const apiRequest = async (params: APIParamsType) => {
 
     return axios
         .get(url, {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${access_token}`
+            },
             params: {
                 access_token,
                 pageSize,
                 q,
+                alt,
                 orderBy,
                 fields
             }
