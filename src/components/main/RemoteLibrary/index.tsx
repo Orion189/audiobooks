@@ -1,4 +1,5 @@
 import { RemoteLibItemType } from '@src/@types';
+import useDownload from '@src/components/hooks/useDownload';
 import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import RemoteLibraryView from '@src/components/main/RemoteLibrary/RemoteLibrary';
 import Loading from '@src/components/shared/Loading';
@@ -8,7 +9,8 @@ import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect, useState } from 'react';
 
 const RemoteLibrary = observer(() => {
-    const { getItem, getSubItems, downloadFile } = useRemoteLib();
+    const { getItem, getSubItems } = useRemoteLib();
+    const { download, pause } = useDownload();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const onStart = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: true }), []);
     const onEnd = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: false }), []);
@@ -33,13 +35,16 @@ const RemoteLibrary = observer(() => {
     const openFile = useCallback((item: RemoteLibItemType) => {
         console.log(item);
     }, []);
-    const donwloadFile = useCallback(async (item: RemoteLibItemType) => {
-        console.log(item.id);
+    const donwloadFile = useCallback(
+        async (item: RemoteLibItemType) => {
+            console.log(item);
 
-        const file = await downloadFile(item.id);
+            const fileURI = await download(item);
 
-        console.log('file:', file);
-    }, []);
+            console.log('file URI:', fileURI);
+        },
+        [download]
+    );
 
     useEffect(() => {
         getItem('root', {

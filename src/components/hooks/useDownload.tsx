@@ -10,24 +10,17 @@ import {
 } from 'expo-file-system';
 import { useCallback, useState } from 'react';
 
-type ConfigType = {
-    onStart?: () => void;
-    onEnd?: () => void;
-};
-
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const useDownload = () => {
     const [downloadProgress, setDownloadProgress] = useState(0);
     const callback = useCallback(
-        (progress: DownloadProgressData) => {
-            const downloadProgress = progress.totalBytesWritten / progress.totalBytesExpectedToWrite;
-
-            setDownloadProgress(downloadProgress);
+        ({ totalBytesWritten, totalBytesExpectedToWrite }: DownloadProgressData) => {
+            setDownloadProgress(totalBytesWritten / totalBytesExpectedToWrite);
         },
         [setDownloadProgress]
     );
-    const getResumable = useCallback(
+    const getResumableInfo = useCallback(
         async (item: RemoteLibItemType) => {
             const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${item.id}?alt=media`;
             const accessToken = store.authInfo.accessToken;
@@ -44,26 +37,51 @@ const useDownload = () => {
             }
 
             if (snapshotJson) {
-                const snapshot = JSON.parse(snapshotJson);
+                try {
+                    const snapshot = JSON.parse(snapshotJson);
 
-                return new DownloadResumable(snapshot.url, snapshot.fileUri, options, callback, snapshot.resumeData);
+                    return {
+                        isNewDownload: false,
+                        downloadResumable: new DownloadResumable(
+                            snapshot.url,
+                            snapshot.fileUri,
+                            options,
+                            callback,
+                            snapshot.resumeData
+                        )
+                    };
+                } catch (e) {
+                    console.error(e);
+                }
             } else {
-                return createDownloadResumable(url, cacheDirectory + item.name, options, callback);
+                return {
+                    isNewDownload: true,
+                    downloadResumable: createDownloadResumable(url, cacheDirectory + item.name, options, callback)
+                };
             }
         },
-        [store.authInfo.accessToken]
+        [store.authInfo.accessToken, callback]
     );
     const download = useCallback(
-        async (item: RemoteLibItemType, downloadResumable: DownloadResumable) => {
-            if (!store.authInfo.accessToken) {
+        async (item: RemoteLibItemType) => {
+            const accessToken = store.authInfo.accessToken;
+            const resumableInfo = await getResumableInfo(item);
+            let result = null;
+
+            if (!accessToken || !resumableInfo) {
                 return null;
             }
 
             try {
-                const result = await downloadResumable.downloadAsync();
+                const { isNewDownload, downloadResumable } = resumableInfo;
+
+                if (isNewDownload) {
+                    result = await downloadResumable.downloadAsync();
+                } else {
+                    result = await downloadResumable.resumeAsync();
+                }
+
                 // TODO: save to documentDirectory and remove from cacheDirectory
-                // TODO: incapsulate getResumable and resume calls here
-                console.log('Finished downloading to ', result?.uri);
                 await AsyncStorage.removeItem(item.name);
 
                 return result?.uri;
@@ -71,11 +89,14 @@ const useDownload = () => {
                 console.error(e);
             }
         },
-        [store.authInfo.accessToken]
+        [store.authInfo.accessToken, getResumableInfo, downloadProgress]
     );
     const pause = useCallback(
-        async (item: RemoteLibItemType, downloadResumable: DownloadResumable) => {
-            if (!store.authInfo.accessToken) {
+        async (item: RemoteLibItemType) => {
+            const accessToken = store.authInfo.accessToken;
+            const downloadResumable = await getResumableInfo(item);
+
+            if (!accessToken || !downloadResumable) {
                 return null;
             }
 
@@ -89,32 +110,14 @@ const useDownload = () => {
                 console.error(e);
             }
         },
-        [store.authInfo.accessToken]
+        [store.authInfo.accessToken, getResumableInfo]
     );
-    const resume = useCallback(
-        async (downloadResumable: DownloadResumable) => {
-            if (!store.authInfo.accessToken) {
-                return null;
-            }
 
-            try {
-                const result = await downloadResumable.resumeAsync();
-
-                console.log('Finished downloading to ', result?.uri);
-                return result?.uri;
-            } catch (e) {
-                console.error(e);
-            }
-        },
-        [store.authInfo.accessToken]
-    );
+    console.log(downloadProgress.toFixed(2));
 
     return {
-        downloadProgress,
-        getResumable,
         download,
-        pause,
-        resume
+        pause
     };
 };
 
