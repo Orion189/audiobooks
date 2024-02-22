@@ -60,8 +60,8 @@ export const defaultState: {
     app: {
         isFocused: true,
         isOnline: false,
-        isProgressBarVisible: false,
         isLoadingVisible: false,
+        progressbar: null,
         snackbar: null,
         language: LOCALE.EN,
         theme: THEME.LIGHT

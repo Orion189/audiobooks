@@ -36,10 +36,15 @@ export type SnackBarType = {
     duration?: number;
 };
 
+export type ProgressBarType = {
+    isProgressBarVisible: boolean;
+    value: number | undefined;
+};
+
 export type AppType = {
     isOnline: boolean;
     isFocused: boolean;
-    isProgressBarVisible: boolean;
+    progressbar: ProgressBarType | null;
     isLoadingVisible: boolean;
     snackbar: SnackBarType | null;
     language: LOCALE;

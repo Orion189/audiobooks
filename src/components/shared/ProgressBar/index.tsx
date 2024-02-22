@@ -8,15 +8,17 @@ const ProgressBarBare = observer(() => {
             colors: { primary, white }
         }
     } = useTheme();
+    const { isProgressBarVisible, value } = store.app.progressbar || {};
 
     return (
         <LinearProgress
             color={primary}
             trackColor={white}
             testID="progressBar"
-            variant="indeterminate"
+            animation={isProgressBarVisible && !value}
+            value={value}
             style={{
-                opacity: store.app.isProgressBarVisible ? 1 : 0
+                opacity: isProgressBarVisible ? 1 : 0
             }}
         />
     );

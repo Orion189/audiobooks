@@ -6,20 +6,27 @@ import {
     DownloadResumable,
     createDownloadResumable,
     cacheDirectory,
-    documentDirectory
+    documentDirectory,
+    moveAsync,
+    readDirectoryAsync,
+    getInfoAsync
 } from 'expo-file-system';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const useDownload = () => {
-    const [downloadProgress, setDownloadProgress] = useState(0);
-    const callback = useCallback(
-        ({ totalBytesWritten, totalBytesExpectedToWrite }: DownloadProgressData) => {
-            setDownloadProgress(totalBytesWritten / totalBytesExpectedToWrite);
-        },
-        [setDownloadProgress]
-    );
+    const callback = useCallback(({ totalBytesWritten, totalBytesExpectedToWrite }: DownloadProgressData) => {
+        const value = Number((totalBytesWritten / totalBytesExpectedToWrite).toFixed(2));
+
+        store.set('app', {
+            ...store.app,
+            progressbar: {
+                isProgressBarVisible: isNaN(value) ? false : value !== 0 && value !== 1,
+                value: isNaN(value) ? undefined : value
+            }
+        });
+    }, []);
     const getResumableInfo = useCallback(
         async (item: RemoteLibItemType) => {
             const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${item.id}?alt=media`;
@@ -54,13 +61,15 @@ const useDownload = () => {
                     console.error(e);
                 }
             } else {
+                const downloadResumable = createDownloadResumable(url, cacheDirectory + item.name, options, callback);
+
                 return {
                     isNewDownload: true,
-                    downloadResumable: createDownloadResumable(url, cacheDirectory + item.name, options, callback)
+                    downloadResumable
                 };
             }
         },
-        [store.authInfo.accessToken, callback]
+        [store.authInfo.accessToken, callback, createDownloadResumable]
     );
     const download = useCallback(
         async (item: RemoteLibItemType) => {
@@ -81,26 +90,31 @@ const useDownload = () => {
                     result = await downloadResumable.resumeAsync();
                 }
 
-                // TODO: save to documentDirectory and remove from cacheDirectory
-                await AsyncStorage.removeItem(item.name);
-
-                return result?.uri;
+                if (result?.uri && documentDirectory) {
+                    await AsyncStorage.removeItem(item.name);
+                    await moveAsync({
+                        from: result?.uri,
+                        to: documentDirectory + item.name
+                    });
+                }
             } catch (e) {
                 console.error(e);
             }
         },
-        [store.authInfo.accessToken, getResumableInfo, downloadProgress]
+        [store.authInfo.accessToken, getResumableInfo, moveAsync]
     );
     const pause = useCallback(
         async (item: RemoteLibItemType) => {
             const accessToken = store.authInfo.accessToken;
-            const downloadResumable = await getResumableInfo(item);
+            const resumableInfo = await getResumableInfo(item);
 
-            if (!accessToken || !downloadResumable) {
+            if (!accessToken || !resumableInfo) {
                 return null;
             }
 
             try {
+                const { downloadResumable } = resumableInfo;
+
                 await downloadResumable.pauseAsync();
 
                 console.log('Paused download operation, saving for future retrieval');
@@ -112,8 +126,6 @@ const useDownload = () => {
         },
         [store.authInfo.accessToken, getResumableInfo]
     );
-
-    console.log(downloadProgress.toFixed(2));
 
     return {
         download,
