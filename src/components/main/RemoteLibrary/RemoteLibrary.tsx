@@ -6,7 +6,7 @@ import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useState, FC, memo } from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator, Text } from 'react-native';
 
 type RemoteLibraryProps = {
     openFile: (item: RemoteLibItemType) => void;
@@ -23,8 +23,8 @@ type RemoteLibraryItemProps = {
 };
 
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFile, openFolder, item }) => {
-    const [isDownloading, setIsDownloading] = useState(false);
     const { download, pause } = useDownload();
+    const [isDownloading, setIsDownloading] = useState(false);
     const getItemIcon = useCallback((mimeType: string) => {
         switch (mimeType) {
             case REMOTE_LIB_ITEM_TYPE.G_FOLDER:
@@ -41,19 +41,19 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
                 openFolder(item);
                 break;
             case REMOTE_LIB_ITEM_TYPE.MPEG:
-                openFile(item);
+                !isDownloading && openFile(item);
                 break;
         }
     }, []);
-    const onPressCb = useCallback(() => {
+    const onPressCb = useCallback(async () => {
         if (isDownloading) {
-            download(item);
-        } else {
+            setIsDownloading(false);
             pause(item);
+        } else {
+            setIsDownloading(true);
+            download(item).then(() => setIsDownloading(false));
         }
-
-        setIsDownloading(!isDownloading);
-    }, [download, pause, setIsDownloading, item, isDownloading]);
+    }, [download, setIsDownloading, item, isDownloading]);
 
     return (
         <ListItem bottomDivider onPress={onItemPress}>
@@ -67,7 +67,11 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
                 <ListItem.Chevron />
             ) : (
                 <Button type="clear" buttonStyle={styles.downloadBtn} onPress={onPressCb}>
-                    <Icon name={isDownloading ? 'pause' : 'cloud-download-outline'} type="material-community" />
+                    {isDownloading ? (
+                        <ActivityIndicator />
+                    ) : (
+                        <Icon name="cloud-download-outline" type="material-community" />
+                    )}
                 </Button>
             )}
         </ListItem>

@@ -1,9 +1,8 @@
 import { useTheme, ListItem, Icon, Dialog } from '@rneui/themed';
 import { LIB_TYPE, LIB_ICON } from '@src/enums';
-import commonStyles from '@src/styles/common';
 import { useCallback, FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 type ChangeLibPopupProps = {
     changeLibType: (libType: LIB_TYPE) => void;
@@ -19,7 +18,7 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { background, disabled, black }
+            colors: { black }
         }
     } = useTheme();
     const getIcon = useCallback(() => {
@@ -48,18 +47,14 @@ const ChangeLibPopup: FC<ChangeLibPopupProps> = memo(({ changeLibType, onClose }
     const { t } = useTranslation();
 
     return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
-            <ScrollView>
-                <Dialog onBackdropPress={onClose} overlayStyle={styles.overlay}>
-                    <Dialog.Title title={t('src.components.main.ChangeLibPopup.title')} />
-                    <View style={styles.dialogView}>
-                        {[LIB_TYPE.LOCAL, LIB_TYPE.REMOTE].map((libType) => (
-                            <ChangeLibPopupItem key={libType} libType={libType} changeLibType={changeLibType} />
-                        ))}
-                    </View>
-                </Dialog>
-            </ScrollView>
-        </SafeAreaView>
+        <Dialog onBackdropPress={onClose} overlayStyle={styles.overlay}>
+            <Dialog.Title title={t('src.components.main.ChangeLibPopup.title')} />
+            <View style={styles.dialogView}>
+                {[LIB_TYPE.LOCAL, LIB_TYPE.REMOTE].map((libType) => (
+                    <ChangeLibPopupItem key={libType} libType={libType} changeLibType={changeLibType} />
+                ))}
+            </View>
+        </Dialog>
     );
 });
 
