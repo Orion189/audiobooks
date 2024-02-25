@@ -1,12 +1,12 @@
 import { ListItem, Icon, useTheme, Button } from '@rneui/themed';
 import { RemoteLibItemType } from '@src/@types';
-import useDownload from '@src/components/hooks/useDownload';
+import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import { REMOTE_LIB_ITEM_TYPE, LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useState, FC, memo } from 'react';
-import { StyleSheet, SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator } from 'react-native';
 
 type RemoteLibraryProps = {
     openFile: (item: RemoteLibItemType) => void;
@@ -23,7 +23,7 @@ type RemoteLibraryItemProps = {
 };
 
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFile, openFolder, item }) => {
-    const { download, pause } = useDownload();
+    const { download, pause } = useRemoteLib();
     const [isDownloading, setIsDownloading] = useState(false);
     const getItemIcon = useCallback((mimeType: string) => {
         switch (mimeType) {

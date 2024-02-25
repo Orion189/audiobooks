@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     SettingsType,
     RemoteLibType,
+    LocalLibType,
     UserInfoType,
     AuthInfoType,
     AppType,
@@ -15,7 +16,7 @@ import { makePersistable, stopPersisting } from 'mobx-persist-store';
 export const defaultState: {
     lib: LibType;
     [LIB_TYPE.REMOTE]: RemoteLibType;
-    [LIB_TYPE.LOCAL]: [];
+    [LIB_TYPE.LOCAL]: LocalLibType;
     settings: SettingsType;
     userInfo: UserInfoType;
     authInfo: AuthInfoType;
@@ -36,7 +37,16 @@ export const defaultState: {
         },
         subItems: []
     },
-    [LIB_TYPE.LOCAL]: [],
+    [LIB_TYPE.LOCAL]: {
+        curItem: {
+            id: '',
+            name: '',
+            mimeType: undefined,
+            parents: [],
+            size: undefined
+        },
+        subItems: []
+    },
     settings: {
         isDarkMode: false
     },

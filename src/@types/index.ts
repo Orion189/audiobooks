@@ -57,9 +57,21 @@ export type LibType = {
     isChangeLibPopupVisible: boolean;
 };
 
+export type LocalLibType = {
+    curItem: LocalLibItemType | undefined;
+    subItems?: LocalLibItemType[];
+};
+
 export type RemoteLibType = {
     curItem: RemoteLibItemType | undefined;
     subItems?: RemoteLibItemType[];
+};
+
+export type LocalLibItemType = {
+    id: string;
+    isDirectory: boolean;
+    parent: string | undefined;
+    uri: string;
 };
 
 export type RemoteLibItemType = {
@@ -70,7 +82,14 @@ export type RemoteLibItemType = {
     size: string | undefined;
 };
 
-export type StoreValuesType = LibType | RemoteLibType | SettingsType | UserInfoType | AuthInfoType | Partial<AppType>;
+export type StoreValuesType =
+    | LibType
+    | RemoteLibType
+    | LocalLibType
+    | SettingsType
+    | UserInfoType
+    | AuthInfoType
+    | Partial<AppType>;
 
 export type StoreKeysType = 'lib' | 'settings' | 'userInfo' | 'authInfo' | 'app' | LIB_TYPE.REMOTE | LIB_TYPE.LOCAL;
 
