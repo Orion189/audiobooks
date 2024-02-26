@@ -1,7 +1,7 @@
 import { LocalLibItemType } from '@src/@types';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
-import { documentDirectory, getInfoAsync, readDirectoryAsync } from 'expo-file-system';
+import { getInfoAsync, readDirectoryAsync } from 'expo-file-system';
 import { useCallback } from 'react';
 
 type ConfigType = {
@@ -9,23 +9,22 @@ type ConfigType = {
     onEnd?: () => void;
 };
 
-const useRemoteLib = () => {
+const useLocalLib = () => {
     const getItem = useCallback(
-        async (id: string, parent: string, config: ConfigType = {}) => {
+        async (itemURI: string, config: ConfigType = {}) => {
             if (store.authInfo.accessToken) {
                 // TODO: check local permissions
                 const { onStart, onEnd } = config;
 
                 onStart && onStart();
 
-                const { exists, isDirectory, uri } = await getInfoAsync(documentDirectory + id);
+                const { exists, isDirectory, uri } = await getInfoAsync(itemURI);
 
                 if (exists) {
                     store.set(LIB_TYPE.LOCAL, {
                         ...store[LIB_TYPE.LOCAL],
                         curItem: {
-                            id,
-                            parent,
+                            name: '',
                             isDirectory,
                             uri
                         },
@@ -56,8 +55,7 @@ const useRemoteLib = () => {
                                 getInfoAsync(uri + itemName)
                                     .then((subItemInfo) =>
                                         resolve({
-                                            id: itemName,
-                                            parent: uri,
+                                            name: itemName,
                                             isDirectory: subItemInfo.isDirectory,
                                             uri: subItemInfo.uri
                                         })
@@ -76,7 +74,7 @@ const useRemoteLib = () => {
                 onEnd && onEnd();
             }
         },
-        [store[LIB_TYPE.REMOTE].curItem]
+        [store[LIB_TYPE.LOCAL].curItem]
     );
 
     return {
@@ -85,4 +83,4 @@ const useRemoteLib = () => {
     };
 };
 
-export default useRemoteLib;
+export default useLocalLib;

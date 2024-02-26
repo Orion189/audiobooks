@@ -68,9 +68,8 @@ export type RemoteLibType = {
 };
 
 export type LocalLibItemType = {
-    id: string;
+    name: string;
     isDirectory: boolean;
-    parent: string | undefined;
     uri: string;
 };
 

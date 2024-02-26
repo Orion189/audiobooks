@@ -20,16 +20,13 @@ const RemoteLibrary = observer(() => {
             onEnd: onRefreshEnd
         });
     }, [getSubItems]);
-    const openFolder = useCallback(
-        (item: RemoteLibItemType) => {
-            store.set(LIB_TYPE.REMOTE, {
-                ...store[LIB_TYPE.REMOTE],
-                curItem: item,
-                subItems: []
-            });
-        },
-        [getSubItems]
-    );
+    const openFolder = useCallback((item: RemoteLibItemType) => {
+        store.set(LIB_TYPE.REMOTE, {
+            ...store[LIB_TYPE.REMOTE],
+            curItem: item,
+            subItems: []
+        });
+    }, []);
     const openFile = useCallback((item: RemoteLibItemType) => {
         console.log(item);
     }, []);

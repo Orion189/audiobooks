@@ -44,7 +44,7 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
                 !isDownloading && openFile(item);
                 break;
         }
-    }, []);
+    }, [openFolder, openFile, isDownloading, item.mimeType]);
     const onPressCb = useCallback(async () => {
         if (isDownloading) {
             setIsDownloading(false);

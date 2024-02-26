@@ -21,7 +21,9 @@ export const enum LIB_ICON {
     HOME = 'folder-home',
     GDRIVE = 'folder-google-drive',
     LOCK = 'folder-lock',
-    ADD = 'folder-plus'
+    ADD = 'folder-plus',
+    BACK = 'arrow-left',
+    BACK_TO_HOME = 'arrow-expand-left'
 }
 
 export const enum LIB_TYPE {

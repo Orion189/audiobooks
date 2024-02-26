@@ -1,8 +1,7 @@
-import { RemoteLibItemType } from '@src/@types';
+import { LocalLibItemType } from '@src/@types';
 import useLocalLib from '@src/components/hooks/useLocalLib';
 import LocalLibraryView from '@src/components/main/LocalLibrary/LocalLibrary';
 import Loading from '@src/components/shared/Loading';
-import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { documentDirectory } from 'expo-file-system';
 import { observer } from 'mobx-react-lite';
@@ -22,27 +21,26 @@ const LocalLibrary = observer(() => {
         });
     }, [getSubItems]);
     const openFolder = useCallback(
-        (item: RemoteLibItemType) => {
-            store.set(LIB_TYPE.REMOTE, {
-                ...store[LIB_TYPE.REMOTE],
-                curItem: item,
-                subItems: []
+        (item: LocalLibItemType) => {
+            getItem(item.uri, {
+                onStart,
+                onEnd
             });
         },
-        [getSubItems]
+        [getItem, onStart, onEnd]
     );
-    const openFile = useCallback((item: RemoteLibItemType) => {
+    const openFile = useCallback((item: LocalLibItemType) => {
         console.log(item);
     }, []);
 
     useEffect(() => {
         if (documentDirectory) {
-            getItem('', '', {
+            getItem(documentDirectory, {
                 onStart,
                 onEnd
             });
         }
-    }, [getItem, onStart, onEnd]);
+    }, [getItem, onStart, onEnd, documentDirectory]);
 
     useEffect(() => {
         getSubItems({
