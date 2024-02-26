@@ -1,7 +1,7 @@
 import { LocalLibItemType } from '@src/@types';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
-import { getInfoAsync, readDirectoryAsync } from 'expo-file-system';
+import { getInfoAsync, readDirectoryAsync, deleteAsync } from 'expo-file-system';
 import { useCallback } from 'react';
 
 type ConfigType = {
@@ -12,30 +12,27 @@ type ConfigType = {
 const useLocalLib = () => {
     const getItem = useCallback(
         async (itemURI: string, config: ConfigType = {}) => {
-            if (store.authInfo.accessToken) {
-                // TODO: check local permissions
-                const { onStart, onEnd } = config;
+            const { onStart, onEnd } = config;
 
-                onStart && onStart();
+            onStart && onStart();
 
-                const { exists, isDirectory, uri } = await getInfoAsync(itemURI);
+            const { exists, isDirectory, uri } = await getInfoAsync(itemURI);
 
-                if (exists) {
-                    store.set(LIB_TYPE.LOCAL, {
-                        ...store[LIB_TYPE.LOCAL],
-                        curItem: {
-                            name: '',
-                            isDirectory,
-                            uri
-                        },
-                        subItems: []
-                    });
-                }
-
-                onEnd && onEnd();
+            if (exists) {
+                store.set(LIB_TYPE.LOCAL, {
+                    ...store[LIB_TYPE.LOCAL],
+                    curItem: {
+                        name: '',
+                        isDirectory,
+                        uri
+                    },
+                    subItems: []
+                });
             }
+
+            onEnd && onEnd();
         },
-        [store.authInfo.accessToken]
+        [getInfoAsync]
     );
     const getSubItems = useCallback(
         async (config: ConfigType = {}) => {
@@ -76,10 +73,23 @@ const useLocalLib = () => {
         },
         [store[LIB_TYPE.LOCAL].curItem]
     );
+    const deleteItem = useCallback(
+        async (itemURI: string, config: ConfigType = {}) => {
+            const { onStart, onEnd } = config;
+
+            onStart && onStart();
+
+            await deleteAsync(itemURI, { idempotent: true });
+
+            onEnd && onEnd();
+        },
+        [deleteAsync]
+    );
 
     return {
         getItem,
-        getSubItems
+        getSubItems,
+        deleteItem
     };
 };
 

@@ -5,11 +5,14 @@ import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
 import { useCallback, FC, memo } from 'react';
-import { SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator } from 'react-native';
+import { SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator, Animated, StyleSheet } from 'react-native';
+import { RectButton } from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 type LocalLibraryProps = {
     openFile: (item: LocalLibItemType) => void;
     openFolder: (item: LocalLibItemType) => void;
+    deleteItem: (item: LocalLibItemType) => void;
 };
 
 type RefreshingProps = {
@@ -21,34 +24,90 @@ type LocalLibraryItemProps = {
     item: LocalLibItemType;
 };
 
-const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ openFile, openFolder, item }) => {
-    const onItemPress = useCallback(() => {
-        if (item.isDirectory) {
-            openFolder(item);
-        } else {
-            openFile(item);
+type LocalLibraryItemActionProps = {
+    swipeable: Swipeable;
+    progress: Animated.AnimatedInterpolation<number>;
+    pressHandler: (pointerInside: boolean) => void;
+};
+
+const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: LocalLibraryItemActionProps) => {
+    const translateX = progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [1, 0],
+        extrapolate: 'clamp'
+    });
+    const {
+        theme: {
+            colors: { white, error }
         }
-    }, [openFolder, openFile]);
+    } = useTheme();
+    const onPress = useCallback(
+        (pointerInside: boolean) => {
+            swipeable.close();
+
+            pressHandler(pointerInside);
+        },
+        [pressHandler]
+    );
 
     return (
-        <ListItem bottomDivider onPress={onItemPress}>
-            <Icon
-                name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
-                type="material-community"
-                color="grey"
-            />
-            <ListItem.Content>
-                <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
-                    {item.name}
-                </ListItem.Title>
-            </ListItem.Content>
-            {item.isDirectory ? <ListItem.Chevron /> : null}
-        </ListItem>
+        <Animated.View style={{ flex: 1, transform: [{ translateX }] }} testID="localLibraryItemAction">
+            <RectButton
+                onPress={onPress}
+                testID="localLibraryItemActionnBtn"
+                style={[styles.rightAction, { backgroundColor: error }]}
+            >
+                <Icon size={25} color={white} type="material-community" name="trash-can-outline" />
+            </RectButton>
+        </Animated.View>
     );
 });
 
+const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(
+    ({ openFile, openFolder, deleteItem, item }) => {
+        const onItemPress = useCallback(() => {
+            if (item.isDirectory) {
+                openFolder(item);
+            } else {
+                openFile(item);
+            }
+        }, [openFolder, openFile, item]);
+        const onDeleteItem = useCallback(() => deleteItem(item), [deleteItem, item]);
+        const renderRightAction = useCallback(
+            (
+                progress: Animated.AnimatedInterpolation<number>,
+                drag: Animated.AnimatedInterpolation<string | number>,
+                swipeable: Swipeable
+            ) => <LocalLibraryItemAction progress={progress} swipeable={swipeable} pressHandler={onDeleteItem} />,
+            [onDeleteItem]
+        );
+
+        return (
+            <Swipeable
+                enableTrackpadTwoFingerGesture
+                onSwipeableOpen={onDeleteItem}
+                renderRightActions={renderRightAction}
+            >
+                <ListItem bottomDivider onPress={onItemPress}>
+                    <Icon
+                        name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
+                        type="material-community"
+                        color="grey"
+                    />
+                    <ListItem.Content>
+                        <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
+                            {item.name}
+                        </ListItem.Title>
+                    </ListItem.Content>
+                    {item.isDirectory ? <ListItem.Chevron /> : null}
+                </ListItem>
+            </Swipeable>
+        );
+    }
+);
+
 const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
-    ({ openFile, openFolder, isRefreshing, onRefresh }) => {
+    ({ openFile, openFolder, deleteItem, isRefreshing, onRefresh }) => {
         const {
             theme: {
                 colors: { primary }
@@ -66,12 +125,27 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
                     }
                 >
                     {store[LIB_TYPE.LOCAL].subItems?.map((item) => (
-                        <LocalLibraryItem key={item.name} item={item} openFile={openFile} openFolder={openFolder} />
+                        <LocalLibraryItem
+                            key={item.name}
+                            item={item}
+                            openFile={openFile}
+                            openFolder={openFolder}
+                            deleteItem={deleteItem}
+                        />
                     ))}
                 </ScrollView>
             </SafeAreaView>
         );
     }
 );
+
+const styles = StyleSheet.create({
+    rightAction: {
+        flex: 1,
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        paddingRight: 15
+    }
+});
 
 export default LocalLibrary;

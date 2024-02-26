@@ -112,12 +112,11 @@ const Header = observer(() => {
         if (store.lib.curLib === LIB_TYPE.REMOTE && store.authInfo.accessToken) {
             return LIB_ICON.GDRIVE;
         } else if (store.lib.curLib === LIB_TYPE.LOCAL && true) {
-            // TODO: check permissions
             return LIB_ICON.HOME;
         } else {
             return LIB_ICON.LOCK;
         }
-    }, [store.authInfo.accessToken, store.lib.curLib]); // TODO: add permissions depedency
+    }, [store.authInfo.accessToken, store.lib.curLib]);
 
     return (
         <>

@@ -11,8 +11,6 @@ const ChangeLibPopup = observer(() => {
         (libType: LIB_TYPE) => {
             switch (libType) {
                 case LIB_TYPE.LOCAL: {
-                    // TODO: check permissions
-                    // if NO - show permissions popup
                     break;
                 }
                 case LIB_TYPE.REMOTE: {

@@ -38,7 +38,7 @@ export type SnackBarType = {
 
 export type ProgressBarType = {
     isProgressBarVisible: boolean;
-    value: number | undefined;
+    value?: number;
 };
 
 export type AppType = {
