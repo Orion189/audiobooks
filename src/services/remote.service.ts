@@ -19,7 +19,6 @@ type APIParams = {
     alt?: string;
 };
 
-type RequestParamsType = DefaultParamsType & AxiosRequestConfig;
 type APIParamsType = DefaultParamsType & APIParams & AxiosRequestConfig;
 
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;

@@ -41,9 +41,20 @@ const useRemoteLib = () => {
                         moveAsync({
                             from: result?.uri,
                             to: documentDirectory + item.name
-                        });
+                        }).then(() => {
+                            const downloadedItemNamesOld = store[LIB_TYPE.LOCAL].downloadedItemNames;
+                            const isExistedItem = downloadedItemNamesOld?.find((itemName) => itemName === item.name);
+                            const downloadedItemNames = [...downloadedItemNamesOld, item.name];
 
-                        downloadResumableRef.current = undefined;
+                            if (!isExistedItem) {
+                                store.set(LIB_TYPE.LOCAL, {
+                                    ...store[LIB_TYPE.LOCAL],
+                                    downloadedItemNames
+                                });
+                            }
+
+                            downloadResumableRef.current = undefined;
+                        });
                     });
                 }
             } catch (e) {
@@ -140,13 +151,16 @@ const useRemoteLib = () => {
     );
     const getSubItems = useCallback(
         async (config: ConfigType = {}) => {
-            if (store[LIB_TYPE.REMOTE].curItem?.id) {
+            const id = store[LIB_TYPE.REMOTE].curItem?.id;
+            const accessToken = store.authInfo.accessToken;
+
+            if (id && accessToken) {
                 const { onStart, onEnd } = config;
                 const filesData = await remoteService.apiRequest({
                     path: '/files',
                     orderBy: 'folder,name',
                     q: `
-                        parents in '${store[LIB_TYPE.REMOTE].curItem?.id}' 
+                        parents in '${id}' 
                         and mimeType in '${REMOTE_LIB_ITEM_TYPE.G_FOLDER}','${REMOTE_LIB_ITEM_TYPE.MPEG}' 
                         and trashed = false
                     `,
@@ -163,7 +177,7 @@ const useRemoteLib = () => {
                 }
             }
         },
-        [store[LIB_TYPE.REMOTE].curItem]
+        [store[LIB_TYPE.REMOTE].curItem, store.authInfo.accessToken]
     );
 
     return {

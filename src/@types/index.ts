@@ -60,6 +60,7 @@ export type LibType = {
 export type LocalLibType = {
     curItem: LocalLibItemType | undefined;
     subItems?: LocalLibItemType[];
+    downloadedItemNames: string[];
 };
 
 export type RemoteLibType = {

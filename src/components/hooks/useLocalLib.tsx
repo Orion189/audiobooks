@@ -1,7 +1,8 @@
 import { LocalLibItemType } from '@src/@types';
+import { LOCAL_ITEMS_TO_HIDE } from '@src/constants';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
-import { getInfoAsync, readDirectoryAsync, deleteAsync } from 'expo-file-system';
+import { getInfoAsync, readDirectoryAsync, deleteAsync, documentDirectory } from 'expo-file-system';
 import { useCallback } from 'react';
 
 type ConfigType = {
@@ -60,11 +61,20 @@ const useLocalLib = () => {
                                     .catch(reject)
                             )
                     );
-                    const subItems = await Promise.all(subItemsPromises);
+                    let subItems = await Promise.all(subItemsPromises);
+                    const downloadedItemNames =
+                        uri === documentDirectory
+                            ? subItems.filter((subItem) => !subItem.isDirectory).map((subItem) => subItem.name)
+                            : store[LIB_TYPE.LOCAL].downloadedItemNames;
+
+                    subItems = subItems
+                        .filter((subItem) => !LOCAL_ITEMS_TO_HIDE.includes(subItem.name))
+                        .sort((subItem1, subItem2) => (subItem1.isDirectory === subItem2.isDirectory ? 1 : -1));
 
                     store.set(LIB_TYPE.LOCAL, {
                         ...store[LIB_TYPE.LOCAL],
-                        subItems
+                        subItems,
+                        downloadedItemNames
                     });
                 }
 

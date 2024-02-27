@@ -22,6 +22,22 @@ type RemoteLibraryItemProps = {
     item: RemoteLibItemType;
 };
 
+type DownloadItemBtnProps = {
+    name: string;
+    isDownloading: boolean;
+    onPressCb: () => void;
+};
+
+const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloading, onPressCb }) => {
+    const isItemDownloaded = store[LIB_TYPE.LOCAL].downloadedItemNames.includes(name);
+
+    return isItemDownloaded ? null : (
+        <Button type="clear" buttonStyle={styles.downloadBtn} onPress={onPressCb}>
+            {isDownloading ? <ActivityIndicator /> : <Icon name="cloud-download-outline" type="material-community" />}
+        </Button>
+    );
+});
+
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFile, openFolder, item }) => {
     const { download, pause } = useRemoteLib();
     const [isDownloading, setIsDownloading] = useState(false);
@@ -66,13 +82,7 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
             {item.mimeType === REMOTE_LIB_ITEM_TYPE.G_FOLDER ? (
                 <ListItem.Chevron />
             ) : (
-                <Button type="clear" buttonStyle={styles.downloadBtn} onPress={onPressCb}>
-                    {isDownloading ? (
-                        <ActivityIndicator />
-                    ) : (
-                        <Icon name="cloud-download-outline" type="material-community" />
-                    )}
-                </Button>
+                <DownloadItemBtn isDownloading={isDownloading} onPressCb={onPressCb} name={item.name} />
             )}
         </ListItem>
     );

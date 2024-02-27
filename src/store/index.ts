@@ -39,13 +39,12 @@ export const defaultState: {
     },
     [LIB_TYPE.LOCAL]: {
         curItem: {
-            id: '',
             name: '',
-            mimeType: undefined,
-            parents: [],
-            size: undefined
+            isDirectory: false,
+            uri: ''
         },
-        subItems: []
+        subItems: [],
+        downloadedItemNames: []
     },
     settings: {
         isDarkMode: false
