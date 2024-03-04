@@ -51,6 +51,11 @@ export type AppType = {
     theme: THEME;
 };
 
+export type PlayerType = {
+    isVisible: boolean;
+    isCollapsed: boolean;
+};
+
 export type LibType = {
     curLib: LIB_TYPE;
     order: LIB_ORDER;
@@ -83,6 +88,7 @@ export type RemoteLibItemType = {
 };
 
 export type StoreValuesType =
+    | PlayerType
     | LibType
     | RemoteLibType
     | LocalLibType
@@ -91,7 +97,15 @@ export type StoreValuesType =
     | AuthInfoType
     | Partial<AppType>;
 
-export type StoreKeysType = 'lib' | 'settings' | 'userInfo' | 'authInfo' | 'app' | LIB_TYPE.REMOTE | LIB_TYPE.LOCAL;
+export type StoreKeysType =
+    | 'player'
+    | 'lib'
+    | 'settings'
+    | 'userInfo'
+    | 'authInfo'
+    | 'app'
+    | LIB_TYPE.REMOTE
+    | LIB_TYPE.LOCAL;
 
 export type SnackBarVariantType =
     | SnackBarVariant.DEFAULT

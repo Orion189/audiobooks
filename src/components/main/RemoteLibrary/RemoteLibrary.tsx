@@ -39,6 +39,11 @@ const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloadin
 });
 
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFile, openFolder, item }) => {
+    const {
+        theme: {
+            colors: { greyOutline }
+        }
+    } = useTheme();
     const { download, pause } = useRemoteLib();
     const [isDownloading, setIsDownloading] = useState(false);
     const getItemIcon = useCallback((mimeType: string) => {
@@ -73,7 +78,9 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
 
     return (
         <ListItem bottomDivider onPress={onItemPress}>
-            {item.mimeType ? <Icon name={getItemIcon(item.mimeType)} type="material-community" color="grey" /> : null}
+            {item.mimeType ? (
+                <Icon name={getItemIcon(item.mimeType)} type="material-community" color={greyOutline} />
+            ) : null}
             <ListItem.Content>
                 <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
                     {item.name}

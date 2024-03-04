@@ -4,7 +4,6 @@ import ProgressBar from '@src/components/shared/ProgressBar';
 import { useRouter, Stack } from 'expo-router';
 import { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
 
 const Header = memo(() => {
     const {
@@ -21,7 +20,7 @@ const Header = memo(() => {
             <HeaderRNE
                 leftComponent={
                     <Button type="clear" onPress={goToBackUrl}>
-                        <Icon name={Platform.OS === 'android' ? 'arrow-back' : 'arrow-back-ios'} color="white" />
+                        <Icon name="arrow-left" type="material-community" color="white" />
                     </Button>
                 }
                 centerComponent={<Text h3>{t('app.settings.language.title')}</Text>}

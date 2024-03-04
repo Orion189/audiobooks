@@ -49,7 +49,7 @@ const Snackbar = observer(() => {
         >
             <Text style={styles.msg}>{store.app.snackbar?.message}</Text>
             <Button onPress={dismissMsg} type="clear">
-                <Icon name="close" color={white} />
+                <Icon name="close" color={white} type="material-community" />
             </Button>
         </Dialog>
     );

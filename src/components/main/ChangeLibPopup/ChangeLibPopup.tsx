@@ -1,5 +1,7 @@
 import { useTheme, ListItem, Icon, Dialog } from '@rneui/themed';
 import { LIB_TYPE, LIB_ICON } from '@src/enums';
+import store from '@src/store';
+import { observer } from 'mobx-react-lite';
 import { useCallback, FC, memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
@@ -43,11 +45,11 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
     );
 });
 
-const ChangeLibPopup: FC<ChangeLibPopupProps> = memo(({ changeLibType, onClose }) => {
+const ChangeLibPopup: FC<ChangeLibPopupProps> = observer(({ changeLibType, onClose }) => {
     const { t } = useTranslation();
 
     return (
-        <Dialog onBackdropPress={onClose} overlayStyle={styles.overlay}>
+        <Dialog onBackdropPress={onClose} overlayStyle={styles.overlay} isVisible={store.lib.isChangeLibPopupVisible}>
             <Dialog.Title title={t('src.components.main.ChangeLibPopup.title')} />
             <View style={styles.dialogView}>
                 {[LIB_TYPE.LOCAL, LIB_TYPE.REMOTE].map((libType) => (

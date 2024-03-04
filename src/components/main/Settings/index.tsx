@@ -57,7 +57,7 @@ const Item: FC<SettingItem> = memo(({ title, subTitle, hasChevron, onPress }) =>
         </ListItem.Content>
         {hasChevron ? (
             <ListItem.Chevron>
-                <Icon name="chevron-right" />
+                <Icon name="chevron-right" type="material-community" />
             </ListItem.Chevron>
         ) : null}
     </ListItem>

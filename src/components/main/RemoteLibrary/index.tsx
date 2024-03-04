@@ -29,6 +29,10 @@ const RemoteLibrary = observer(() => {
     }, []);
     const openFile = useCallback((item: RemoteLibItemType) => {
         console.log(item);
+        store.set('player', {
+            ...store.player,
+            isVisible: true
+        });
     }, []);
 
     useEffect(() => {

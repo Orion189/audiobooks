@@ -39,6 +39,10 @@ const LocalLibrary = observer(() => {
     );
     const openFile = useCallback((item: LocalLibItemType) => {
         console.log(item);
+        store.set('player', {
+            ...store.player,
+            isVisible: true
+        });
     }, []);
     const deleteItem = useCallback(
         async (item: LocalLibItemType) => {

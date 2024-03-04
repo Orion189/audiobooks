@@ -65,6 +65,11 @@ const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: Loca
 
 const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(
     ({ openFile, openFolder, deleteItem, item }) => {
+        const {
+            theme: {
+                colors: { greyOutline }
+            }
+        } = useTheme();
         const onItemPress = useCallback(() => {
             if (item.isDirectory) {
                 openFolder(item);
@@ -92,7 +97,7 @@ const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(
                     <Icon
                         name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
                         type="material-community"
-                        color="grey"
+                        color={greyOutline}
                     />
                     <ListItem.Content>
                         <ListItem.Title numberOfLines={1} ellipsizeMode="tail">

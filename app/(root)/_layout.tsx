@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text } from '@rneui/themed';
 import useAppTheme from '@src/components/hooks/useAppTheme';
+import PlayerPopup from '@src/components/shared/PlayerPopup';
 import SnackBar from '@src/components/shared/SnackBar';
 import { TAB_BAR_HEIGHT } from '@src/constants';
 import * as Device from 'expo-device';
@@ -67,6 +68,7 @@ const Layout = memo(() => {
                 />
             </Tabs>
             <SnackBar />
+            <PlayerPopup />
         </>
     );
 });

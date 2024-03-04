@@ -9,9 +9,9 @@ import store from '@src/store';
 import { documentDirectory } from 'expo-file-system';
 import { Stack } from 'expo-router';
 import { observer } from 'mobx-react-lite';
-import { useCallback } from 'react';
+import { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const BackBtn = observer(() => {
     const {
@@ -142,7 +142,7 @@ const Header = observer(() => {
     );
 });
 
-const LibraryPage = observer(() => {
+const LibraryPage = memo(() => {
     const header = useCallback(() => <Header />, []);
 
     return (
@@ -153,7 +153,7 @@ const LibraryPage = observer(() => {
                 }}
             />
             <Library />
-            {store.lib.isChangeLibPopupVisible ? <ChangeLibPopup /> : null}
+            <ChangeLibPopup />
         </>
     );
 });
