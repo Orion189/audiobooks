@@ -26,7 +26,16 @@ export const defaultState: {
 } = {
     player: {
         isVisible: false,
-        isCollapsed: true
+        isCollapsed: true,
+        volume: 0.5,
+        item: {
+            isRemote: false,
+            id: '',
+            name: '',
+            uri: '',
+            duration: 0,
+            position: 0
+        }
     },
     lib: {
         curLib: LIB_TYPE.NONE,

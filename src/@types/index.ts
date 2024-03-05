@@ -51,9 +51,20 @@ export type AppType = {
     theme: THEME;
 };
 
+export type PlayerItemType = {
+    isRemote: boolean;
+    id?: string;
+    name: string;
+    uri?: string;
+    duration?: number;
+    position?: number;
+};
+
 export type PlayerType = {
     isVisible: boolean;
     isCollapsed: boolean;
+    volume: number;
+    item: PlayerItemType;
 };
 
 export type LibType = {

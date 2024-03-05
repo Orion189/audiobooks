@@ -1,4 +1,5 @@
 import { RemoteLibItemType } from '@src/@types';
+import usePlayer from '@src/components/hooks/usePlayer';
 import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import RemoteLibraryView from '@src/components/main/RemoteLibrary/RemoteLibrary';
 import Loading from '@src/components/shared/Loading';
@@ -8,6 +9,7 @@ import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect, useState } from 'react';
 
 const RemoteLibrary = observer(() => {
+    const { playRemoteFile } = usePlayer();
     const { getItem, getSubItems } = useRemoteLib();
     const [isRefreshing, setIsRefreshing] = useState(false);
     const onStart = useCallback(() => store.set('app', { ...store.app, isLoadingVisible: true }), []);
@@ -27,13 +29,23 @@ const RemoteLibrary = observer(() => {
             subItems: []
         });
     }, []);
-    const openFile = useCallback((item: RemoteLibItemType) => {
-        console.log(item);
-        store.set('player', {
-            ...store.player,
-            isVisible: true
-        });
-    }, []);
+    const openFile = useCallback(
+        (item: RemoteLibItemType) => {
+            store.set('player', {
+                ...store.player,
+                isVisible: true,
+                item: {
+                    ...store.player.item,
+                    isRemote: true,
+                    id: item.id,
+                    name: item.name
+                }
+            });
+
+            playRemoteFile(item);
+        },
+        [playRemoteFile]
+    );
 
     useEffect(() => {
         getItem('root', {
