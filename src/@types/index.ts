@@ -53,18 +53,19 @@ export type AppType = {
 
 export type PlayerItemType = {
     isRemote: boolean;
+    isLoaded: boolean;
+    isPlaying: boolean;
     id?: string;
     name: string;
     uri?: string;
-    duration?: number;
-    position?: number;
 };
 
 export type PlayerType = {
     isVisible: boolean;
     isCollapsed: boolean;
     volume: number;
-    item: PlayerItemType;
+    duration: number;
+    position: number;
 };
 
 export type LibType = {
@@ -100,6 +101,7 @@ export type RemoteLibItemType = {
 
 export type StoreValuesType =
     | PlayerType
+    | PlayerItemType
     | LibType
     | RemoteLibType
     | LocalLibType
@@ -110,6 +112,7 @@ export type StoreValuesType =
 
 export type StoreKeysType =
     | 'player'
+    | 'playerItem'
     | 'lib'
     | 'settings'
     | 'userInfo'

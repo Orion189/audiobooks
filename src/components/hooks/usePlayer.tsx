@@ -1,9 +1,6 @@
-import { LocalLibItemType } from '@src/@types';
-import { LOCAL_ITEMS_TO_HIDE } from '@src/constants';
-import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { AVPlaybackStatus, Audio } from 'expo-av';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 type LocalFileType = {
     name: string;
@@ -18,117 +15,155 @@ type RemoteFileType = {
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const usePlayer = () => {
-    const [sound, setSound] = useState<Audio.Sound | undefined>();
-    const onMount = useCallback(async () => {
+    const soundRef = useRef<Audio.Sound | undefined>();
+    const init = useCallback(async () => {
         await Audio.setAudioModeAsync({
             playThroughEarpieceAndroid: true,
             playsInSilentModeIOS: true,
             staysActiveInBackground: true
         });
     }, [Audio.setAudioModeAsync]);
-    const onUnmount = useCallback(() => {
-        sound && sound.unloadAsync();
-    }, [sound]);
+    const closePlayer = useCallback(async () => {
+        console.log('sound:', soundRef.current);
+        if (soundRef.current) {
+            await soundRef.current.stopAsync();
+            await soundRef.current.unloadAsync();
+        }
+    }, [soundRef.current]);
     const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
-        console.log(status);
         if (!status.isLoaded) {
             if (status.error) {
                 console.error(`Encountered a fatal error during playback: ${status.error}`);
             }
         } else {
-            if (status.isPlaying) {
+            const { isPlaying, positionMillis, durationMillis, isBuffering, didJustFinish, isLooping } = status;
+
+            if (isPlaying && positionMillis && durationMillis) {
                 store.set('player', {
                     ...store.player,
-                    item: {
-                        ...store.player.item,
-                        duration: status.durationMillis,
-                        position: status.positionMillis
-                    }
+                    duration: durationMillis,
+                    position: positionMillis
                 });
             } else {
-                // Update your UI for the paused state
+                store.set('player', {
+                    ...store.player,
+                    duration: 0,
+                    position: 0
+                });
             }
 
-            if (status.isBuffering) {
+            if (isBuffering) {
                 // Update your UI for the buffering state
             }
 
-            if (status.didJustFinish && !status.isLooping) {
+            if (didJustFinish && !isLooping) {
                 // The player has just finished playing and will stop. Maybe you want to play something else?
             }
         }
     }, []);
-    const playLocalFile = useCallback(
-        async (itemURI: string, config: ConfigType = {}) => {
-            const { onStart, onEnd } = config;
-
-            onStart && onStart();
-
-            const { exists, isDirectory, uri } = await getInfoAsync(itemURI);
-
-            if (exists) {
-                store.set(LIB_TYPE.LOCAL, {
-                    ...store[LIB_TYPE.LOCAL],
-                    curItem: {
-                        name: '',
-                        isDirectory,
-                        uri
-                    },
-                    subItems: []
-                });
+    const createLocalSound = useCallback(async (itemURI: string) => {}, []);
+    const createRemoteSound = useCallback(async () => {
+        const accessToken = store.authInfo.accessToken;
+        const id = store.playerItem.id;
+        const volume = store.player.volume;
+        const uri = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${id}?alt=media`;
+        const options = {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${accessToken}`
             }
+        };
 
-            onEnd && onEnd();
+        if (!accessToken || !id) {
+            return null;
+        }
+
+        await unload();
+
+        try {
+            const { sound, status } = await Audio.Sound.createAsync(
+                { uri, ...options },
+                { isLooping: false, volume },
+                onPlaybackStatusUpdate
+            );
+
+            if (status.isLoaded) {
+                soundRef.current = sound;
+
+                store.set('playerItem', { ...store.playerItem, isLoaded: true });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [
+        onPlaybackStatusUpdate,
+        soundRef.current,
+        store.authInfo.accessToken,
+        store.playerItem.id,
+        store.player.volume
+    ]);
+    const unload = useCallback(async () => {
+        if (soundRef.current) {
+            await soundRef.current.stopAsync();
+            await soundRef.current.unloadAsync();
+        }
+    }, [soundRef.current]);
+    const play = useCallback(async () => {
+        const { position } = store.player;
+
+        await soundRef.current?.playFromPositionAsync(position);
+    }, [soundRef.current]);
+    const pause = useCallback(async () => {
+        await soundRef.current?.pauseAsync();
+    }, [soundRef.current]);
+    const setVolume = useCallback(
+        async (volume: number) => {
+            await soundRef.current?.setVolumeAsync(volume);
         },
-        [getInfoAsync]
-    );
-    const playRemoteFile = useCallback(
-        async (item: RemoteFileType) => {
-            const uri = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${item.id}?alt=media`;
-            const accessToken = store.authInfo.accessToken;
-            const options = {
-                headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${accessToken}`
-                }
-            };
-
-            if (!accessToken) {
-                return null;
-            }
-
-            try {
-                const { sound, status } = await Audio.Sound.createAsync(
-                    { uri, ...options },
-                    { isLooping: false, volume: store.player.volume },
-                    onPlaybackStatusUpdate
-                );
-
-                if (status.isLoaded) {
-                    setSound(sound);
-
-                    sound.playAsync();
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        [onPlaybackStatusUpdate, setSound]
+        [soundRef.current]
     );
 
     useEffect(() => {
-        //store.reset('player');
-        onMount();
-    }, [onMount]);
+        const { name, isLoaded, isPlaying, isRemote } = store.playerItem;
+
+        if (name) {
+            if (isLoaded) {
+                if (isPlaying) {
+                    pause();
+                } else {
+                    play();
+                }
+            } else {
+                if (isRemote) {
+                    createRemoteSound();
+                } else {
+                    //createLocalSound();
+                }
+            }
+        } else {
+            unload();
+        }
+    }, [store.playerItem]);
 
     useEffect(() => {
-        return sound ? onUnmount() : undefined;
-    }, [sound, onUnmount]);
+        setVolume(store.player.volume);
+    }, [store.player.volume]);
 
-    return {
-        playLocalFile,
-        playRemoteFile
-    };
+    useEffect(() => {
+        init();
+    }, [init]);
+
+    useEffect(() => {
+        return soundRef.current
+            ? () => {
+                  console.log('unLoad');
+                  soundRef.current?.unloadAsync();
+                  soundRef.current = undefined;
+              }
+            : undefined;
+    }, [soundRef.current]);
+
+    return null;
 };
 
 export default usePlayer;

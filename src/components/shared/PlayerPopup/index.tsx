@@ -7,8 +7,9 @@ const PlayerPopup = observer(() => {
     const onCollapse = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: true });
     }, [store.player.isCollapsed]);
-    const onClose = useCallback(() => {
-        store.set('player', { ...store.player, isVisible: false });
+    const onClose = useCallback(async () => {
+        store.set('player', { ...store.player, isVisible: false, duration: 0, position: 0 });
+        store.reset('playerItem');
     }, [store.player.isVisible]);
     const expandPlayer = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: false });

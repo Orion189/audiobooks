@@ -14,16 +14,56 @@ const Expanded: FC<ExpandedProps> = memo(({ onCollapse }) => {
             colors: { primary, white }
         }
     } = useTheme();
-    const [timing, setTiming] = useState(0);
+    const play = useCallback(() => {
+        store.set('playerItem', {
+            ...store.playerItem,
+            isPlaying: true
+        });
+    }, []);
+    const pause = useCallback(() => {
+        store.set('playerItem', {
+            ...store.playerItem,
+            isPlaying: false
+        });
+    }, []);
+    const setPosition = useCallback(
+        (position: number) => {
+            pause();
+
+            store.set('player', {
+                ...store.player,
+                position
+            });
+
+            play();
+        },
+        [pause, play]
+    );
+    const incrVolume = useCallback(() => {
+        if (store.player.volume < 1) {
+            store.set('player', {
+                ...store.player,
+                volume: store.player.volume + 0.1
+            });
+        }
+    }, [store.player.volume]);
+    const decrVolume = useCallback(() => {
+        if (store.player.volume > 0) {
+            store.set('player', {
+                ...store.player,
+                volume: store.player.volume - 0.1
+            });
+        }
+    }, []);
 
     return (
         <Overlay isVisible onBackdropPress={onCollapse} overlayStyle={[styles.overlay, { backgroundColor: white }]}>
             <View style={styles.cont}>
                 <View style={styles.timingCont}>
                     <Slider
-                        value={timing}
-                        onValueChange={setTiming}
-                        maximumValue={100}
+                        value={store.player.position}
+                        onSlidingComplete={setPosition}
+                        maximumValue={store.player.duration}
                         minimumValue={0}
                         step={1}
                         allowTouchTrack
@@ -32,23 +72,33 @@ const Expanded: FC<ExpandedProps> = memo(({ onCollapse }) => {
                         thumbTouchSize={{ height: 15, width: 15 }}
                     />
                     <View style={styles.timingValues}>
-                        <Text>{timing}</Text>
-                        <Text>{'100'}</Text>
+                        <Text>{store.player.position}</Text>
+                        <Text>{store.player.duration}</Text>
                     </View>
                     <View style={styles.controlsCont}>
-                        <Button onPress={() => {}} type="clear">
-                            <Icon name="volume-low" color={primary} type="material-community" />
+                        <Button onPress={decrVolume} type="clear">
+                            {store.player.volume === 0 ? (
+                                <Icon name="volume-variant-off" color={primary} type="material-community" />
+                            ) : (
+                                <Icon name="volume-low" color={primary} type="material-community" />
+                            )}
                         </Button>
                         <Button onPress={() => {}} type="clear">
                             <Icon name="skip-previous" color={primary} type="material-community" />
                         </Button>
-                        <TouchableOpacity style={[styles.playBtn, { borderColor: primary }]}>
-                            <Icon name="play" color={primary} type="material-community" />
-                        </TouchableOpacity>
+                        {store.playerItem.isPlaying ? (
+                            <TouchableOpacity style={[styles.playPauseBtn, { borderColor: primary }]} onPress={pause}>
+                                <Icon name="pause" color={primary} type="material-community" />
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity style={[styles.playPauseBtn, { borderColor: primary }]} onPress={play}>
+                                <Icon name="play" color={primary} type="material-community" />
+                            </TouchableOpacity>
+                        )}
                         <Button onPress={() => {}} type="clear">
                             <Icon name="skip-next" color={primary} type="material-community" />
                         </Button>
-                        <Button onPress={() => {}} type="clear">
+                        <Button onPress={incrVolume} type="clear">
                             <Icon name="volume-high" color={primary} type="material-community" />
                         </Button>
                     </View>
@@ -57,7 +107,7 @@ const Expanded: FC<ExpandedProps> = memo(({ onCollapse }) => {
         </Overlay>
     );
 });
-// pause, volume-variant-off
+
 const styles = StyleSheet.create({
     overlay: {
         position: 'absolute',
@@ -95,7 +145,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    playBtn: {
+    playPauseBtn: {
         borderWidth: 1,
         alignItems: 'center',
         justifyContent: 'center',

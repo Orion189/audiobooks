@@ -1,34 +1,32 @@
 import { useTheme, Icon, Slider, Text, Button } from '@rneui/themed';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
-import { useState, FC, memo } from 'react';
+import { FC } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 
-type ExpandedProps = {
+type CollapsedProps = {
     onClose: () => void;
     expandPlayer: () => void;
 };
 
-const Expanded: FC<ExpandedProps> = memo(({ onClose, expandPlayer }) => {
+const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer }) => {
     const {
         theme: {
             colors: { primary, white }
         }
     } = useTheme();
-    const [timing, setTiming] = useState(20);
 
     return (
         <Pressable onPress={expandPlayer} style={[styles.overlay, { backgroundColor: white }]}>
             <View style={styles.cont}>
-                <Text>{'Hello world'}</Text>
+                <Text>{store.playerItem.name}</Text>
                 <Button type="clear" onPress={onClose}>
                     <Icon name="close" color={primary} type="material-community" />
                 </Button>
             </View>
             <Slider
-                value={timing}
-                onValueChange={setTiming}
-                maximumValue={100}
+                value={store.player.position}
+                maximumValue={store.player.duration}
                 minimumValue={0}
                 step={1}
                 style={styles.slider}
@@ -56,7 +54,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingLeft: 15,
+        paddingRight: 5
     },
     slider: {
         width: '100%',
@@ -73,4 +73,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Expanded;
+export default Collapsed;
