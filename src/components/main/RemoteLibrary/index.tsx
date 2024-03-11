@@ -30,17 +30,9 @@ const RemoteLibrary = observer(() => {
     const openFile = useCallback((item: RemoteLibItemType) => {
         store.set('player', {
             ...store.player,
-            isVisible: true
-        });
-        store.set('playerItem', {
-            ...store.playerItem,
-            isRemote: true,
-            isLoaded: false,
-            isPlaying: false,
-            id: item.id,
-            name: item.name,
-            duration: 0,
-            position: 0
+            isVisible: true,
+            itemId: item.id,
+            itemName: item.name
         });
     }, []);
 

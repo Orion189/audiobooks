@@ -19,7 +19,7 @@ const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer }) => {
     return (
         <Pressable onPress={expandPlayer} style={[styles.overlay, { backgroundColor: white }]}>
             <View style={styles.cont}>
-                <Text>{store.playerItem.name}</Text>
+                <Text>{store.player.itemName}</Text>
                 <Button type="clear" onPress={onClose}>
                     <Icon name="close" color={primary} type="material-community" />
                 </Button>

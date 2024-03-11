@@ -1,60 +1,61 @@
 import { useTheme, Slider, Overlay, Icon, Text, Button } from '@rneui/themed';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useState, FC, memo } from 'react';
+import { useCallback, FC } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
 type ExpandedProps = {
     onCollapse: () => void;
 };
 
-const Expanded: FC<ExpandedProps> = memo(({ onCollapse }) => {
+const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
     const {
         theme: {
             colors: { primary, white }
         }
     } = useTheme();
-    const play = useCallback(() => {
-        store.set('playerItem', {
-            ...store.playerItem,
-            isPlaying: true
-        });
-    }, []);
-    const pause = useCallback(() => {
-        store.set('playerItem', {
-            ...store.playerItem,
-            isPlaying: false
-        });
-    }, []);
+    const play = useCallback(async () => {
+        const { position, sound } = store.player;
+
+        await sound?.playFromPositionAsync(position);
+    }, [store.player.sound]);
+    const pause = useCallback(async () => {
+        await store.player.sound?.pauseAsync();
+    }, [store.player.sound]);
     const setPosition = useCallback(
-        (position: number) => {
-            pause();
-
-            store.set('player', {
-                ...store.player,
-                position
-            });
-
-            play();
+        async (position: number) => {
+            if (store.player.isPlaying) {
+                await store.player.sound?.playFromPositionAsync(position);
+            } else {
+                await store.player.sound?.setPositionAsync(position);
+            }
         },
-        [pause, play]
+        [store.player.isPlaying, store.player.sound]
     );
-    const incrVolume = useCallback(() => {
+    const incrVolume = useCallback(async () => {
         if (store.player.volume < 1) {
+            const volume = store.player.volume + 0.1;
+
             store.set('player', {
                 ...store.player,
-                volume: store.player.volume + 0.1
+                volume
             });
+
+            await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
         }
-    }, [store.player.volume]);
-    const decrVolume = useCallback(() => {
+    }, [store.player.volume, store.player.sound]);
+    const decrVolume = useCallback(async () => {
         if (store.player.volume > 0) {
+            const volume = store.player.volume - 0.1;
+
             store.set('player', {
                 ...store.player,
-                volume: store.player.volume - 0.1
+                volume
             });
+
+            await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
         }
-    }, []);
+    }, [store.player.volume, store.player.sound]);
 
     return (
         <Overlay isVisible onBackdropPress={onCollapse} overlayStyle={[styles.overlay, { backgroundColor: white }]}>
@@ -86,7 +87,7 @@ const Expanded: FC<ExpandedProps> = memo(({ onCollapse }) => {
                         <Button onPress={() => {}} type="clear">
                             <Icon name="skip-previous" color={primary} type="material-community" />
                         </Button>
-                        {store.playerItem.isPlaying ? (
+                        {store.player.isPlaying ? (
                             <TouchableOpacity style={[styles.playPauseBtn, { borderColor: primary }]} onPress={pause}>
                                 <Icon name="pause" color={primary} type="material-community" />
                             </TouchableOpacity>

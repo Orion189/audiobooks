@@ -4,7 +4,6 @@ import useAppFocus from '@src/components/hooks/useAppFocus';
 import useAppLang from '@src/components/hooks/useAppLang';
 import useAuth from '@src/components/hooks/useAuth';
 import useOnline from '@src/components/hooks/useOnline';
-import usePlayer from '@src/components/hooks/usePlayer';
 import useUpdates from '@src/components/hooks/useUpdates';
 import { theme, navigationTheme } from '@src/themes/default';
 import { Slot } from 'expo-router';
@@ -16,7 +15,6 @@ const Layout = memo(() => {
     useAppLang();
     useUpdates();
     useAuth();
-    usePlayer();
 
     return (
         <RNEProvider theme={theme}>

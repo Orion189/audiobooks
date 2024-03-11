@@ -1,4 +1,5 @@
 import { SnackBarVariant, THEME, LOCALE, LIB_TYPE, LIB_ORDER, REMOTE_LIB_ITEM_TYPE } from '@src/enums';
+import { Audio } from 'expo-av';
 
 export type BookType = {
     id: string;
@@ -51,21 +52,17 @@ export type AppType = {
     theme: THEME;
 };
 
-export type PlayerItemType = {
-    isRemote: boolean;
-    isLoaded: boolean;
-    isPlaying: boolean;
-    id?: string;
-    name: string;
-    uri?: string;
-};
-
 export type PlayerType = {
     isVisible: boolean;
     isCollapsed: boolean;
+    isPlaying: boolean;
     volume: number;
-    duration: number;
+    duration: number | undefined;
     position: number;
+    sound: Audio.Sound | null;
+    itemName: string;
+    itemId: string;
+    itemURI: string;
 };
 
 export type LibType = {
@@ -101,7 +98,6 @@ export type RemoteLibItemType = {
 
 export type StoreValuesType =
     | PlayerType
-    | PlayerItemType
     | LibType
     | RemoteLibType
     | LocalLibType
@@ -112,7 +108,6 @@ export type StoreValuesType =
 
 export type StoreKeysType =
     | 'player'
-    | 'playerItem'
     | 'lib'
     | 'settings'
     | 'userInfo'

@@ -8,8 +8,7 @@ import {
     AppType,
     StoreValuesType,
     LibType,
-    PlayerType,
-    PlayerItemType
+    PlayerType
 } from '@src/@types';
 import { LOCALE, THEME, LIB_TYPE, LIB_ORDER } from '@src/enums';
 import { makeObservable, observable, action } from 'mobx';
@@ -17,7 +16,6 @@ import { makePersistable, stopPersisting } from 'mobx-persist-store';
 
 export const defaultState: {
     player: PlayerType;
-    playerItem: PlayerItemType;
     lib: LibType;
     [LIB_TYPE.REMOTE]: RemoteLibType;
     [LIB_TYPE.LOCAL]: LocalLibType;
@@ -29,17 +27,14 @@ export const defaultState: {
     player: {
         isVisible: false,
         isCollapsed: true,
+        isPlaying: false,
         volume: 0.5,
         duration: 0,
-        position: 0
-    },
-    playerItem: {
-        isRemote: false,
-        isLoaded: false,
-        isPlaying: false,
-        id: '',
-        name: '',
-        uri: ''
+        position: 0,
+        sound: null,
+        itemName: '',
+        itemId: '',
+        itemURI: ''
     },
     lib: {
         curLib: LIB_TYPE.NONE,
@@ -116,7 +111,6 @@ const store = makeObservable(
     },
     {
         player: observable,
-        playerItem: observable,
         lib: observable,
         [LIB_TYPE.REMOTE]: observable,
         [LIB_TYPE.LOCAL]: observable,
@@ -136,17 +130,7 @@ makePersistable(
     {
         storage: AsyncStorage,
         name: 'AudiobooksStore',
-        properties: [
-            'player',
-            'playerItem',
-            'lib',
-            'settings',
-            'userInfo',
-            'authInfo',
-            'app',
-            LIB_TYPE.REMOTE,
-            LIB_TYPE.LOCAL
-        ],
+        properties: ['player', 'lib', 'settings', 'userInfo', 'authInfo', 'app', LIB_TYPE.REMOTE, LIB_TYPE.LOCAL],
         debugMode: process.env.EXPO_PUBLIC_MOBX_DEBUG_MODE === 'true'
     } /*, { delay: 200 }*/
 );
