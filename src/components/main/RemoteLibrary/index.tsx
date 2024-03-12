@@ -27,14 +27,26 @@ const RemoteLibrary = observer(() => {
             subItems: []
         });
     }, []);
-    const openFile = useCallback((item: RemoteLibItemType) => {
-        store.set('player', {
-            ...store.player,
-            isVisible: true,
-            itemId: item.id,
-            itemName: item.name
-        });
-    }, []);
+    const openFile = useCallback(
+        async (item: RemoteLibItemType) => {
+            if (store.player.sound) {
+                try {
+                    await store.player.sound?.stopAsync();
+                    await store.player.sound?.unloadAsync();
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            store.set('player', {
+                ...store.player,
+                isVisible: true,
+                itemId: item.id,
+                itemName: item.name
+            });
+        },
+        [store.player.sound]
+    );
 
     useEffect(() => {
         getItem('root', {

@@ -44,11 +44,12 @@ const PlayerPopup = observer(() => {
                 console.error(`Encountered a fatal error during playback: ${status.error}`);
             }
         } else {
-            const { isPlaying, positionMillis, durationMillis, didJustFinish, isLooping } = status;
+            const { isPlaying, positionMillis, durationMillis, didJustFinish, isLooping, volume } = status;
 
             store.set('player', {
                 ...store.player,
                 isPlaying,
+                volume: Number(volume.toPrecision(1)),
                 duration: durationMillis,
                 position: positionMillis
             });
@@ -73,11 +74,6 @@ const PlayerPopup = observer(() => {
             return null;
         }
 
-        if (store.player.sound) {
-            await store.player.sound?.stopAsync();
-            await store.player.sound?.unloadAsync();
-        }
-
         try {
             const { sound, status } = await Audio.Sound.createAsync(
                 { uri, ...options },
@@ -96,6 +92,10 @@ const PlayerPopup = observer(() => {
     }, [onPlaybackStatusUpdate, store.authInfo.accessToken, store.player.itemId, store.player.volume]);
 
     useEffect(() => {
+        init();
+    }, [init]);
+
+    useEffect(() => {
         if (store.player.itemName) {
             switch (store.lib.curLib) {
                 case LIB_TYPE.REMOTE: {
@@ -105,10 +105,6 @@ const PlayerPopup = observer(() => {
             }
         }
     }, [store.player.itemName]);
-
-    useEffect(() => {
-        init();
-    }, [init]);
 
     useEffect(() => {
         return () => {

@@ -1,8 +1,9 @@
 import { useTheme, Slider, Overlay, Icon, Text, Button } from '@rneui/themed';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
-import { useCallback, FC } from 'react';
+import { useCallback, FC, useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { getMMSSFromMillis } from '@src/components/shared/PlayerPopup/helpers';
 
 type ExpandedProps = {
     onCollapse: () => void;
@@ -36,11 +37,6 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
         if (store.player.volume < 1) {
             const volume = store.player.volume + 0.1;
 
-            store.set('player', {
-                ...store.player,
-                volume
-            });
-
             await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
         }
     }, [store.player.volume, store.player.sound]);
@@ -48,19 +44,19 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
         if (store.player.volume > 0) {
             const volume = store.player.volume - 0.1;
 
-            store.set('player', {
-                ...store.player,
-                volume
-            });
-
             await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
         }
     }, [store.player.volume, store.player.sound]);
+    const position = useMemo(() => getMMSSFromMillis(store.player.position), [store.player.position]);
+    const duration = useMemo(() => getMMSSFromMillis(store.player.duration), [store.player.duration]);
 
     return (
         <Overlay isVisible onBackdropPress={onCollapse} overlayStyle={[styles.overlay, { backgroundColor: white }]}>
             <View style={styles.cont}>
                 <View style={styles.timingCont}>
+                    <Text h4 numberOfLines={1} ellipsizeMode="tail">
+                        {store.player.itemName}
+                    </Text>
                     <Slider
                         value={store.player.position}
                         onSlidingComplete={setPosition}
@@ -73,8 +69,8 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
                         thumbTouchSize={{ height: 15, width: 15 }}
                     />
                     <View style={styles.timingValues}>
-                        <Text>{store.player.position}</Text>
-                        <Text>{store.player.duration}</Text>
+                        <Text>{position}</Text>
+                        <Text>{duration}</Text>
                     </View>
                     <View style={styles.controlsCont}>
                         <Button onPress={decrVolume} type="clear">
