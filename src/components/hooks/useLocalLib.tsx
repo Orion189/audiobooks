@@ -15,7 +15,7 @@ const useLocalLib = () => {
         async (itemURI: string, config: ConfigType = {}) => {
             const { onStart, onEnd } = config;
 
-            onStart && onStart();
+            onStart?.();
 
             const { exists, isDirectory, uri } = await getInfoAsync(itemURI);
 
@@ -31,7 +31,7 @@ const useLocalLib = () => {
                 });
             }
 
-            onEnd && onEnd();
+            onEnd?.();
         },
         [getInfoAsync]
     );
@@ -42,7 +42,7 @@ const useLocalLib = () => {
             if (isDirectory && uri) {
                 const { onStart, onEnd } = config;
 
-                onStart && onStart();
+                onStart?.();
 
                 const itemNames = await readDirectoryAsync(uri);
 
@@ -78,7 +78,7 @@ const useLocalLib = () => {
                     });
                 }
 
-                onEnd && onEnd();
+                onEnd?.();
             }
         },
         [store[LIB_TYPE.LOCAL].curItem]
@@ -87,11 +87,11 @@ const useLocalLib = () => {
         async (itemURI: string, config: ConfigType = {}) => {
             const { onStart, onEnd } = config;
 
-            onStart && onStart();
+            onStart?.();
 
             await deleteAsync(itemURI, { idempotent: true });
 
-            onEnd && onEnd();
+            onEnd?.();
         },
         [deleteAsync]
     );

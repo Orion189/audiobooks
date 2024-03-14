@@ -168,7 +168,7 @@ const useRemoteLib = () => {
                     onStart,
                     onEnd
                 });
-console.log(filesData?.files);
+
                 if (filesData?.files.length) {
                     store.set(LIB_TYPE.REMOTE, {
                         ...store[LIB_TYPE.REMOTE],

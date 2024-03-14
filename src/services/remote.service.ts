@@ -89,7 +89,7 @@ export const apiRequest = async (params: APIParamsType) => {
     const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}${path}`;
     const access_token = store.authInfo.accessToken;
 
-    onStart && onStart();
+    onStart?.();
 
     return axios
         .get(url, {
@@ -108,5 +108,5 @@ export const apiRequest = async (params: APIParamsType) => {
         })
         .then(({ data }) => data)
         .catch(({ response }) => handleError(response))
-        .finally(() => onEnd && onEnd());
+        .finally(() => onEnd?.());
 };

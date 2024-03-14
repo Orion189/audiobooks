@@ -18,7 +18,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
     const play = useCallback(async () => {
         const { position, sound } = store.player;
 
-        await sound?.playFromPositionAsync(position);
+        await sound?.playFromPositionAsync?.(position);
     }, [store.player.sound]);
     const pause = useCallback(async () => {
         await store.player.sound?.pauseAsync();

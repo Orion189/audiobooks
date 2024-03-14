@@ -8,20 +8,15 @@ import { useCallback, useEffect } from 'react';
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const PlayerPopup = observer(() => {
-    const init = useCallback(async () => {
-        await Audio.setAudioModeAsync({
-            playThroughEarpieceAndroid: true,
-            playsInSilentModeIOS: true,
-            staysActiveInBackground: true
-        });
-    }, [Audio.setAudioModeAsync]);
     const onCollapse = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: true });
     }, []);
     const onClose = useCallback(async () => {
-        if (store.player.sound) {
-            await store.player.sound?.stopAsync();
-            await store.player.sound?.unloadAsync();
+        try {
+            await store.player.sound?.stopAsync?.();
+            await store.player.sound?.unloadAsync?.();
+        } catch (e) {
+            console.error(e);
         }
 
         store.set('player', {
@@ -61,7 +56,7 @@ const PlayerPopup = observer(() => {
     }, []);
     const createRemoteSound = useCallback(async () => {
         const accessToken = store.authInfo.accessToken;
-        const { volume, itemId } = store.player;
+        const { volume, itemId, position } = store.player;
         const uri = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${itemId}?alt=media`;
         const options = {
             headers: {
@@ -75,36 +70,55 @@ const PlayerPopup = observer(() => {
         }
 
         try {
-            const { sound, status } = await Audio.Sound.createAsync(
-                { uri, ...options },
-                { isLooping: false, volume },
-                onPlaybackStatusUpdate
-            );
+            const curStatus = await store.player.sound?.getStatusAsync?.();
 
-            if (status.isLoaded) {
-                store.set('player', { ...store.player, sound });
+            if (curStatus?.isLoaded === true) {
+                await store.player.sound?.stopAsync?.();
+                await store.player.sound?.unloadAsync?.();
+            }
 
-                await sound.playAsync();
+            if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
+                const { sound, status } = await Audio.Sound.createAsync(
+                    { uri, ...options },
+                    { isLooping: false, volume, positionMillis: position, shouldPlay: false },
+                    onPlaybackStatusUpdate
+                );
+
+                if (status.isLoaded) {
+                    store.set('player', {
+                        ...store.player,
+                        sound
+                    });
+                }
             }
         } catch (error) {
             console.error(error);
         }
-    }, [onPlaybackStatusUpdate, store.authInfo.accessToken, store.player.itemId, store.player.volume]);
+    }, [
+        store.authInfo.accessToken,
+        store.player.volume,
+        store.player.itemId,
+        store.player.itemName,
+        store.player.position
+    ]);
+    const init = useCallback(async () => {
+        await Audio.setAudioModeAsync({
+            playThroughEarpieceAndroid: true,
+            playsInSilentModeIOS: true,
+            staysActiveInBackground: true
+        });
+
+        switch (store.lib.curLib) {
+            case LIB_TYPE.REMOTE: {
+                await createRemoteSound();
+                break;
+            }
+        }
+    }, [Audio.setAudioModeAsync, store.lib.curLib]);
 
     useEffect(() => {
         init();
-    }, [init]);
-
-    useEffect(() => {
-        if (store.player.itemName) {
-            switch (store.lib.curLib) {
-                case LIB_TYPE.REMOTE: {
-                    createRemoteSound();
-                    break;
-                }
-            }
-        }
-    }, [store.player.itemName]);
+    }, []);
 
     useEffect(() => {
         return () => {
