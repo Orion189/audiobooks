@@ -37,13 +37,6 @@ const LocalLibrary = observer(() => {
         },
         [getItem, onStart, onEnd]
     );
-    const openFile = useCallback((item: LocalLibItemType) => {
-        console.log(item);
-        store.set('player', {
-            ...store.player,
-            isVisible: true
-        });
-    }, []);
     const deleteItem = useCallback(
         async (item: LocalLibItemType) => {
             await deleteLocalItem(item.uri, {
@@ -79,7 +72,6 @@ const LocalLibrary = observer(() => {
         <Loading />
     ) : (
         <LocalLibraryView
-            openFile={openFile}
             onRefresh={onRefresh}
             openFolder={openFolder}
             deleteItem={deleteItem}

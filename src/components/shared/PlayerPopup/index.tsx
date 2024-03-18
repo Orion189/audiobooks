@@ -1,13 +1,13 @@
+import usePlayer from '@src/components/hooks/usePlayer';
 import PlayerPopupView from '@src/components/shared/PlayerPopup/PlayerPopup';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
-import { AVPlaybackStatus, Audio } from 'expo-av';
+import { Audio } from 'expo-av';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect } from 'react';
 
-const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
-
 const PlayerPopup = observer(() => {
+    const { createRemoteSound, openRemoteFile, getRemotePrevPlayItem, getRemoteNextPlayItem } = usePlayer();
     const onCollapse = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: true });
     }, []);
@@ -33,74 +33,30 @@ const PlayerPopup = observer(() => {
     const expandPlayer = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: false });
     }, []);
-    const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
-        if (!status.isLoaded) {
-            if (status.error) {
-                console.error(`Encountered a fatal error during playback: ${status.error}`);
-            }
-        } else {
-            const { isPlaying, positionMillis, durationMillis, didJustFinish, isLooping, volume } = status;
+    const playPrevItem = useCallback(async () => {
+        switch (store.lib.curLib) {
+            case LIB_TYPE.REMOTE: {
+                const prevItem = getRemotePrevPlayItem();
 
-            store.set('player', {
-                ...store.player,
-                isPlaying,
-                volume: Number(volume.toPrecision(1)),
-                duration: durationMillis,
-                position: positionMillis
-            });
-
-            if (didJustFinish && !isLooping) {
-                // The player has just finished playing and will stop. Maybe you want to play something else?
-            }
-        }
-    }, []);
-    const createRemoteSound = useCallback(async () => {
-        const accessToken = store.authInfo.accessToken;
-        const { volume, itemId, position } = store.player;
-        const uri = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${itemId}?alt=media`;
-        const options = {
-            headers: {
-                Accept: 'application/json',
-                Authorization: `Bearer ${accessToken}`
-            }
-        };
-
-        if (!accessToken || !itemId) {
-            return null;
-        }
-
-        try {
-            const curStatus = await store.player.sound?.getStatusAsync?.();
-
-            if (curStatus?.isLoaded === true) {
-                await store.player.sound?.stopAsync?.();
-                await store.player.sound?.unloadAsync?.();
-            }
-
-            if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
-                const { sound, status } = await Audio.Sound.createAsync(
-                    { uri, ...options },
-                    { isLooping: false, volume, positionMillis: position, shouldPlay: false },
-                    onPlaybackStatusUpdate
-                );
-
-                if (status.isLoaded) {
-                    store.set('player', {
-                        ...store.player,
-                        sound
-                    });
+                if (prevItem) {
+                    openRemoteFile(prevItem);
                 }
+                break;
             }
-        } catch (error) {
-            console.error(error);
         }
-    }, [
-        store.authInfo.accessToken,
-        store.player.volume,
-        store.player.itemId,
-        store.player.itemName,
-        store.player.position
-    ]);
+    }, [store.lib.curLib, getRemotePrevPlayItem, openRemoteFile]);
+    const playNextItem = useCallback(async () => {
+        switch (store.lib.curLib) {
+            case LIB_TYPE.REMOTE: {
+                const nextItem = getRemoteNextPlayItem();
+
+                if (nextItem) {
+                    openRemoteFile(nextItem);
+                }
+                break;
+            }
+        }
+    }, [store.lib.curLib, getRemoteNextPlayItem, openRemoteFile]);
     const init = useCallback(async () => {
         await Audio.setAudioModeAsync({
             playThroughEarpieceAndroid: true,
@@ -127,7 +83,13 @@ const PlayerPopup = observer(() => {
     }, []);
 
     return store.player.isVisible ? (
-        <PlayerPopupView onClose={onClose} onCollapse={onCollapse} expandPlayer={expandPlayer} />
+        <PlayerPopupView
+            onClose={onClose}
+            onCollapse={onCollapse}
+            expandPlayer={expandPlayer}
+            playPrevItem={playPrevItem}
+            playNextItem={playNextItem}
+        />
     ) : null;
 });
 

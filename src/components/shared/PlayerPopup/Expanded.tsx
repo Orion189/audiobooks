@@ -1,15 +1,17 @@
 import { useTheme, Slider, Overlay, Icon, Text, Button } from '@rneui/themed';
+import { getMMSSFromMillis } from '@src/components/shared/PlayerPopup/helpers';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
 import { useCallback, FC, useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { getMMSSFromMillis } from '@src/components/shared/PlayerPopup/helpers';
 
 type ExpandedProps = {
     onCollapse: () => void;
+    playPrevItem: () => void;
+    playNextItem: () => void;
 };
 
-const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
+const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNextItem }) => {
     const {
         theme: {
             colors: { primary, white }
@@ -80,7 +82,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
                                 <Icon name="volume-low" color={primary} type="material-community" />
                             )}
                         </Button>
-                        <Button onPress={() => {}} type="clear">
+                        <Button onPress={playPrevItem} type="clear">
                             <Icon name="skip-previous" color={primary} type="material-community" />
                         </Button>
                         {store.player.isPlaying ? (
@@ -92,7 +94,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse }) => {
                                 <Icon name="play" color={primary} type="material-community" />
                             </TouchableOpacity>
                         )}
-                        <Button onPress={() => {}} type="clear">
+                        <Button onPress={playNextItem} type="clear">
                             <Icon name="skip-next" color={primary} type="material-community" />
                         </Button>
                         <Button onPress={incrVolume} type="clear">

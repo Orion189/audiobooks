@@ -1,5 +1,6 @@
 import { ListItem, Icon, useTheme, Button } from '@rneui/themed';
 import { RemoteLibItemType } from '@src/@types';
+import usePlayer from '@src/components/hooks/usePlayer';
 import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import { REMOTE_LIB_ITEM_TYPE, LIB_TYPE } from '@src/enums';
 import store from '@src/store';
@@ -9,7 +10,6 @@ import { useCallback, useState, FC, memo } from 'react';
 import { StyleSheet, SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator } from 'react-native';
 
 type RemoteLibraryProps = {
-    openFile: (item: RemoteLibItemType) => void;
     openFolder: (item: RemoteLibItemType) => void;
 };
 
@@ -38,12 +38,13 @@ const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloadin
     );
 });
 
-const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFile, openFolder, item }) => {
+const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFolder, item }) => {
     const {
         theme: {
             colors: { greyOutline }
         }
     } = useTheme();
+    const { openRemoteFile } = usePlayer();
     const { download, pause } = useRemoteLib();
     const [isDownloading, setIsDownloading] = useState(false);
     const getItemIcon = useCallback((mimeType: string) => {
@@ -62,10 +63,10 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
                 openFolder(item);
                 break;
             case REMOTE_LIB_ITEM_TYPE.MPEG:
-                !isDownloading && openFile(item);
+                !isDownloading && openRemoteFile(item);
                 break;
         }
-    }, [openFolder, openFile, isDownloading, item.mimeType]);
+    }, [openFolder, openRemoteFile, isDownloading, item.mimeType]);
     const onPressCb = useCallback(async () => {
         if (isDownloading) {
             setIsDownloading(false);
@@ -95,32 +96,30 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
     );
 });
 
-const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(
-    ({ openFile, openFolder, isRefreshing, onRefresh }) => {
-        const {
-            theme: {
-                colors: { primary }
-            }
-        } = useTheme();
+const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(({ openFolder, isRefreshing, onRefresh }) => {
+    const {
+        theme: {
+            colors: { primary }
+        }
+    } = useTheme();
 
-        return (
-            <SafeAreaView style={commonStyles.safeAreaView}>
-                <View style={commonStyles.activityView}>
-                    <ActivityIndicator animating={isRefreshing} size="small" color={primary} />
-                </View>
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl onRefresh={onRefresh} tintColor="transparent" refreshing={isRefreshing} />
-                    }
-                >
-                    {store[LIB_TYPE.REMOTE].subItems?.map((item) => (
-                        <RemoteLibraryItem key={item.id} item={item} openFile={openFile} openFolder={openFolder} />
-                    ))}
-                </ScrollView>
-            </SafeAreaView>
-        );
-    }
-);
+    return (
+        <SafeAreaView style={commonStyles.safeAreaView}>
+            <View style={commonStyles.activityView}>
+                <ActivityIndicator animating={isRefreshing} size="small" color={primary} />
+            </View>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl onRefresh={onRefresh} tintColor="transparent" refreshing={isRefreshing} />
+                }
+            >
+                {store[LIB_TYPE.REMOTE].subItems?.map((item) => (
+                    <RemoteLibraryItem key={item.id} item={item} openFolder={openFolder} />
+                ))}
+            </ScrollView>
+        </SafeAreaView>
+    );
+});
 
 const styles = StyleSheet.create({
     downloadBtn: {

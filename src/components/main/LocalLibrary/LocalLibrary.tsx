@@ -2,6 +2,7 @@ import { ListItem, Icon, useTheme } from '@rneui/themed';
 import { LocalLibItemType } from '@src/@types';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
+import usePlayer from '@src/components/hooks/usePlayer';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
 import { useCallback, FC, memo } from 'react';
@@ -10,7 +11,6 @@ import { RectButton } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 type LocalLibraryProps = {
-    openFile: (item: LocalLibItemType) => void;
     openFolder: (item: LocalLibItemType) => void;
     deleteItem: (item: LocalLibItemType) => void;
 };
@@ -63,53 +63,48 @@ const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: Loca
     );
 });
 
-const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(
-    ({ openFile, openFolder, deleteItem, item }) => {
-        const {
-            theme: {
-                colors: { greyOutline }
-            }
-        } = useTheme();
-        const onItemPress = useCallback(() => {
-            if (item.isDirectory) {
-                openFolder(item);
-            } else {
-                openFile(item);
-            }
-        }, [openFolder, openFile, item]);
-        const onDeleteItem = useCallback(() => deleteItem(item), [deleteItem, item]);
-        const renderRightAction = useCallback(
-            (
-                progress: Animated.AnimatedInterpolation<number>,
-                drag: Animated.AnimatedInterpolation<string | number>,
-                swipeable: Swipeable
-            ) => <LocalLibraryItemAction progress={progress} swipeable={swipeable} pressHandler={onDeleteItem} />,
-            [onDeleteItem]
-        );
+const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ openFolder, deleteItem, item }) => {
+    const {
+        theme: {
+            colors: { greyOutline }
+        }
+    } = useTheme();
+    const { openLocalFile } = usePlayer();
+    const onItemPress = useCallback(() => {
+        if (item.isDirectory) {
+            openFolder(item);
+        } else {
+            openLocalFile(item);
+        }
+    }, [openLocalFile, item]);
+    const onDeleteItem = useCallback(() => deleteItem(item), [deleteItem, item]);
+    const renderRightAction = useCallback(
+        (
+            progress: Animated.AnimatedInterpolation<number>,
+            drag: Animated.AnimatedInterpolation<string | number>,
+            swipeable: Swipeable
+        ) => <LocalLibraryItemAction progress={progress} swipeable={swipeable} pressHandler={onDeleteItem} />,
+        [onDeleteItem]
+    );
 
-        return (
-            <Swipeable
-                enableTrackpadTwoFingerGesture
-                onSwipeableOpen={onDeleteItem}
-                renderRightActions={renderRightAction}
-            >
-                <ListItem bottomDivider onPress={onItemPress}>
-                    <Icon
-                        name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
-                        type="material-community"
-                        color={greyOutline}
-                    />
-                    <ListItem.Content>
-                        <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
-                            {item.name}
-                        </ListItem.Title>
-                    </ListItem.Content>
-                    {item.isDirectory ? <ListItem.Chevron /> : null}
-                </ListItem>
-            </Swipeable>
-        );
-    }
-);
+    return (
+        <Swipeable enableTrackpadTwoFingerGesture onSwipeableOpen={onDeleteItem} renderRightActions={renderRightAction}>
+            <ListItem bottomDivider onPress={onItemPress}>
+                <Icon
+                    name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
+                    type="material-community"
+                    color={greyOutline}
+                />
+                <ListItem.Content>
+                    <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
+                        {item.name}
+                    </ListItem.Title>
+                </ListItem.Content>
+                {item.isDirectory ? <ListItem.Chevron /> : null}
+            </ListItem>
+        </Swipeable>
+    );
+});
 
 const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
     ({ openFile, openFolder, deleteItem, isRefreshing, onRefresh }) => {

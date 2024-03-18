@@ -8,14 +8,17 @@ type PlayerPopupProps = {
     expandPlayer: () => void;
     onCollapse: () => void;
     onClose: () => void;
+    playPrevItem: () => void;
+    playNextItem: () => void;
 };
 
-const PlayerPopup: FC<PlayerPopupProps> = observer(({ expandPlayer, onCollapse, onClose }) =>
-    store.player.isCollapsed ? (
-        <Collapsed expandPlayer={expandPlayer} onClose={onClose} />
-    ) : (
-        <Expanded onCollapse={onCollapse} />
-    )
+const PlayerPopup: FC<PlayerPopupProps> = observer(
+    ({ expandPlayer, onCollapse, onClose, playPrevItem, playNextItem }) =>
+        store.player.isCollapsed ? (
+            <Collapsed expandPlayer={expandPlayer} onClose={onClose} />
+        ) : (
+            <Expanded onCollapse={onCollapse} playPrevItem={playPrevItem} playNextItem={playNextItem} />
+        )
 );
 
 export default PlayerPopup;
