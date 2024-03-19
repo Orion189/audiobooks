@@ -7,7 +7,16 @@ import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect } from 'react';
 
 const PlayerPopup = observer(() => {
-    const { createRemoteSound, openRemoteFile, getRemotePrevPlayItem, getRemoteNextPlayItem } = usePlayer();
+    const {
+        createLocalSound,
+        createRemoteSound,
+        openLocalFile,
+        openRemoteFile,
+        getLocalPrevPlayItem,
+        getLocalNextPlayItem,
+        getRemotePrevPlayItem,
+        getRemoteNextPlayItem
+    } = usePlayer();
     const onCollapse = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: true });
     }, []);
@@ -35,24 +44,44 @@ const PlayerPopup = observer(() => {
     }, []);
     const playPrevItem = useCallback(async () => {
         switch (store.lib.curLib) {
+            case LIB_TYPE.LOCAL: {
+                const prevItem = getLocalPrevPlayItem();
+
+                if (prevItem) {
+                    openLocalFile(prevItem);
+                }
+
+                break;
+            }
             case LIB_TYPE.REMOTE: {
                 const prevItem = getRemotePrevPlayItem();
 
                 if (prevItem) {
                     openRemoteFile(prevItem);
                 }
+
                 break;
             }
         }
     }, [store.lib.curLib, getRemotePrevPlayItem, openRemoteFile]);
     const playNextItem = useCallback(async () => {
         switch (store.lib.curLib) {
+            case LIB_TYPE.LOCAL: {
+                const nextItem = getLocalNextPlayItem();
+
+                if (nextItem) {
+                    openLocalFile(nextItem);
+                }
+
+                break;
+            }
             case LIB_TYPE.REMOTE: {
                 const nextItem = getRemoteNextPlayItem();
 
                 if (nextItem) {
                     openRemoteFile(nextItem);
                 }
+
                 break;
             }
         }
@@ -65,8 +94,14 @@ const PlayerPopup = observer(() => {
         });
 
         switch (store.lib.curLib) {
+            case LIB_TYPE.LOCAL: {
+                await createLocalSound();
+
+                break;
+            }
             case LIB_TYPE.REMOTE: {
                 await createRemoteSound();
+
                 break;
             }
         }

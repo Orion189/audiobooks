@@ -20,17 +20,29 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
     const play = useCallback(async () => {
         const { position, sound } = store.player;
 
-        await sound?.playFromPositionAsync?.(position);
+        try {
+            await sound?.playFromPositionAsync?.(position);
+        } catch (e) {
+            console.error(e);
+        }
     }, [store.player.sound]);
     const pause = useCallback(async () => {
-        await store.player.sound?.pauseAsync();
+        try {
+            await store.player.sound?.pauseAsync();
+        } catch (e) {
+            console.error(e);
+        }
     }, [store.player.sound]);
     const setPosition = useCallback(
         async (position: number) => {
-            if (store.player.isPlaying) {
-                await store.player.sound?.playFromPositionAsync(position);
-            } else {
-                await store.player.sound?.setPositionAsync(position);
+            try {
+                if (store.player.isPlaying) {
+                    await store.player.sound?.playFromPositionAsync(position);
+                } else {
+                    await store.player.sound?.setPositionAsync(position);
+                }
+            } catch (e) {
+                console.error(e);
             }
         },
         [store.player.isPlaying, store.player.sound]
@@ -39,14 +51,22 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
         if (store.player.volume < 1) {
             const volume = store.player.volume + 0.1;
 
-            await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
+            try {
+                await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
+            } catch (e) {
+                console.error(e);
+            }
         }
     }, [store.player.volume, store.player.sound]);
     const decrVolume = useCallback(async () => {
         if (store.player.volume > 0) {
             const volume = store.player.volume - 0.1;
 
-            await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
+            try {
+                await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
+            } catch (e) {
+                console.error(e);
+            }
         }
     }, [store.player.volume, store.player.sound]);
     const position = useMemo(() => getMMSSFromMillis(store.player.position), [store.player.position]);

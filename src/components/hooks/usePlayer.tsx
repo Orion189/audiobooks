@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const usePlayer = () => {
-    const stopRemotePlay = useCallback(async () => {
+    const stopPlayback = useCallback(async () => {
         try {
             await store.player.sound?.stopAsync?.();
             await store.player.sound?.unloadAsync?.();
@@ -50,6 +50,26 @@ const usePlayer = () => {
             return nextItem;
         }
     }, [store[LIB_TYPE.REMOTE].subItems, store.player.itemId]);
+    const getLocalPrevPlayItem = useCallback(() => {
+        const playlist = store[LIB_TYPE.LOCAL].subItems?.filter((subItem) => subItem.isDirectory === false);
+
+        if (playlist) {
+            const itemIndex = playlist.findIndex((item) => item.name === store.player.itemName);
+            const prevItem = itemIndex === 0 ? null : playlist[itemIndex - 1];
+
+            return prevItem;
+        }
+    }, [store[LIB_TYPE.REMOTE].subItems, store.player.itemId]);
+    const getLocalNextPlayItem = useCallback(() => {
+        const playlist = store[LIB_TYPE.LOCAL].subItems?.filter((subItem) => subItem.isDirectory === false);
+
+        if (playlist) {
+            const itemIndex = playlist.findIndex((item) => item.name === store.player.itemName);
+            const nextItem = itemIndex === playlist.length - 1 ? null : playlist[itemIndex + 1];
+
+            return nextItem;
+        }
+    }, [store[LIB_TYPE.LOCAL].subItems, store.player.itemName]);
     const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
         if (!status.isLoaded) {
             if (status.error) {
@@ -127,16 +147,24 @@ const usePlayer = () => {
                 if (nextItem) {
                     openRemoteFile(nextItem);
                 } else {
-                    stopRemotePlay();
+                    stopPlayback();
                 }
 
                 break;
             }
             case LIB_TYPE.LOCAL: {
-                
+                const nextItem = getLocalNextPlayItem();
+
+                if (nextItem) {
+                    openLocalFile(nextItem);
+                } else {
+                    stopPlayback();
+                }
+
+                break;
             }
         }
-    }, [store.lib.curLib, getRemoteNextPlayItem, openRemoteFile, stopRemotePlay]);
+    }, [store.lib.curLib, getRemoteNextPlayItem, openRemoteFile, stopPlayback]);
     const createRemoteSound = useCallback(async () => {
         const accessToken = store.authInfo.accessToken;
         const { volume, itemId, position } = store.player;
@@ -164,7 +192,7 @@ const usePlayer = () => {
                 const { sound, status } = await Audio.Sound.createAsync(
                     { uri, ...options },
                     { isLooping: false, volume, positionMillis: position, shouldPlay: false },
-                    onRemotePlaybackStatusUpdate
+                    onPlaybackStatusUpdate
                 );
 
                 if (status.isLoaded) {
@@ -177,13 +205,7 @@ const usePlayer = () => {
         } catch (error) {
             console.error(error);
         }
-    }, [
-        store.authInfo.accessToken,
-        store.player.volume,
-        store.player.itemId,
-        store.player.itemName,
-        store.player.position
-    ]);
+    }, [store.authInfo.accessToken, store.player.volume, store.player.itemId, store.player.position]);
     const openLocalFile = useCallback(
         async (item: LocalLibItemType) => {
             const { volume } = store.player;
@@ -224,11 +246,47 @@ const usePlayer = () => {
         },
         [store.player.volume, store.player.sound]
     );
+    const createLocalSound = useCallback(async () => {
+        const { volume, itemURI, position } = store.player;
+
+        if (!itemURI) {
+            return null;
+        }
+
+        try {
+            const curStatus = await store.player.sound?.getStatusAsync?.();
+
+            if (curStatus?.isLoaded === true) {
+                await store.player.sound?.stopAsync?.();
+                await store.player.sound?.unloadAsync?.();
+            }
+
+            if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
+                const { sound, status } = await Audio.Sound.createAsync(
+                    { uri: itemURI },
+                    { isLooping: false, volume, positionMillis: position, shouldPlay: false },
+                    onPlaybackStatusUpdate
+                );
+
+                if (status.isLoaded) {
+                    store.set('player', {
+                        ...store.player,
+                        sound
+                    });
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }, [store.player.volume, store.player.itemURI, store.player.position]);
 
     return {
         openLocalFile,
         openRemoteFile,
+        createLocalSound,
         createRemoteSound,
+        getLocalPrevPlayItem,
+        getLocalNextPlayItem,
         getRemotePrevPlayItem,
         getRemoteNextPlayItem
     };
