@@ -1,4 +1,4 @@
-import { LocalLibItemType } from '@src/@types';
+import { LibItemType } from '@src/@types';
 import useLocalLib from '@src/components/hooks/useLocalLib';
 import LocalLibraryView from '@src/components/main/LocalLibrary/LocalLibrary';
 import Loading from '@src/components/shared/Loading';
@@ -29,7 +29,7 @@ const LocalLibrary = observer(() => {
         });
     }, [getSubItems]);
     const openFolder = useCallback(
-        (item: LocalLibItemType) => {
+        (item: LibItemType) => {
             getItem(item.uri, {
                 onStart,
                 onEnd
@@ -38,7 +38,7 @@ const LocalLibrary = observer(() => {
         [getItem, onStart, onEnd]
     );
     const deleteItem = useCallback(
-        async (item: LocalLibItemType) => {
+        async (item: LibItemType) => {
             await deleteLocalItem(item.uri, {
                 onStart: onStartAlt,
                 onEnd: onEndAlt

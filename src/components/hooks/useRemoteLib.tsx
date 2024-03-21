@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RemoteLibItemType } from '@src/@types';
+import { LibItemType } from '@src/@types';
 import { REMOTE_LIB_ITEM_TYPE, LIB_TYPE } from '@src/enums';
 import * as remoteService from '@src/services/remote.service';
 import store from '@src/store';
@@ -19,6 +19,13 @@ type ConfigType = {
     onEnd?: () => void;
 };
 
+type GItemType = {
+    id: string;
+    mimeType: REMOTE_LIB_ITEM_TYPE;
+    name: string;
+    parents: string[];
+};
+
 const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const useRemoteLib = () => {
@@ -34,7 +41,7 @@ const useRemoteLib = () => {
         [setProgress]
     );
     const downloadResultHandler = useCallback(
-        async (result: FileSystemDownloadResult, item: RemoteLibItemType) => {
+        async (result: FileSystemDownloadResult, item: LibItemType) => {
             try {
                 if (result?.uri && documentDirectory) {
                     AsyncStorage.removeItem(item.name).then(() => {
@@ -42,7 +49,7 @@ const useRemoteLib = () => {
                             from: result?.uri,
                             to: documentDirectory + item.name
                         }).then(() => {
-                            const downloadedItemNamesOld = store[LIB_TYPE.LOCAL].downloadedItemNames;
+                            const downloadedItemNamesOld = store[LIB_TYPE.LOCAL].downloadedItemNames || [];
                             const isExistedItem = downloadedItemNamesOld?.find((itemName) => itemName === item.name);
                             const downloadedItemNames = [...downloadedItemNamesOld, item.name];
 
@@ -64,8 +71,7 @@ const useRemoteLib = () => {
         [moveAsync]
     );
     const download = useCallback(
-        async (item: RemoteLibItemType) => {
-            const url = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${item.id}?alt=media`;
+        async (item: LibItemType) => {
             const accessToken = store.authInfo.accessToken;
             const snapshotJson = await AsyncStorage.getItem(item.name);
             const options = {
@@ -97,7 +103,12 @@ const useRemoteLib = () => {
                     console.error(e);
                 }
             } else {
-                const downloadResumable = createDownloadResumable(url, cacheDirectory + item.name, options, callback);
+                const downloadResumable = createDownloadResumable(
+                    item.uri,
+                    cacheDirectory + item.name,
+                    options,
+                    callback
+                );
 
                 downloadResumableRef.current = downloadResumable;
 
@@ -109,7 +120,7 @@ const useRemoteLib = () => {
         [store.authInfo.accessToken, createDownloadResumable, downloadResumableRef.current]
     );
     const pause = useCallback(
-        async (item: RemoteLibItemType) => {
+        async (item: LibItemType) => {
             const accessToken = store.authInfo.accessToken;
             const downloadResumable = downloadResumableRef.current;
 
@@ -169,10 +180,19 @@ const useRemoteLib = () => {
                     onEnd
                 });
 
+                const subItems = filesData?.files.map((file: GItemType) => ({
+                    name: file.name,
+                    id: file.id,
+                    parents: file.parents,
+                    isRemote: true,
+                    isDirectory: file.mimeType === REMOTE_LIB_ITEM_TYPE.G_FOLDER,
+                    uri: `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${file.id}?alt=media`
+                }));
+
                 if (filesData?.files.length) {
                     store.set(LIB_TYPE.REMOTE, {
                         ...store[LIB_TYPE.REMOTE],
-                        subItems: filesData?.files
+                        subItems
                     });
                 }
             }

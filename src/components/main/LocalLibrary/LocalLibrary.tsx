@@ -1,8 +1,8 @@
 import { ListItem, Icon, useTheme } from '@rneui/themed';
-import { LocalLibItemType } from '@src/@types';
+import { LibItemType } from '@src/@types';
+import usePlayer from '@src/components/hooks/usePlayer';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
-import usePlayer from '@src/components/hooks/usePlayer';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
 import { useCallback, FC, memo } from 'react';
@@ -11,8 +11,8 @@ import { RectButton } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 type LocalLibraryProps = {
-    openFolder: (item: LocalLibItemType) => void;
-    deleteItem: (item: LocalLibItemType) => void;
+    openFolder: (item: LibItemType) => void;
+    deleteItem: (item: LibItemType) => void;
 };
 
 type RefreshingProps = {
@@ -21,7 +21,7 @@ type RefreshingProps = {
 };
 
 type LocalLibraryItemProps = {
-    item: LocalLibItemType;
+    item: LibItemType;
 };
 
 type LocalLibraryItemActionProps = {
@@ -107,7 +107,7 @@ const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ 
 });
 
 const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
-    ({ openFile, openFolder, deleteItem, isRefreshing, onRefresh }) => {
+    ({ openFolder, deleteItem, isRefreshing, onRefresh }) => {
         const {
             theme: {
                 colors: { primary }
@@ -125,13 +125,7 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
                     }
                 >
                     {store[LIB_TYPE.LOCAL].subItems?.map((item) => (
-                        <LocalLibraryItem
-                            key={item.name}
-                            item={item}
-                            openFile={openFile}
-                            openFolder={openFolder}
-                            deleteItem={deleteItem}
-                        />
+                        <LocalLibraryItem key={item.name} item={item} openFolder={openFolder} deleteItem={deleteItem} />
                     ))}
                 </ScrollView>
             </SafeAreaView>

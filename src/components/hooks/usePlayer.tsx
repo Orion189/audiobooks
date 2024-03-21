@@ -1,10 +1,8 @@
-import { LocalLibItemType, RemoteLibItemType } from '@src/@types';
-import { REMOTE_LIB_ITEM_TYPE, LIB_TYPE } from '@src/enums';
+import { LibItemType } from '@src/@types';
+import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { AVPlaybackStatus, Audio } from 'expo-av';
 import { useCallback } from 'react';
-
-const EXPO_PUBLIC_API_SERVER_HOSTNAME = process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME;
 
 const usePlayer = () => {
     const stopPlayback = useCallback(async () => {
@@ -27,9 +25,7 @@ const usePlayer = () => {
         });
     }, [store.player.sound]);
     const getRemotePrevPlayItem = useCallback(() => {
-        const playlist = store[LIB_TYPE.REMOTE].subItems?.filter(
-            (subItem) => subItem.mimeType === REMOTE_LIB_ITEM_TYPE.MPEG
-        );
+        const playlist = store[LIB_TYPE.REMOTE].subItems?.filter((subItem) => !subItem.isDirectory);
 
         if (playlist) {
             const itemIndex = playlist.findIndex((item) => item.id === store.player.itemId);
@@ -39,9 +35,7 @@ const usePlayer = () => {
         }
     }, [store[LIB_TYPE.REMOTE].subItems, store.player.itemId]);
     const getRemoteNextPlayItem = useCallback(() => {
-        const playlist = store[LIB_TYPE.REMOTE].subItems?.filter(
-            (subItem) => subItem.mimeType === REMOTE_LIB_ITEM_TYPE.MPEG
-        );
+        const playlist = store[LIB_TYPE.REMOTE].subItems?.filter((subItem) => !subItem.isDirectory);
 
         if (playlist) {
             const itemIndex = playlist.findIndex((item) => item.id === store.player.itemId);
@@ -92,10 +86,9 @@ const usePlayer = () => {
         }
     }, []);
     const openRemoteFile = useCallback(
-        async (item: RemoteLibItemType) => {
+        async (item: LibItemType) => {
             const accessToken = store.authInfo.accessToken;
             const { volume } = store.player;
-            const uri = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${item.id}?alt=media`;
             const options = {
                 headers: {
                     Accept: 'application/json',
@@ -117,17 +110,18 @@ const usePlayer = () => {
 
                 if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
                     const { sound, status } = await Audio.Sound.createAsync(
-                        { uri, ...options },
+                        { uri: item.uri, ...options },
                         { isLooping: false, volume, positionMillis: 0, shouldPlay: true },
                         onPlaybackStatusUpdate
                     );
 
                     if (status.isLoaded) {
+                        store.set('history', [item, ...store.history.filter((libItem) => libItem.uri !== item.uri)]);
                         store.set('player', {
                             ...store.player,
                             isVisible: true,
                             sound,
-                            itemURI: '',
+                            itemURI: item.uri,
                             itemId: item.id,
                             itemName: item.name
                         });
@@ -167,8 +161,7 @@ const usePlayer = () => {
     }, [store.lib.curLib, getRemoteNextPlayItem, openRemoteFile, stopPlayback]);
     const createRemoteSound = useCallback(async () => {
         const accessToken = store.authInfo.accessToken;
-        const { volume, itemId, position } = store.player;
-        const uri = `${EXPO_PUBLIC_API_SERVER_HOSTNAME}/files/${itemId}?alt=media`;
+        const { volume, itemId, itemURI, position } = store.player;
         const options = {
             headers: {
                 Accept: 'application/json',
@@ -190,7 +183,7 @@ const usePlayer = () => {
 
             if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
                 const { sound, status } = await Audio.Sound.createAsync(
-                    { uri, ...options },
+                    { uri: itemURI, ...options },
                     { isLooping: false, volume, positionMillis: position, shouldPlay: false },
                     onPlaybackStatusUpdate
                 );
@@ -207,7 +200,7 @@ const usePlayer = () => {
         }
     }, [store.authInfo.accessToken, store.player.volume, store.player.itemId, store.player.position]);
     const openLocalFile = useCallback(
-        async (item: LocalLibItemType) => {
+        async (item: LibItemType) => {
             const { volume } = store.player;
 
             if (!item.uri) {
@@ -230,6 +223,7 @@ const usePlayer = () => {
                     );
 
                     if (status.isLoaded) {
+                        store.set('history', [item, ...store.history.filter((libItem) => libItem.uri !== item.uri)]);
                         store.set('player', {
                             ...store.player,
                             isVisible: true,
@@ -244,7 +238,7 @@ const usePlayer = () => {
                 console.error(error);
             }
         },
-        [store.player.volume, store.player.sound]
+        [store.player.volume, store.player.sound, store.history]
     );
     const createLocalSound = useCallback(async () => {
         const { volume, itemURI, position } = store.player;

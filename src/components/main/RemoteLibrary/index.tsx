@@ -1,4 +1,4 @@
-import { RemoteLibItemType } from '@src/@types';
+import { LibItemType } from '@src/@types';
 import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import RemoteLibraryView from '@src/components/main/RemoteLibrary/RemoteLibrary';
 import Loading from '@src/components/shared/Loading';
@@ -20,7 +20,7 @@ const RemoteLibrary = observer(() => {
             onEnd: onRefreshEnd
         });
     }, [getSubItems]);
-    const openFolder = useCallback((item: RemoteLibItemType) => {
+    const openFolder = useCallback((item: LibItemType) => {
         store.set(LIB_TYPE.REMOTE, {
             ...store[LIB_TYPE.REMOTE],
             curItem: item,

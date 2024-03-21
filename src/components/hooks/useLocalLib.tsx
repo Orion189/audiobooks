@@ -1,4 +1,4 @@
-import { LocalLibItemType } from '@src/@types';
+import { LibItemType } from '@src/@types';
 import { LOCAL_ITEMS_TO_HIDE } from '@src/constants';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
@@ -25,7 +25,8 @@ const useLocalLib = () => {
                     curItem: {
                         name: '',
                         isDirectory,
-                        uri
+                        uri,
+                        isRemote: false
                     },
                     subItems: []
                 });
@@ -49,7 +50,7 @@ const useLocalLib = () => {
                 if (itemNames.length) {
                     const subItemsPromises = itemNames.map(
                         (itemName) =>
-                            new Promise<LocalLibItemType>((resolve, reject) =>
+                            new Promise<LibItemType>((resolve, reject) =>
                                 getInfoAsync(uri + itemName)
                                     .then((subItemInfo) =>
                                         resolve({
@@ -69,7 +70,11 @@ const useLocalLib = () => {
 
                     subItems = subItems
                         .filter((subItem) => !LOCAL_ITEMS_TO_HIDE.includes(subItem.name))
-                        .sort((subItem1, subItem2) => (subItem1.isDirectory === subItem2.isDirectory ? 1 : -1));
+                        .sort((subItem1, subItem2) => (subItem1.isDirectory === subItem2.isDirectory ? 1 : -1))
+                        .map((subItem) => ({
+                            ...subItem,
+                            isRemote: false
+                        }));
 
                     store.set(LIB_TYPE.LOCAL, {
                         ...store[LIB_TYPE.LOCAL],

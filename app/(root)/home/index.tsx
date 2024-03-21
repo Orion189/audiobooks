@@ -1,6 +1,5 @@
 import { useTheme, Text, Header as HeaderRNE } from '@rneui/themed';
 import ProgressBar from '@src/components/shared/ProgressBar';
-import commonStyles from '@src/styles/common';
 import { Stack } from 'expo-router';
 import { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,10 +14,7 @@ const Header = memo(() => {
 
     return (
         <>
-            <HeaderRNE
-                centerComponent={{ text: t('app.home.index.title'), style: commonStyles.appBarHeaderTitle }}
-                backgroundColor={primary}
-            />
+            <HeaderRNE centerComponent={<Text h3>{t('app.home.index.title')}</Text>} backgroundColor={primary} />
             <ProgressBar />
         </>
     );

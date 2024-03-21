@@ -19,7 +19,7 @@ const PlayerPopup = observer(() => {
     } = usePlayer();
     const onCollapse = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: true });
-    }, []);
+    }, [store.player]);
     const onClose = useCallback(async () => {
         try {
             await store.player.sound?.stopAsync?.();
@@ -41,7 +41,7 @@ const PlayerPopup = observer(() => {
     }, [store.player.sound]);
     const expandPlayer = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: false });
-    }, []);
+    }, [store.player]);
     const playPrevItem = useCallback(async () => {
         switch (store.lib.curLib) {
             case LIB_TYPE.LOCAL: {

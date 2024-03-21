@@ -1,4 +1,4 @@
-import { SnackBarVariant, THEME, LOCALE, LIB_TYPE, LIB_ORDER, REMOTE_LIB_ITEM_TYPE } from '@src/enums';
+import { SnackBarVariant, THEME, LOCALE, LIB_TYPE, LIB_ORDER } from '@src/enums';
 import { Audio } from 'expo-av';
 
 export type BookType = {
@@ -65,42 +65,32 @@ export type PlayerType = {
     itemURI: string;
 };
 
-export type LibType = {
+export type LibViewType = {
     curLib: LIB_TYPE;
     order: LIB_ORDER;
     isChangeLibPopupVisible: boolean;
 };
 
-export type LocalLibType = {
-    curItem: LocalLibItemType | undefined;
-    subItems?: LocalLibItemType[];
-    downloadedItemNames: string[];
+export type LibType = {
+    curItem?: LibItemType;
+    subItems?: LibItemType[];
+    downloadedItemNames?: string[];
 };
 
-export type RemoteLibType = {
-    curItem: RemoteLibItemType | undefined;
-    subItems?: RemoteLibItemType[];
-};
-
-export type LocalLibItemType = {
+export type LibItemType = {
     name: string;
-    isDirectory: boolean;
     uri: string;
-};
-
-export type RemoteLibItemType = {
-    id: string;
-    name: string;
-    mimeType: REMOTE_LIB_ITEM_TYPE | undefined;
-    parents: string[] | undefined;
-    size: string | undefined;
+    isDirectory: boolean;
+    isRemote: boolean;
+    id?: string;
+    parents?: string[];
 };
 
 export type StoreValuesType =
     | PlayerType
+    | LibViewType
     | LibType
-    | RemoteLibType
-    | LocalLibType
+    | LibItemType[]
     | SettingsType
     | UserInfoType
     | AuthInfoType
@@ -113,6 +103,7 @@ export type StoreKeysType =
     | 'userInfo'
     | 'authInfo'
     | 'app'
+    | 'history'
     | LIB_TYPE.REMOTE
     | LIB_TYPE.LOCAL;
 
