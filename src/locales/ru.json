@@ -138,6 +138,13 @@
     "src": {
         "components": {
             "main": {
+                "Home": {
+                    "sections": {
+                        "recently": {
+                            "title": "Недавно открытые"
+                        }
+                    }
+                },
                 "Settings": {
                     "sections": {
                         "general": {

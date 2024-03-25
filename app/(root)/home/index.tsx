@@ -1,4 +1,5 @@
 import { useTheme, Text, Header as HeaderRNE } from '@rneui/themed';
+import Home from '@src/components/main/Home';
 import ProgressBar from '@src/components/shared/ProgressBar';
 import { Stack } from 'expo-router';
 import { useCallback, memo } from 'react';
@@ -30,7 +31,7 @@ const HomePage = memo(() => {
                     header
                 }}
             />
-            <Text h3>Home</Text>
+            <Home />
         </>
     );
 });

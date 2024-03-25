@@ -59,6 +59,13 @@
     "src": {
         "components": {
             "main": {
+                "Home": {
+                    "sections": {
+                        "recently": {
+                            "title": "Recently opened"
+                        }
+                    }
+                },
                 "Settings": {
                     "sections": {
                         "general": {
