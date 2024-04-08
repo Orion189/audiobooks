@@ -57,6 +57,7 @@ export type PlayerType = {
     isCollapsed: boolean;
     isPlaying: boolean;
     volume: number;
+    rate: number;
     duration: number | undefined;
     position: number;
     sound: Audio.Sound | null;

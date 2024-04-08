@@ -1,3 +1,4 @@
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { ThemeProvider } from '@react-navigation/native';
 import { ThemeProvider as RNEProvider } from '@rneui/themed';
 import useAppFocus from '@src/components/hooks/useAppFocus';
@@ -19,7 +20,9 @@ const Layout = memo(() => {
     return (
         <RNEProvider theme={theme}>
             <ThemeProvider value={navigationTheme}>
-                <Slot />
+                <ActionSheetProvider>
+                    <Slot />
+                </ActionSheetProvider>
             </ThemeProvider>
         </RNEProvider>
     );

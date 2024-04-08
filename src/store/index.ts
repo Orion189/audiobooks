@@ -30,6 +30,7 @@ export const defaultState: {
         isCollapsed: true,
         isPlaying: false,
         volume: 0.5,
+        rate: 1,
         duration: 0,
         position: 0,
         sound: null,

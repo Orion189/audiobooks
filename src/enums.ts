@@ -52,3 +52,13 @@ export const enum REMOTE_LIB_ITEM_TYPE {
     G_FOLDER = 'application/vnd.google-apps.folder',
     MPEG = 'audio/mpeg'
 }
+
+export const enum PLAYBACK_RATE {
+    _0_5 = '0.5',
+    _0_75 = '0.75',
+    _1 = '1',
+    _1_25 = '1.25',
+    _1_5 = '1.5',
+    _1_75 = '1.75',
+    _2 = '2'
+}

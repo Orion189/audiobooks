@@ -1,28 +1,72 @@
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import { useTheme, Icon, Slider, Text, Button } from '@rneui/themed';
+import { PLAYBACK_RATE } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Pressable } from 'react-native';
 
 type CollapsedProps = {
     onClose: () => void;
     expandPlayer: () => void;
+    width: number;
 };
 
-const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer }) => {
+const ACTIONS_CONT_WIDTH = 130;
+
+const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer, width }) => {
     const {
         theme: {
             colors: { primary, white }
         }
     } = useTheme();
+    const { t } = useTranslation();
+    const { showActionSheetWithOptions } = useActionSheet();
+    const options = [
+        PLAYBACK_RATE._0_5,
+        PLAYBACK_RATE._0_75,
+        PLAYBACK_RATE._1,
+        PLAYBACK_RATE._1_25,
+        PLAYBACK_RATE._1_5,
+        PLAYBACK_RATE._1_75,
+        PLAYBACK_RATE._2,
+        t('src.components.shared.PlayerPopup.Collapsed.actionSheet.cancel')
+    ];
+    const title = t('src.components.shared.PlayerPopup.Collapsed.actionSheet.title');
+    const cancelButtonIndex = options.length - 1;
+    const showActionSheetCallback = useCallback(async (selectedIndex: number | undefined) => {
+        if (selectedIndex !== undefined && selectedIndex !== cancelButtonIndex) {
+            try {
+                await store.player.sound?.setRateAsync(Number(options[selectedIndex]), true);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }, []);
+    const onChangeRate = useCallback(() => {
+        showActionSheetWithOptions(
+            {
+                options,
+                cancelButtonIndex,
+                title
+            },
+            showActionSheetCallback
+        );
+    }, [t, showActionSheetWithOptions]);
 
     return (
         <Pressable onPress={expandPlayer} style={[styles.overlay, { backgroundColor: white }]}>
-            <View style={styles.cont}>
-                <Text>{store.player.itemName}</Text>
-                <Button type="clear" onPress={onClose}>
-                    <Icon name="close" color={primary} type="material-community" />
-                </Button>
+            <View style={[styles.mainCont, { width }]}>
+                <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: width - ACTIONS_CONT_WIDTH }}>
+                    {store.player.itemName}
+                </Text>
+                <View style={styles.actionsCont}>
+                    <Button type="clear" title={store.player.rate?.toString()} onPress={onChangeRate} />
+                    <Button type="clear" onPress={onClose}>
+                        <Icon name="close" color={primary} type="material-community" />
+                    </Button>
+                </View>
             </View>
             <Slider
                 value={store.player.position}
@@ -50,13 +94,21 @@ const styles = StyleSheet.create({
         borderRadius: 0,
         height: 50
     },
-    cont: {
-        flex: 1,
+    mainCont: {
+        display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingLeft: 15,
         paddingRight: 5
+    },
+    actionsCont: {
+        paddingHorizontal: 25,
+        width: ACTIONS_CONT_WIDTH,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     },
     slider: {
         width: '100%',

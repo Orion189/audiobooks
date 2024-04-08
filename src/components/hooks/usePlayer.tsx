@@ -17,6 +17,7 @@ const usePlayer = () => {
             ...store.player,
             isVisible: false,
             sound: null,
+            rate: 1,
             duration: 0,
             position: 0,
             itemId: '',
@@ -70,14 +71,15 @@ const usePlayer = () => {
                 console.error(`Encountered a fatal error during playback: ${status.error}`);
             }
         } else {
-            const { isPlaying, positionMillis, durationMillis, didJustFinish, isLooping, volume } = status;
+            const { isPlaying, positionMillis, durationMillis, didJustFinish, isLooping, volume, rate } = status;
 
             store.set('player', {
                 ...store.player,
                 isPlaying,
                 volume: Number(volume.toPrecision(1)),
                 duration: durationMillis,
-                position: positionMillis
+                position: positionMillis,
+                rate
             });
 
             if (didJustFinish && !isLooping) {
@@ -88,7 +90,7 @@ const usePlayer = () => {
     const openRemoteFile = useCallback(
         async (item: LibItemType) => {
             const accessToken = store.authInfo.accessToken;
-            const { volume } = store.player;
+            const { volume, rate } = store.player;
             const options = {
                 headers: {
                     Accept: 'application/json',
@@ -111,7 +113,7 @@ const usePlayer = () => {
                 if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
                     const { sound, status } = await Audio.Sound.createAsync(
                         { uri: item.uri, ...options },
-                        { isLooping: false, volume, positionMillis: 0, shouldPlay: true },
+                        { isLooping: false, volume, rate, positionMillis: 0, shouldPlay: true },
                         onPlaybackStatusUpdate
                     );
 
@@ -161,7 +163,7 @@ const usePlayer = () => {
     }, [store.lib.curLib, getRemoteNextPlayItem, openRemoteFile, stopPlayback]);
     const createRemoteSound = useCallback(async () => {
         const accessToken = store.authInfo.accessToken;
-        const { volume, itemId, itemURI, position } = store.player;
+        const { volume, rate, itemId, itemURI, position } = store.player;
         const options = {
             headers: {
                 Accept: 'application/json',
@@ -184,7 +186,7 @@ const usePlayer = () => {
             if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
                 const { sound, status } = await Audio.Sound.createAsync(
                     { uri: itemURI, ...options },
-                    { isLooping: false, volume, positionMillis: position, shouldPlay: false },
+                    { isLooping: false, volume, rate, positionMillis: position, shouldPlay: false },
                     onPlaybackStatusUpdate
                 );
 
@@ -201,7 +203,7 @@ const usePlayer = () => {
     }, [store.authInfo.accessToken, store.player.volume, store.player.itemId, store.player.position]);
     const openLocalFile = useCallback(
         async (item: LibItemType) => {
-            const { volume } = store.player;
+            const { volume, rate } = store.player;
 
             if (!item.uri) {
                 return null;
@@ -218,7 +220,7 @@ const usePlayer = () => {
                 if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
                     const { sound, status } = await Audio.Sound.createAsync(
                         { uri: item.uri },
-                        { isLooping: false, volume, positionMillis: 0, shouldPlay: true },
+                        { isLooping: false, volume, rate, positionMillis: 0, shouldPlay: true },
                         onPlaybackStatusUpdate
                     );
 
@@ -241,7 +243,7 @@ const usePlayer = () => {
         [store.player.volume, store.player.sound, store.history]
     );
     const createLocalSound = useCallback(async () => {
-        const { volume, itemURI, position } = store.player;
+        const { volume, rate, itemURI, position } = store.player;
 
         if (!itemURI) {
             return null;
@@ -258,7 +260,7 @@ const usePlayer = () => {
             if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
                 const { sound, status } = await Audio.Sound.createAsync(
                     { uri: itemURI },
-                    { isLooping: false, volume, positionMillis: position, shouldPlay: false },
+                    { isLooping: false, volume, rate, positionMillis: position, shouldPlay: false },
                     onPlaybackStatusUpdate
                 );
 

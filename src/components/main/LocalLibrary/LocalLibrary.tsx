@@ -1,7 +1,7 @@
 import { ListItem, Icon, useTheme } from '@rneui/themed';
 import { LibItemType } from '@src/@types';
 import usePlayer from '@src/components/hooks/usePlayer';
-import { LIB_TYPE } from '@src/enums';
+import { LIB_TYPE, LIB_ORDER } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
@@ -113,6 +113,26 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
                 colors: { primary }
             }
         } = useTheme();
+        const getSubItems = useCallback(() => {
+            switch (store.lib.order) {
+                case LIB_ORDER.DEFAULT: {
+                    return store[LIB_TYPE.LOCAL].subItems;
+                }
+                case LIB_ORDER.ASC: {
+                    return store[LIB_TYPE.LOCAL].subItems
+                        ?.slice()
+                        .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name));
+                }
+                case LIB_ORDER.DESC: {
+                    return store[LIB_TYPE.LOCAL].subItems
+                        ?.slice()
+                        .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name))
+                        .reverse();
+                }
+                default:
+                    return [];
+            }
+        }, [store.lib.order, store[LIB_TYPE.LOCAL].subItems]);
 
         return (
             <SafeAreaView style={commonStyles.safeAreaView}>
@@ -124,7 +144,7 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
                         <RefreshControl onRefresh={onRefresh} tintColor="transparent" refreshing={isRefreshing} />
                     }
                 >
-                    {store[LIB_TYPE.LOCAL].subItems?.map((item) => (
+                    {getSubItems()?.map((item) => (
                         <LocalLibraryItem key={item.name} item={item} openFolder={openFolder} deleteItem={deleteItem} />
                     ))}
                 </ScrollView>

@@ -227,6 +227,14 @@
                 },
                 "ItemInfoPopup": {
                     "title": "Item info"
+                },
+                "PlayerPopup": {
+                    "Collapsed": {
+                        "actionSheet": {
+                            "title": "Скорость воспроизведения",
+                            "cancel": "Отмена"
+                        }
+                    }
                 }
             }
         }

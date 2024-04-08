@@ -2,7 +2,7 @@ import { ListItem, Icon, useTheme, Button } from '@rneui/themed';
 import { LibItemType } from '@src/@types';
 import usePlayer from '@src/components/hooks/usePlayer';
 import useRemoteLib from '@src/components/hooks/useRemoteLib';
-import { LIB_TYPE } from '@src/enums';
+import { LIB_TYPE, LIB_ORDER } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
@@ -91,6 +91,26 @@ const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(({ open
             colors: { primary }
         }
     } = useTheme();
+    const getSubItems = useCallback(() => {
+        switch (store.lib.order) {
+            case LIB_ORDER.DEFAULT: {
+                return store[LIB_TYPE.REMOTE].subItems;
+            }
+            case LIB_ORDER.ASC: {
+                return store[LIB_TYPE.REMOTE].subItems
+                    ?.slice()
+                    .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name));
+            }
+            case LIB_ORDER.DESC: {
+                return store[LIB_TYPE.REMOTE].subItems
+                    ?.slice()
+                    .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name))
+                    .reverse();
+            }
+            default:
+                return [];
+        }
+    }, [store.lib.order, store[LIB_TYPE.REMOTE].subItems]);
 
     return (
         <SafeAreaView style={commonStyles.safeAreaView}>
@@ -102,9 +122,7 @@ const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(({ open
                     <RefreshControl onRefresh={onRefresh} tintColor="transparent" refreshing={isRefreshing} />
                 }
             >
-                {store[LIB_TYPE.REMOTE].subItems?.map((item) => (
-                    <RemoteLibraryItem key={item.id} item={item} openFolder={openFolder} />
-                ))}
+                {getSubItems()?.map((item) => <RemoteLibraryItem key={item.id} item={item} openFolder={openFolder} />)}
             </ScrollView>
         </SafeAreaView>
     );
