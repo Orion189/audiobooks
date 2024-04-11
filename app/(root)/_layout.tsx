@@ -4,9 +4,11 @@ import useAppTheme from '@src/components/hooks/useAppTheme';
 import PlayerPopup from '@src/components/shared/PlayerPopup';
 import SnackBar from '@src/components/shared/SnackBar';
 import { TAB_BAR_HEIGHT } from '@src/constants';
+import { NEW_RELIC } from '@src/enums';
 import * as Device from 'expo-device';
-import { Tabs } from 'expo-router';
-import { memo } from 'react';
+import { usePathname, useGlobalSearchParams, Tabs } from 'expo-router';
+import NewRelic from 'newrelic-react-native-agent';
+import { memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,8 +33,14 @@ const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
 const Layout = memo(() => {
     const { t } = useTranslation();
     const { bottom } = useSafeAreaInsets();
+    const pathname = usePathname();
+    const params = useGlobalSearchParams();
 
     useAppTheme();
+
+    useEffect(() => {
+        NewRelic.recordBreadcrumb(NEW_RELIC.ROUTE_CHANGE, new Map(Object.entries({ pathname, params })));
+    }, [pathname, params]);
 
     return (
         <>

@@ -9,6 +9,7 @@ import { useRouter } from 'expo-router';
 import * as StoreReview from 'expo-store-review';
 import * as WebBrowser from 'expo-web-browser';
 import { observer } from 'mobx-react-lite';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback, memo, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
@@ -79,7 +80,7 @@ const Settings = observer(() => {
                     toolbarColor: white
                 });
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[Settings] - gotToLink', e as Error));
             }
 
             return;

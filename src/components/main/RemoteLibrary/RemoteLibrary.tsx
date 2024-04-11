@@ -6,7 +6,7 @@ import { LIB_TYPE, LIB_ORDER } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useState, FC, memo } from 'react';
+import { useCallback, useState, useMemo, FC, memo } from 'react';
 import { StyleSheet, SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator } from 'react-native';
 
 type RemoteLibraryProps = {
@@ -91,26 +91,29 @@ const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(({ open
             colors: { primary }
         }
     } = useTheme();
-    const getSubItems = useCallback(() => {
-        switch (store.lib.order) {
-            case LIB_ORDER.DEFAULT: {
-                return store[LIB_TYPE.REMOTE].subItems;
+    const getSubItems = useMemo(
+        () => () => {
+            switch (store.lib.order) {
+                case LIB_ORDER.DEFAULT: {
+                    return store[LIB_TYPE.REMOTE].subItems;
+                }
+                case LIB_ORDER.ASC: {
+                    return store[LIB_TYPE.REMOTE].subItems
+                        ?.slice()
+                        .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name));
+                }
+                case LIB_ORDER.DESC: {
+                    return store[LIB_TYPE.REMOTE].subItems
+                        ?.slice()
+                        .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name))
+                        .reverse();
+                }
+                default:
+                    return [];
             }
-            case LIB_ORDER.ASC: {
-                return store[LIB_TYPE.REMOTE].subItems
-                    ?.slice()
-                    .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name));
-            }
-            case LIB_ORDER.DESC: {
-                return store[LIB_TYPE.REMOTE].subItems
-                    ?.slice()
-                    .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name))
-                    .reverse();
-            }
-            default:
-                return [];
-        }
-    }, [store.lib.order, store[LIB_TYPE.REMOTE].subItems]);
+        },
+        [store.lib.order, store[LIB_TYPE.REMOTE].subItems]
+    );
 
     return (
         <SafeAreaView style={commonStyles.safeAreaView}>

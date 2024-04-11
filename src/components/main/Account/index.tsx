@@ -3,6 +3,7 @@ import AccountView from '@src/components/main/Account/Account';
 import { SnackBarVariant } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -58,8 +59,8 @@ const Account = observer(() => {
 
             store.reset('userInfo');
             store.reset('authInfo');
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            NewRelic.recordError(new Error('[Account] - signOut', e as Error));
         }
     }, []);
 

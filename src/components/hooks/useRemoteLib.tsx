@@ -12,6 +12,7 @@ import {
     moveAsync,
     FileSystemDownloadResult
 } from 'expo-file-system';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback, useRef, useState } from 'react';
 
 type ConfigType = {
@@ -65,7 +66,7 @@ const useRemoteLib = () => {
                     });
                 }
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[useRemoteLib] - downloadResultHandler', e as Error));
             }
         },
         [moveAsync]
@@ -100,7 +101,7 @@ const useRemoteLib = () => {
                         .resumeAsync()
                         .then((result) => result && downloadResultHandler(result, item));
                 } catch (e) {
-                    console.error(e);
+                    NewRelic.recordError(new Error('[useRemoteLib] - download', e as Error));
                 }
             } else {
                 const downloadResumable = createDownloadResumable(
@@ -133,7 +134,7 @@ const useRemoteLib = () => {
                     .pauseAsync()
                     .then(() => AsyncStorage.setItem(item.name, JSON.stringify(downloadResumable.savable())));
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[useRemoteLib] - pause', e as Error));
             }
         },
         [store.authInfo.accessToken, downloadResumableRef.current]

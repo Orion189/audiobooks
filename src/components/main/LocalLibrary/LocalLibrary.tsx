@@ -5,7 +5,7 @@ import { LIB_TYPE, LIB_ORDER } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
-import { useCallback, FC, memo } from 'react';
+import { useCallback, useMemo, FC, memo } from 'react';
 import { SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator, Animated, StyleSheet } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -113,26 +113,29 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
                 colors: { primary }
             }
         } = useTheme();
-        const getSubItems = useCallback(() => {
-            switch (store.lib.order) {
-                case LIB_ORDER.DEFAULT: {
-                    return store[LIB_TYPE.LOCAL].subItems;
+        const getSubItems = useMemo(
+            () => () => {
+                switch (store.lib.order) {
+                    case LIB_ORDER.DEFAULT: {
+                        return store[LIB_TYPE.LOCAL].subItems;
+                    }
+                    case LIB_ORDER.ASC: {
+                        return store[LIB_TYPE.LOCAL].subItems
+                            ?.slice()
+                            .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name));
+                    }
+                    case LIB_ORDER.DESC: {
+                        return store[LIB_TYPE.LOCAL].subItems
+                            ?.slice()
+                            .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name))
+                            .reverse();
+                    }
+                    default:
+                        return [];
                 }
-                case LIB_ORDER.ASC: {
-                    return store[LIB_TYPE.LOCAL].subItems
-                        ?.slice()
-                        .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name));
-                }
-                case LIB_ORDER.DESC: {
-                    return store[LIB_TYPE.LOCAL].subItems
-                        ?.slice()
-                        .sort((subItem1, subItem2) => subItem1.name.localeCompare(subItem2.name))
-                        .reverse();
-                }
-                default:
-                    return [];
-            }
-        }, [store.lib.order, store[LIB_TYPE.LOCAL].subItems]);
+            },
+            [store.lib.order, store[LIB_TYPE.LOCAL].subItems]
+        );
 
         return (
             <SafeAreaView style={commonStyles.safeAreaView}>

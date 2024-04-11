@@ -62,3 +62,7 @@ export const enum PLAYBACK_RATE {
     _1_75 = '1.75',
     _2 = '2'
 }
+
+export const enum NEW_RELIC {
+    ROUTE_CHANGE = 'ROUTE_CHANGE'
+}

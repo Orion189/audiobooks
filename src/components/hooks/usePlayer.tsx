@@ -2,6 +2,7 @@ import { LibItemType } from '@src/@types';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { AVPlaybackStatus, Audio } from 'expo-av';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback } from 'react';
 
 const usePlayer = () => {
@@ -10,7 +11,7 @@ const usePlayer = () => {
             await store.player.sound?.stopAsync?.();
             await store.player.sound?.unloadAsync?.();
         } catch (e) {
-            console.error(e);
+            NewRelic.recordError(new Error('[usePlayer] - stopPlayback', e as Error));
         }
 
         store.set('player', {
@@ -68,7 +69,7 @@ const usePlayer = () => {
     const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
         if (!status.isLoaded) {
             if (status.error) {
-                console.error(`Encountered a fatal error during playback: ${status.error}`);
+                NewRelic.recordError(new Error(`[usePlayer] - onPlaybackStatusUpdate. Details: ${status.error}`));
             }
         } else {
             const { isPlaying, positionMillis, durationMillis, didJustFinish, isLooping, volume, rate } = status;
@@ -129,8 +130,8 @@ const usePlayer = () => {
                         });
                     }
                 }
-            } catch (error) {
-                console.error(error);
+            } catch (e) {
+                NewRelic.recordError(new Error('[usePlayer] - openRemoteFile', e as Error));
             }
         },
         [store.player.volume, store.player.sound, store.authInfo.accessToken]
@@ -197,8 +198,8 @@ const usePlayer = () => {
                     });
                 }
             }
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            NewRelic.recordError(new Error('[usePlayer] - createRemoteSound', e as Error));
         }
     }, [store.authInfo.accessToken, store.player.volume, store.player.itemId, store.player.position]);
     const openLocalFile = useCallback(
@@ -236,8 +237,8 @@ const usePlayer = () => {
                         });
                     }
                 }
-            } catch (error) {
-                console.error(error);
+            } catch (e) {
+                NewRelic.recordError(new Error('[usePlayer] - openLocalFile', e as Error));
             }
         },
         [store.player.volume, store.player.sound, store.history]
@@ -271,8 +272,8 @@ const usePlayer = () => {
                     });
                 }
             }
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            NewRelic.recordError(new Error('[usePlayer] - createLocalSound', e as Error));
         }
     }, [store.player.volume, store.player.itemURI, store.player.position]);
 

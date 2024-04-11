@@ -2,6 +2,7 @@ import { useTheme, Slider, Overlay, Icon, Text, Button } from '@rneui/themed';
 import { getMMSSFromMillis } from '@src/components/shared/PlayerPopup/helpers';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback, FC, useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -23,14 +24,14 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
         try {
             await sound?.playFromPositionAsync?.(position);
         } catch (e) {
-            console.error(e);
+            NewRelic.recordError(new Error('[Expanded] - play', e as Error));
         }
     }, [store.player.sound]);
     const pause = useCallback(async () => {
         try {
             await store.player.sound?.pauseAsync();
         } catch (e) {
-            console.error(e);
+            NewRelic.recordError(new Error('[Expanded] - pause', e as Error));
         }
     }, [store.player.sound]);
     const setPosition = useCallback(
@@ -42,7 +43,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
                     await store.player.sound?.setPositionAsync(position);
                 }
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[Expanded] - setPosition', e as Error));
             }
         },
         [store.player.isPlaying, store.player.sound]
@@ -54,7 +55,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
             try {
                 await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[Expanded] - incrVolume', e as Error));
             }
         }
     }, [store.player.volume, store.player.sound]);
@@ -65,7 +66,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
             try {
                 await store.player.sound?.setVolumeAsync(Number(volume.toPrecision(1)));
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[Expanded] - decrVolume', e as Error));
             }
         }
     }, [store.player.volume, store.player.sound]);

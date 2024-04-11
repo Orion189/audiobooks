@@ -3,6 +3,7 @@ import { useTheme, Icon, Slider, Text, Button } from '@rneui/themed';
 import { PLAYBACK_RATE } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
+import NewRelic from 'newrelic-react-native-agent';
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet, Pressable } from 'react-native';
@@ -40,7 +41,7 @@ const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer, width }
             try {
                 await store.player.sound?.setRateAsync(Number(options[selectedIndex]), true);
             } catch (e) {
-                console.error(e);
+                NewRelic.recordError(new Error('[Collapsed] - showActionSheetCallback', e as Error));
             }
         }
     }, []);

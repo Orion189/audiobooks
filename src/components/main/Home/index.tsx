@@ -35,7 +35,7 @@ const Home = observer(() => {
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { primary, white, grey5 }
+            colors: { grey5 }
         }
     } = useTheme();
 

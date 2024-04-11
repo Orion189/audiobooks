@@ -1,6 +1,7 @@
 import { GoogleSignin, statusCodes, NativeModuleError } from '@react-native-google-signin/google-signin';
 import { SnackBarVariant, ERROR_STATUS_CODE } from '@src/enums';
 import store from '@src/store';
+import NewRelic from 'newrelic-react-native-agent';
 import axios, { AxiosRequestConfig } from 'axios';
 import i18n from 'i18next';
 
@@ -78,10 +79,7 @@ const handleError = async (response: any) => {
         await invalidateAccessToken();
     }
 
-    console.error('Response:', response);
-    console.error('Status:', response?.status);
-    console.error('Error message:', response?.data?.error?.message);
-    console.error('Error detailed message:', response?.data?.error?.errors);
+    NewRelic.recordError(new Error('remote.service - handleError', response?.data?.error as Error));
 };
 
 export const apiRequest = async (params: APIParamsType) => {

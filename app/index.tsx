@@ -8,27 +8,27 @@ import { Platform } from 'react-native';
 import * as appVersion from '../package.json';
 
 if (!process.env.EXPO_PUBLIC_SERVER_HOSTNAME) {
-    console.error('Environment variable SERVER_HOSTNAME is not defined');
+    NewRelic.recordError(new Error('Environment variable SERVER_HOSTNAME is not defined'));
 }
 
 if (!process.env.EXPO_PUBLIC_SERVER_EMAIL) {
-    console.error('Environment variable SERVER_EMAIL is not defined');
+    NewRelic.recordError(new Error('Environment variable SERVER_EMAIL is not defined'));
 }
 
 if (!process.env.EXPO_PUBLIC_WEB_CLIENT_ID) {
-    console.error('Environment variable EXPO_PUBLIC_WEB_CLIENT_ID is not defined');
+    NewRelic.recordError(new Error('Environment variable EXPO_PUBLIC_WEB_CLIENT_ID is not defined'));
 }
 
 if (!process.env.EXPO_PUBLIC_API_SERVER_HOSTNAME) {
-    console.error('Environment variable EXPO_PUBLIC_API_SERVER_HOSTNAME is not defined');
+    NewRelic.recordError(new Error('Environment variable EXPO_PUBLIC_API_SERVER_HOSTNAME is not defined'));
 }
 
 if (!process.env.EXPO_PUBLIC_NEW_RELIC_IOS_TOKEN) {
-    console.error('Environment variable EXPO_PUBLIC_NEW_RELIC_IOS_TOKEN is not defined');
+    NewRelic.recordError(new Error('Environment variable EXPO_PUBLIC_NEW_RELIC_IOS_TOKEN is not defined'));
 }
 
 if (!process.env.EXPO_PUBLIC_NEW_RELIC_ANDROID_TOKEN) {
-    console.error('Environment variable EXPO_PUBLIC_NEW_RELIC_ANDROID_TOKEN is not defined');
+    NewRelic.recordError(new Error('Environment variable EXPO_PUBLIC_NEW_RELIC_ANDROID_TOKEN is not defined'));
 }
 
 const appToken =

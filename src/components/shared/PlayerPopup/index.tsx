@@ -4,6 +4,7 @@ import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { Audio } from 'expo-av';
 import { observer } from 'mobx-react-lite';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback, useEffect } from 'react';
 
 const PlayerPopup = observer(() => {
@@ -25,7 +26,7 @@ const PlayerPopup = observer(() => {
             await store.player.sound?.stopAsync?.();
             await store.player.sound?.unloadAsync?.();
         } catch (e) {
-            console.error(e);
+            NewRelic.recordError(new Error('[PlayerPopup] - onClose', e as Error));
         }
 
         store.set('player', {

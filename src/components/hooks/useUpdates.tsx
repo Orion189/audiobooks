@@ -1,11 +1,12 @@
 import * as Updates from 'expo-updates';
+import NewRelic from 'newrelic-react-native-agent';
 import { useCallback } from 'react';
 
 const useUpdates = () => {
     const eventListener = useCallback(async (event: Updates.UpdateEvent) => {
         switch (event.type) {
             case Updates.UpdateEventType.ERROR: {
-                console.error(event.message);
+                NewRelic.recordError(new Error(`[useUpdates] - eventListener, Detals: ${event.message}`));
 
                 break;
             }
