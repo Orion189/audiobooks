@@ -9,7 +9,7 @@
         "splash": {
             "image": "./assets/splash.png",
             "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "backgroundColor": "#F6EEE4"
         },
         "assetBundlePatterns": ["**/*"],
         "scheme": "abooks",
@@ -27,7 +27,7 @@
             "icon": "./assets/icon.png",
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#ffffff"
+                "backgroundColor": "#F6EEE4"
             },
             "package": "com.orion189.abooks",
             "playStoreUrl": "https://play.google.com/store/apps/details?id=com.orion189.shopping",
