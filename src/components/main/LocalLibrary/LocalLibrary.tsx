@@ -66,7 +66,7 @@ const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: Loca
 const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ openFolder, deleteItem, item }) => {
     const {
         theme: {
-            colors: { greyOutline }
+            colors: { primary }
         }
     } = useTheme();
     const { openLocalFile } = usePlayer();
@@ -93,10 +93,14 @@ const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ 
                 <Icon
                     name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
                     type="material-community"
-                    color={greyOutline}
+                    color={primary}
                 />
                 <ListItem.Content>
-                    <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
+                    <ListItem.Title
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        style={{ color: primary, fontWeight: '400' }}
+                    >
                         {item.name}
                     </ListItem.Title>
                 </ListItem.Content>

@@ -20,7 +20,7 @@ const ThemeItem: FC<ThemeItemProps> = observer(({ theme, changeTheme }) => {
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { background, disabled }
+            colors: { primary, background, secondary }
         }
     } = useTheme();
     const changeThemeCb = useCallback(() => changeTheme(theme), [theme]);
@@ -29,10 +29,12 @@ const ThemeItem: FC<ThemeItemProps> = observer(({ theme, changeTheme }) => {
         <ListItem
             bottomDivider
             onPress={changeThemeCb}
-            containerStyle={{ backgroundColor: store.app.theme === theme ? disabled : background }}
+            containerStyle={{ backgroundColor: store.app.theme === theme ? secondary : background }}
         >
             <ListItem.Content>
-                <ListItem.Title>{t(`src.components.main.Theme.themes.${theme}`)}</ListItem.Title>
+                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>
+                    {t(`src.components.main.Theme.themes.${theme}`)}
+                </ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );

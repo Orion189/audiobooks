@@ -14,7 +14,7 @@ type AccountProps = {
 const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
     const {
         theme: {
-            colors: { greyOutline, black, white }
+            colors: { background, primary, white }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -28,17 +28,19 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
                             rounded
                             size={120}
                             source={{ uri: store.userInfo.user.photo }}
-                            containerStyle={{ backgroundColor: greyOutline }}
+                            containerStyle={{ backgroundColor: background }}
                         />
                         <View style={styles.nameCont}>
-                            <Text h4 h4Style={{ color: black }}>
+                            <Text h4 h4Style={{ color: primary }}>
                                 {store.userInfo.user.name}
                             </Text>
                         </View>
-                        <View style={styles.actionBtnCont}>
+                        <View style={styles.actionCont}>
                             <Button
                                 onPress={signOut}
-                                color="secondary"
+                                color="btnPrimary"
+                                buttonStyle={styles.btn}
+                                containerStyle={styles.btnCont}
                                 title={t('src.components.main.Account.logOutBtnLabel')}
                             />
                         </View>
@@ -46,20 +48,22 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
                 ) : (
                     <View style={styles.mainCont}>
                         <View style={styles.logInInfoCont}>
-                            <Text h4 h4Style={{ fontSize: 14 }}>
+                            <Text h4 h4Style={{ color: primary, fontSize: 14 }}>
                                 {'sdhf sdfhksbd fhbs dhfh sbdfjhb sdhbfh bsdjhf hsdbfh bdsjhfb jdsbfj bsdjhfb jsbdf jsdf'}
                             </Text>
                         </View>
-                        <View style={styles.actionBtnCont}>
+                        <View style={styles.actionCont}>
                             <Button
                                 onPress={signIn}
-                                color="secondary"
+                                color="btnPrimary"
                                 icon={{
                                     name: 'google',
                                     type: 'material-community',
                                     size: 15,
                                     color: white
                                 }}
+                                buttonStyle={styles.btn}
+                                containerStyle={styles.btnCont}
                                 title={t('src.components.main.Account.logInBtnLabel')}
                             />
                         </View>
@@ -80,8 +84,16 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     logInInfoCont: {},
-    actionBtnCont: {
+    actionCont: {
         marginTop: 20
+    },
+    btnCont: {
+        width: 150,
+        marginHorizontal: 50,
+        marginVertical: 10
+    },
+    btn: {
+        borderRadius: 10
     }
 });
 

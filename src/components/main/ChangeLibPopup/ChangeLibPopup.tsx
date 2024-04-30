@@ -20,7 +20,7 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { black }
+            colors: { primary }
         }
     } = useTheme();
     const getIcon = useCallback(() => {
@@ -37,19 +37,30 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
 
     return (
         <ListItem bottomDivider onPress={changeLibTypeCb}>
-            <Icon name={getIcon()} type="material-community" color={black} size={30} />
+            <Icon name={getIcon()} type="material-community" color={primary} size={30} />
             <ListItem.Content>
-                <ListItem.Title>{t(`src.components.main.ChangeLibPopup.libTypes.${libType}`)}</ListItem.Title>
+                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>
+                    {t(`src.components.main.ChangeLibPopup.libTypes.${libType}`)}
+                </ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );
 });
 
 const ChangeLibPopup: FC<ChangeLibPopupProps> = observer(({ changeLibType, onClose }) => {
+    const {
+        theme: {
+            colors: { background, divider }
+        }
+    } = useTheme();
     const { t } = useTranslation();
 
     return (
-        <Dialog onBackdropPress={onClose} overlayStyle={styles.overlay} isVisible={store.lib.isChangeLibPopupVisible}>
+        <Dialog
+            onBackdropPress={onClose}
+            overlayStyle={[styles.overlay, { backgroundColor: background, borderBottomColor: divider }]}
+            isVisible={store.lib.isChangeLibPopupVisible}
+        >
             <Dialog.Title title={t('src.components.main.ChangeLibPopup.title')} />
             <View style={styles.dialogView}>
                 {[LIB_TYPE.LOCAL, LIB_TYPE.REMOTE].map((libType) => (
@@ -67,7 +78,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         margin: 'auto',
-        backgroundColor: '#fff',
         borderRadius: 15,
         borderBottomRightRadius: 0,
         borderBottomLeftRadius: 0,

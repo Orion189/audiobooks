@@ -29,11 +29,21 @@ type DownloadItemBtnProps = {
 };
 
 const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloading, onPressCb }) => {
-    const isItemDownloaded = store[LIB_TYPE.LOCAL].downloadedItemNames.includes(name);
+    const {
+        theme: {
+            colors: { primary }
+        }
+    } = useTheme();
+    const downloadedItemNames = store[LIB_TYPE.LOCAL].downloadedItemNames;
+    const isItemDownloaded = Array.isArray(downloadedItemNames) && downloadedItemNames.includes(name);
 
     return isItemDownloaded ? null : (
         <Button type="clear" buttonStyle={styles.downloadBtn} onPress={onPressCb}>
-            {isDownloading ? <ActivityIndicator /> : <Icon name="cloud-download-outline" type="material-community" />}
+            {isDownloading ? (
+                <ActivityIndicator />
+            ) : (
+                <Icon name="cloud-download-outline" type="material-community" color={primary} />
+            )}
         </Button>
     );
 });
@@ -41,7 +51,7 @@ const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloadin
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFolder, item }) => {
     const {
         theme: {
-            colors: { greyOutline }
+            colors: { primary }
         }
     } = useTheme();
     const { openRemoteFile } = usePlayer();
@@ -69,10 +79,10 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
             <Icon
                 name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
                 type="material-community"
-                color={greyOutline}
+                color={primary}
             />
             <ListItem.Content>
-                <ListItem.Title numberOfLines={1} ellipsizeMode="tail">
+                <ListItem.Title numberOfLines={1} ellipsizeMode="tail" style={{ color: primary, fontWeight: '400' }}>
                     {item.name}
                 </ListItem.Title>
             </ListItem.Content>

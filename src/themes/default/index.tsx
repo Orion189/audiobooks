@@ -1,15 +1,19 @@
-import { DefaultTheme } from '@react-navigation/native';
 import { createTheme, lightColors, darkColors } from '@rneui/themed';
 import { Platform } from 'react-native';
 
 export const theme = createTheme({
-    mode: 'light',
     lightColors: {
         ...Platform.select({
             default: lightColors.platform.default,
             ios: lightColors.platform.ios,
             android: lightColors.platform.android
-        })
+        }),
+        primary: '#392228',
+        secondary: '#E4D7D1',
+        background: '#F6EEE4',
+        divider: '#B99FA2',
+        subTitle: '#746065',
+        btnPrimary: '#D34C02'
     },
     darkColors: {
         ...Platform.select({
@@ -17,15 +21,6 @@ export const theme = createTheme({
             ios: darkColors.platform.ios,
             android: darkColors.platform.android
         })
-    }
+    },
+    mode: 'light'
 });
-
-export const navigationTheme = {
-    ...DefaultTheme,
-    colors: {
-        ...DefaultTheme.colors,
-        primary: '#193BEA',
-        secondary: '#4cd964',
-        error: '#ff3b30'
-    }
-};

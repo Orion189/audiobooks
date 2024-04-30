@@ -1,9 +1,10 @@
+import { useTheme } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import { Redirect } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import NewRelic from 'newrelic-react-native-agent';
 import { useEffect, useCallback, memo } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View, StyleSheet } from 'react-native';
 
 import * as appVersion from '../package.json';
 
@@ -79,6 +80,11 @@ NewRelic.setJSAppVersion(appVersion.version);
 SplashScreen.preventAutoHideAsync();
 
 const Index = memo(() => {
+    const {
+        theme: {
+            colors: { background }
+        }
+    } = useTheme();
     const [fontsLoaded, fontError] = useFonts({
         'SuisseIntl-Regular': require('@assets/fonts/SuisseIntl-Regular.otf'),
         'SuisseIntl-Bold': require('@assets/fonts/SuisseIntl-Bold.otf')
@@ -93,7 +99,19 @@ const Index = memo(() => {
         onFontLoaded();
     }, []);
 
-    return !fontsLoaded && !fontError ? null : <Redirect href="/home" />;
+    return !fontsLoaded && !fontError ? null : (
+        <View style={[styles.container, { backgroundColor: background }]}>
+            <Redirect href="/home" />
+        </View>
+    );
+});
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 });
 
 export default Index;

@@ -5,12 +5,12 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 const Loading = memo(() => {
     const {
         theme: {
-            colors: { primary, white }
+            colors: { primary, background }
         }
     } = useTheme();
 
     return (
-        <View style={[styles.container, { backgroundColor: white }]}>
+        <View style={[styles.container, { backgroundColor: background }]}>
             <ActivityIndicator size="large" color={primary} />
         </View>
     );

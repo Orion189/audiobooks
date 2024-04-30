@@ -6,12 +6,13 @@ import Library from '@src/components/main/Library';
 import ProgressBar from '@src/components/shared/ProgressBar';
 import { LIB_TYPE, LIB_ICON, LIB_ORDER, ORDER_ICON } from '@src/enums';
 import store from '@src/store';
+import commonStyles from '@src/styles/common';
 import { documentDirectory } from 'expo-file-system';
 import { Stack } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 
 const BackBtn = observer(() => {
     const {
@@ -82,7 +83,7 @@ const BackBtn = observer(() => {
 const Header = observer(() => {
     const {
         theme: {
-            colors: { primary, white }
+            colors: { primary, white, background }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -119,13 +120,19 @@ const Header = observer(() => {
     }, [store.authInfo.accessToken, store.lib.curLib]);
 
     return (
-        <>
+        <View style={{ backgroundColor: background }}>
             <HeaderRNE
+                containerStyle={commonStyles.header}
                 backgroundColor={primary}
                 leftComponent={<BackBtn />}
-                centerComponent={<Text h3>{t('app.library.index.title')}</Text>}
+                centerContainerStyle={commonStyles.centerComponentCont}
+                centerComponent={
+                    <Text h4 h4Style={{ color: white }}>
+                        {t('app.library.index.title')}
+                    </Text>
+                }
                 rightComponent={
-                    <View style={styles.rightComponentCont}>
+                    <View style={commonStyles.rightComponentCont}>
                         {store.lib.curLib === LIB_TYPE.NONE ? null : (
                             <Button type="clear" onPress={changeOrder}>
                                 <Icon size={25} color={white} type="material-community" name={getOrderIcon()} />
@@ -138,7 +145,7 @@ const Header = observer(() => {
                 }
             />
             <ProgressBar />
-        </>
+        </View>
     );
 });
 
@@ -156,13 +163,6 @@ const LibraryPage = memo(() => {
             <ChangeLibPopup />
         </>
     );
-});
-
-const styles = StyleSheet.create({
-    rightComponentCont: {
-        display: 'flex',
-        flexDirection: 'row'
-    }
 });
 
 export default LibraryPage;

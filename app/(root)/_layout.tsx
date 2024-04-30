@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text } from '@rneui/themed';
+import { Text, Icon, useTheme } from '@rneui/themed';
 import useAppTheme from '@src/components/hooks/useAppTheme';
 import PlayerPopup from '@src/components/shared/PlayerPopup';
 import SnackBar from '@src/components/shared/SnackBar';
@@ -21,7 +21,7 @@ type TabBarItemProps = {
 };
 
 const getTabBarIcon = ({ color, size }: TabBarItemProps, iconName: IconType) => (
-    <MaterialCommunityIcons name={iconName} size={size} color={color} />
+    <Icon size={size} color={color} type="material-community" name={iconName} />
 );
 
 const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
@@ -31,6 +31,11 @@ const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
 );
 
 const Layout = memo(() => {
+    const {
+        theme: {
+            colors: { primary, background, divider }
+        }
+    } = useTheme();
     const { t } = useTranslation();
     const { bottom } = useSafeAreaInsets();
     const pathname = usePathname();
@@ -48,7 +53,14 @@ const Layout = memo(() => {
                 initialRouteName="home"
                 screenOptions={{
                     headerShown: false,
-                    tabBarStyle: { height: TAB_BAR_HEIGHT + bottom, justifyContent: 'center', alignItems: 'center' },
+                    tabBarStyle: {
+                        height: TAB_BAR_HEIGHT + bottom,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: background,
+                        borderTopWidth: 1,
+                        borderTopColor: divider
+                    },
                     tabBarIconStyle: styles.tabBarIconStyle,
                     tabBarLabelStyle: styles.tabBarLabelStyle
                 }}
@@ -56,22 +68,28 @@ const Layout = memo(() => {
                 <Tabs.Screen
                     name="home"
                     options={{
-                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'home'),
-                        tabBarLabel: ({ color }) => getTabBarLabel({ color }, t('app.tabs.home'))
+                        tabBarIcon: ({ focused, size }) =>
+                            getTabBarIcon({ color: focused ? primary : divider, size }, 'home'),
+                        tabBarLabel: ({ focused }) =>
+                            getTabBarLabel({ color: focused ? primary : divider }, t('app.tabs.home'))
                     }}
                 />
                 <Tabs.Screen
                     name="library"
                     options={{
-                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'library'),
-                        tabBarLabel: ({ color }) => getTabBarLabel({ color }, t('app.tabs.library'))
+                        tabBarIcon: ({ focused, size }) =>
+                            getTabBarIcon({ color: focused ? primary : divider, size }, 'library'),
+                        tabBarLabel: ({ focused }) =>
+                            getTabBarLabel({ color: focused ? primary : divider }, t('app.tabs.library'))
                     }}
                 />
                 <Tabs.Screen
                     name="settings"
                     options={{
-                        tabBarIcon: ({ color, size }) => getTabBarIcon({ color, size }, 'cog'),
-                        tabBarLabel: ({ color }) => getTabBarLabel({ color }, t('app.tabs.settings'))
+                        tabBarIcon: ({ focused, size }) =>
+                            getTabBarIcon({ color: focused ? primary : divider, size }, 'cog'),
+                        tabBarLabel: ({ focused }) =>
+                            getTabBarLabel({ color: focused ? primary : divider }, t('app.tabs.settings'))
                     }}
                 />
             </Tabs>

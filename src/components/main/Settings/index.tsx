@@ -1,3 +1,4 @@
+import { color } from '@rneui/base';
 import { useTheme, ListItem, Icon } from '@rneui/themed';
 import { SnackBarVariant } from '@src/enums';
 import store from '@src/store';
@@ -37,32 +38,42 @@ const SERVER_EMAIL = process.env.EXPO_PUBLIC_SERVER_EMAIL;
 const Section: FC<Partial<SettingSection>> = memo(({ sectionTitle }) => {
     const {
         theme: {
-            colors: { grey5 }
+            colors: { primary, secondary, divider }
         }
     } = useTheme();
 
     return (
-        <ListItem topDivider bottomDivider containerStyle={{ backgroundColor: grey5 }}>
+        <ListItem
+            topDivider
+            bottomDivider
+            containerStyle={{ backgroundColor: secondary, borderBottomColor: divider, borderBottomWidth: 1 }}
+        >
             <ListItem.Content style={styles.itemContent}>
-                <ListItem.Title>{sectionTitle}</ListItem.Title>
+                <ListItem.Title style={{ color: primary, fontWeight: 'bold' }}>{sectionTitle}</ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );
 });
 
-const Item: FC<SettingItem> = memo(({ title, subTitle, hasChevron, onPress }) => (
-    <ListItem bottomDivider onPress={onPress}>
-        <ListItem.Content style={styles.itemContent}>
-            <ListItem.Title>{title}</ListItem.Title>
-            {subTitle ? <ListItem.Subtitle>{subTitle}</ListItem.Subtitle> : null}
-        </ListItem.Content>
-        {hasChevron ? (
-            <ListItem.Chevron>
-                <Icon name="chevron-right" type="material-community" />
-            </ListItem.Chevron>
-        ) : null}
-    </ListItem>
-));
+const Item: FC<SettingItem> = memo(({ title, subTitle, hasChevron, onPress }) => {
+    const {
+        theme: { colors }
+    } = useTheme();
+
+    return (
+        <ListItem bottomDivider onPress={onPress}>
+            <ListItem.Content style={styles.itemContent}>
+                <ListItem.Title style={{ color: colors.primary, fontWeight: '400' }}>{title}</ListItem.Title>
+                {subTitle ? <ListItem.Subtitle style={{ color: colors.subTitle }}>{subTitle}</ListItem.Subtitle> : null}
+            </ListItem.Content>
+            {hasChevron ? (
+                <ListItem.Chevron>
+                    <Icon name="chevron-right" type="material-community" />
+                </ListItem.Chevron>
+            ) : null}
+        </ListItem>
+    );
+});
 
 const Settings = observer(() => {
     const { t } = useTranslation();

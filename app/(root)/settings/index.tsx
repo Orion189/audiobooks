@@ -1,23 +1,34 @@
 import { useTheme, Text, Header as HeaderRNE } from '@rneui/themed';
 import Settings from '@src/components/main/Settings';
 import ProgressBar from '@src/components/shared/ProgressBar';
+import commonStyles from '@src/styles/common';
 import { Stack } from 'expo-router';
 import { useCallback, memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { View } from 'react-native';
 
 const Header = memo(() => {
     const {
         theme: {
-            colors: { primary }
+            colors: { primary, background, white }
         }
     } = useTheme();
     const { t } = useTranslation();
 
     return (
-        <>
-            <HeaderRNE centerComponent={<Text h3>{t('app.settings.index.title')}</Text>} backgroundColor={primary} />
+        <View style={{ backgroundColor: background }}>
+            <HeaderRNE
+                centerContainerStyle={commonStyles.centerComponentCont}
+                containerStyle={commonStyles.header}
+                centerComponent={
+                    <Text h4 h4Style={{ color: white }}>
+                        {t('app.settings.index.title')}
+                    </Text>
+                }
+                backgroundColor={primary}
+            />
             <ProgressBar />
-        </>
+        </View>
     );
 });
 

@@ -13,6 +13,11 @@ type ItemProps = {
 };
 
 const Item: FC<ItemProps> = memo(({ item }) => {
+    const {
+        theme: {
+            colors: { primary }
+        }
+    } = useTheme();
     const { openRemoteFile, openLocalFile } = usePlayer();
     const onItemPress = useCallback(() => {
         if (item.isRemote) {
@@ -25,7 +30,7 @@ const Item: FC<ItemProps> = memo(({ item }) => {
     return (
         <ListItem bottomDivider onPress={onItemPress}>
             <ListItem.Content>
-                <ListItem.Title>{item.name}</ListItem.Title>
+                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>{item.name}</ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );
@@ -35,7 +40,7 @@ const Home = observer(() => {
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { grey5 }
+            colors: { primary, secondary, divider }
         }
     } = useTheme();
 
@@ -43,9 +48,19 @@ const Home = observer(() => {
         <SafeAreaView style={commonStyles.safeAreaView}>
             <ScrollView>
                 <View>
-                    <ListItem topDivider bottomDivider containerStyle={{ backgroundColor: grey5 }}>
+                    <ListItem
+                        topDivider
+                        bottomDivider
+                        containerStyle={{
+                            backgroundColor: secondary,
+                            borderBottomColor: divider,
+                            borderBottomWidth: 1
+                        }}
+                    >
                         <ListItem.Content style={styles.itemContent}>
-                            <ListItem.Title>{t('src.components.main.Home.sections.recently.title')}</ListItem.Title>
+                            <ListItem.Title style={{ color: primary, fontWeight: 'bold' }}>
+                                {t('src.components.main.Home.sections.recently.title')}
+                            </ListItem.Title>
                         </ListItem.Content>
                     </ListItem>
                     {store.history?.map((item) => <Item key={item.uri} item={item} />)}

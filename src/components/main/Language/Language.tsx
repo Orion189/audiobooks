@@ -20,7 +20,7 @@ const LocaleItem: FC<LocaleItemProps> = observer(({ locale, changeLanguage }) =>
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { background, disabled }
+            colors: { primary, secondary, background }
         }
     } = useTheme();
     const getAvatarSrc = useCallback(() => {
@@ -39,11 +39,13 @@ const LocaleItem: FC<LocaleItemProps> = observer(({ locale, changeLanguage }) =>
         <ListItem
             bottomDivider
             onPress={changeLanguageCb}
-            containerStyle={{ backgroundColor: store.app.language === locale ? disabled : background }}
+            containerStyle={{ backgroundColor: store.app.language === locale ? secondary : background }}
         >
             <Avatar size={40} rounded source={getAvatarSrc()} />
             <ListItem.Content>
-                <ListItem.Title>{t(`src.components.main.Language.locales.${locale}`)}</ListItem.Title>
+                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>
+                    {t(`src.components.main.Language.locales.${locale}`)}
+                </ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );

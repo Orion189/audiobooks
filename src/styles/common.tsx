@@ -40,7 +40,7 @@ const commonStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignContent: 'center',
-        backgroundColor: themeColors?.white
+        backgroundColor: themeColors?.background
     },
     scrollView: {
         paddingTop: 20,
@@ -136,6 +136,17 @@ const commonStyles = StyleSheet.create({
     },
     modal: {
         marginBottom: 0
+    },
+    header: {
+        height: 120
+    },
+    centerComponentCont: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    rightComponentCont: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 });
 

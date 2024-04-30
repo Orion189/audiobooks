@@ -1,4 +1,4 @@
-import { Text } from '@rneui/themed';
+import { Text, useTheme } from '@rneui/themed';
 import LocalLibrary from '@src/components/main/LocalLibrary';
 import RemoteLibrary from '@src/components/main/RemoteLibrary';
 import { LIB_TYPE } from '@src/enums';
@@ -10,12 +10,19 @@ import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 
 const ChooseLib = memo(() => {
+    const {
+        theme: {
+            colors: { primary }
+        }
+    } = useTheme();
     const { t } = useTranslation();
 
     return (
         <SafeAreaView style={commonStyles.safeAreaView}>
             <ScrollView contentContainerStyle={styles.mainCont}>
-                <Text>{t('src.components.main.Library.chooseLibMsg')}</Text>
+                <Text h4 h4Style={{ color: primary, fontSize: 14 }}>
+                    {t('src.components.main.Library.chooseLibMsg')}
+                </Text>
             </ScrollView>
         </SafeAreaView>
     );

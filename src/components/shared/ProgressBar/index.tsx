@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 const ProgressBarBare = observer(() => {
     const {
         theme: {
-            colors: { primary, white }
+            colors: { primary, background }
         }
     } = useTheme();
     const { isProgressBarVisible, value } = store.app.progressbar || {};
@@ -13,7 +13,7 @@ const ProgressBarBare = observer(() => {
     return (
         <LinearProgress
             color={primary}
-            trackColor={white}
+            trackColor={background}
             testID="progressBar"
             animation={isProgressBarVisible && !value}
             value={value}
