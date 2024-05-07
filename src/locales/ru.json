@@ -170,17 +170,6 @@
                                 }
                             }
                         },
-                        "downloading": {
-                            "title": "Books downloading",
-                            "items": {
-                                "downloaded": {
-                                    "title": "Downloaded books"
-                                },
-                                "preferences": {
-                                    "title": "Downloading preferences"
-                                }
-                            }
-                        },
                         "support": {
                             "title": "Support",
                             "items": {

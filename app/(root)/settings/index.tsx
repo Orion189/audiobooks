@@ -10,7 +10,7 @@ import { View } from 'react-native';
 const Header = memo(() => {
     const {
         theme: {
-            colors: { primary, background, white }
+            colors: { headerBgColor, background, white }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -25,7 +25,7 @@ const Header = memo(() => {
                         {t('app.settings.index.title')}
                     </Text>
                 }
-                backgroundColor={primary}
+                backgroundColor={headerBgColor}
             />
             <ProgressBar />
         </View>

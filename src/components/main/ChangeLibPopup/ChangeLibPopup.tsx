@@ -20,7 +20,7 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { primary }
+            colors: { textColor }
         }
     } = useTheme();
     const getIcon = useCallback(() => {
@@ -37,9 +37,9 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
 
     return (
         <ListItem bottomDivider onPress={changeLibTypeCb}>
-            <Icon name={getIcon()} type="material-community" color={primary} size={30} />
+            <Icon name={getIcon()} type="material-community" color={textColor} size={30} />
             <ListItem.Content>
-                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>
+                <ListItem.Title style={{ color: textColor, fontWeight: '400' }}>
                     {t(`src.components.main.ChangeLibPopup.libTypes.${libType}`)}
                 </ListItem.Title>
             </ListItem.Content>
@@ -50,7 +50,7 @@ const ChangeLibPopupItem: FC<LocaleItemProps> = memo(({ libType, changeLibType }
 const ChangeLibPopup: FC<ChangeLibPopupProps> = observer(({ changeLibType, onClose }) => {
     const {
         theme: {
-            colors: { background, divider }
+            colors: { background, textColor, divider }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -61,7 +61,7 @@ const ChangeLibPopup: FC<ChangeLibPopupProps> = observer(({ changeLibType, onClo
             overlayStyle={[styles.overlay, { backgroundColor: background, borderBottomColor: divider }]}
             isVisible={store.lib.isChangeLibPopupVisible}
         >
-            <Dialog.Title title={t('src.components.main.ChangeLibPopup.title')} />
+            <Dialog.Title title={t('src.components.main.ChangeLibPopup.title')} titleStyle={{ color: textColor }} />
             <View style={styles.dialogView}>
                 {[LIB_TYPE.LOCAL, LIB_TYPE.REMOTE].map((libType) => (
                     <ChangeLibPopupItem key={libType} libType={libType} changeLibType={changeLibType} />

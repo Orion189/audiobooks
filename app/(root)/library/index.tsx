@@ -83,7 +83,7 @@ const BackBtn = observer(() => {
 const Header = observer(() => {
     const {
         theme: {
-            colors: { primary, white, background }
+            colors: { headerBgColor, white, background }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -123,7 +123,7 @@ const Header = observer(() => {
         <View style={{ backgroundColor: background }}>
             <HeaderRNE
                 containerStyle={commonStyles.header}
-                backgroundColor={primary}
+                backgroundColor={headerBgColor}
                 leftComponent={<BackBtn />}
                 centerContainerStyle={commonStyles.centerComponentCont}
                 centerComponent={

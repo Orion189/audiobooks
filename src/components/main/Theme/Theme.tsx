@@ -20,7 +20,7 @@ const ThemeItem: FC<ThemeItemProps> = observer(({ theme, changeTheme }) => {
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { primary, background, secondary }
+            colors: { textColor, background, secondary }
         }
     } = useTheme();
     const changeThemeCb = useCallback(() => changeTheme(theme), [theme]);
@@ -32,7 +32,7 @@ const ThemeItem: FC<ThemeItemProps> = observer(({ theme, changeTheme }) => {
             containerStyle={{ backgroundColor: store.app.theme === theme ? secondary : background }}
         >
             <ListItem.Content>
-                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>
+                <ListItem.Title style={{ color: textColor, fontWeight: '400' }}>
                     {t(`src.components.main.Theme.themes.${theme}`)}
                 </ListItem.Title>
             </ListItem.Content>
@@ -40,14 +40,22 @@ const ThemeItem: FC<ThemeItemProps> = observer(({ theme, changeTheme }) => {
     );
 });
 
-const Theme: FC<ThemeProps> = memo(({ changeTheme }) => (
-    <SafeAreaView style={commonStyles.safeAreaView}>
-        <ScrollView>
-            {[THEME.LIGHT, THEME.DARK].map((theme) => (
-                <ThemeItem key={theme} theme={theme} changeTheme={changeTheme} />
-            ))}
-        </ScrollView>
-    </SafeAreaView>
-));
+const Theme: FC<ThemeProps> = memo(({ changeTheme }) => {
+    const {
+        theme: {
+            colors: { background }
+        }
+    } = useTheme();
+
+    return (
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
+            <ScrollView>
+                {[THEME.LIGHT, THEME.DARK].map((theme) => (
+                    <ThemeItem key={theme} theme={theme} changeTheme={changeTheme} />
+                ))}
+            </ScrollView>
+        </SafeAreaView>
+    );
+});
 
 export default Theme;

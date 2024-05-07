@@ -38,7 +38,7 @@ const SERVER_EMAIL = process.env.EXPO_PUBLIC_SERVER_EMAIL;
 const Section: FC<Partial<SettingSection>> = memo(({ sectionTitle }) => {
     const {
         theme: {
-            colors: { primary, secondary, divider }
+            colors: { sectionTitleColor, secondary, divider }
         }
     } = useTheme();
 
@@ -49,7 +49,7 @@ const Section: FC<Partial<SettingSection>> = memo(({ sectionTitle }) => {
             containerStyle={{ backgroundColor: secondary, borderBottomColor: divider, borderBottomWidth: 1 }}
         >
             <ListItem.Content style={styles.itemContent}>
-                <ListItem.Title style={{ color: primary, fontWeight: 'bold' }}>{sectionTitle}</ListItem.Title>
+                <ListItem.Title style={{ color: sectionTitleColor, fontWeight: 'bold' }}>{sectionTitle}</ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );
@@ -57,14 +57,16 @@ const Section: FC<Partial<SettingSection>> = memo(({ sectionTitle }) => {
 
 const Item: FC<SettingItem> = memo(({ title, subTitle, hasChevron, onPress }) => {
     const {
-        theme: { colors }
+        theme: {
+            colors: { textColor }
+        }
     } = useTheme();
 
     return (
         <ListItem bottomDivider onPress={onPress}>
             <ListItem.Content style={styles.itemContent}>
-                <ListItem.Title style={{ color: colors.primary, fontWeight: '400' }}>{title}</ListItem.Title>
-                {subTitle ? <ListItem.Subtitle style={{ color: colors.subTitle }}>{subTitle}</ListItem.Subtitle> : null}
+                <ListItem.Title style={{ color: textColor, fontWeight: '400' }}>{title}</ListItem.Title>
+                {subTitle ? <ListItem.Subtitle style={{ color: textColor }}>{subTitle}</ListItem.Subtitle> : null}
             </ListItem.Content>
             {hasChevron ? (
                 <ListItem.Chevron>
@@ -79,7 +81,7 @@ const Settings = observer(() => {
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { primary, white }
+            colors: { primary, white, background }
         }
     } = useTheme();
     const router = useRouter();
@@ -177,29 +179,6 @@ const Settings = observer(() => {
             ]
         },
         {
-            sectionTitle: t('src.components.main.Settings.sections.downloading.title'),
-            sectionItems: [
-                {
-                    title: t('src.components.main.Settings.sections.downloading.items.downloaded.title'),
-                    hasChevron: true,
-                    onPress: () =>
-                        gotToLink({
-                            url: '/settings/downloaded-books',
-                            isExternal: false
-                        })
-                },
-                {
-                    title: t('src.components.main.Settings.sections.downloading.items.preferences.title'),
-                    hasChevron: true,
-                    onPress: () =>
-                        gotToLink({
-                            url: '/settings/downloading-preferences',
-                            isExternal: false
-                        })
-                }
-            ]
-        },
-        {
             sectionTitle: t('src.components.main.Settings.sections.support.title'),
             sectionItems: [
                 {
@@ -235,7 +214,7 @@ const Settings = observer(() => {
     ];
 
     return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
             <ScrollView>
                 {SETTING_ITEMS.map((settingSection) => (
                     <View key={settingSection.sectionTitle}>

@@ -33,7 +33,7 @@ const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
 const Layout = memo(() => {
     const {
         theme: {
-            colors: { primary, background, divider }
+            colors: { primary, tabBarBgColor, divider, tabBarDefaultColor, tabBarActiveColor }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -57,7 +57,7 @@ const Layout = memo(() => {
                         height: TAB_BAR_HEIGHT + bottom,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: background,
+                        backgroundColor: tabBarBgColor,
                         borderTopWidth: 1,
                         borderTopColor: divider
                     },
@@ -69,27 +69,36 @@ const Layout = memo(() => {
                     name="home"
                     options={{
                         tabBarIcon: ({ focused, size }) =>
-                            getTabBarIcon({ color: focused ? primary : divider, size }, 'home'),
+                            getTabBarIcon({ color: focused ? tabBarActiveColor : tabBarDefaultColor, size }, 'home'),
                         tabBarLabel: ({ focused }) =>
-                            getTabBarLabel({ color: focused ? primary : divider }, t('app.tabs.home'))
+                            getTabBarLabel(
+                                { color: focused ? tabBarActiveColor : tabBarDefaultColor },
+                                t('app.tabs.home')
+                            )
                     }}
                 />
                 <Tabs.Screen
                     name="library"
                     options={{
                         tabBarIcon: ({ focused, size }) =>
-                            getTabBarIcon({ color: focused ? primary : divider, size }, 'library'),
+                            getTabBarIcon({ color: focused ? tabBarActiveColor : tabBarDefaultColor, size }, 'library'),
                         tabBarLabel: ({ focused }) =>
-                            getTabBarLabel({ color: focused ? primary : divider }, t('app.tabs.library'))
+                            getTabBarLabel(
+                                { color: focused ? tabBarActiveColor : tabBarDefaultColor },
+                                t('app.tabs.library')
+                            )
                     }}
                 />
                 <Tabs.Screen
                     name="settings"
                     options={{
                         tabBarIcon: ({ focused, size }) =>
-                            getTabBarIcon({ color: focused ? primary : divider, size }, 'cog'),
+                            getTabBarIcon({ color: focused ? tabBarActiveColor : tabBarDefaultColor, size }, 'cog'),
                         tabBarLabel: ({ focused }) =>
-                            getTabBarLabel({ color: focused ? primary : divider }, t('app.tabs.settings'))
+                            getTabBarLabel(
+                                { color: focused ? tabBarActiveColor : tabBarDefaultColor },
+                                t('app.tabs.settings')
+                            )
                     }}
                 />
             </Tabs>

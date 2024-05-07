@@ -12,15 +12,15 @@ import { SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 const ChooseLib = memo(() => {
     const {
         theme: {
-            colors: { primary }
+            colors: { textColor, background }
         }
     } = useTheme();
     const { t } = useTranslation();
 
     return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
             <ScrollView contentContainerStyle={styles.mainCont}>
-                <Text h4 h4Style={{ color: primary, fontSize: 14 }}>
+                <Text h4 h4Style={{ color: textColor, fontSize: 14 }}>
                     {t('src.components.main.Library.chooseLibMsg')}
                 </Text>
             </ScrollView>

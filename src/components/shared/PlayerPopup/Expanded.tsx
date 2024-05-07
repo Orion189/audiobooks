@@ -15,7 +15,7 @@ type ExpandedProps = {
 const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNextItem }) => {
     const {
         theme: {
-            colors: { primary, white }
+            colors: { primary, tabBarDefaultColor, textColor, background }
         }
     } = useTheme();
     const play = useCallback(async () => {
@@ -74,10 +74,14 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
     const duration = useMemo(() => getMMSSFromMillis(store.player.duration), [store.player.duration]);
 
     return (
-        <Overlay isVisible onBackdropPress={onCollapse} overlayStyle={[styles.overlay, { backgroundColor: white }]}>
+        <Overlay
+            isVisible
+            onBackdropPress={onCollapse}
+            overlayStyle={[styles.overlay, { backgroundColor: background }]}
+        >
             <View style={styles.cont}>
                 <View style={styles.timingCont}>
-                    <Text h4 numberOfLines={1} ellipsizeMode="tail">
+                    <Text h4 h4Style={{ color: textColor, fontSize: 18 }} numberOfLines={1} ellipsizeMode="tail">
                         {store.player.itemName}
                     </Text>
                     <Slider
@@ -87,7 +91,7 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
                         minimumValue={0}
                         step={1}
                         allowTouchTrack
-                        trackStyle={styles.trackStyle}
+                        trackStyle={[styles.trackStyle, { backgroundColor: tabBarDefaultColor }]}
                         thumbStyle={[styles.thumbStyle, { backgroundColor: primary }]}
                         thumbTouchSize={{ height: 15, width: 15 }}
                     />
@@ -98,28 +102,28 @@ const Expanded: FC<ExpandedProps> = observer(({ onCollapse, playPrevItem, playNe
                     <View style={styles.controlsCont}>
                         <Button onPress={decrVolume} type="clear">
                             {store.player.volume === 0 ? (
-                                <Icon name="volume-variant-off" color={primary} type="material-community" />
+                                <Icon name="volume-variant-off" color={textColor} type="material-community" />
                             ) : (
-                                <Icon name="volume-low" color={primary} type="material-community" />
+                                <Icon name="volume-low" color={textColor} type="material-community" />
                             )}
                         </Button>
                         <Button onPress={playPrevItem} type="clear">
-                            <Icon name="skip-previous" color={primary} type="material-community" />
+                            <Icon name="skip-previous" color={textColor} type="material-community" />
                         </Button>
                         {store.player.isPlaying ? (
-                            <TouchableOpacity style={[styles.playPauseBtn, { borderColor: primary }]} onPress={pause}>
-                                <Icon name="pause" color={primary} type="material-community" />
+                            <TouchableOpacity style={[styles.playPauseBtn, { borderColor: textColor }]} onPress={pause}>
+                                <Icon name="pause" color={textColor} type="material-community" />
                             </TouchableOpacity>
                         ) : (
-                            <TouchableOpacity style={[styles.playPauseBtn, { borderColor: primary }]} onPress={play}>
-                                <Icon name="play" color={primary} type="material-community" />
+                            <TouchableOpacity style={[styles.playPauseBtn, { borderColor: textColor }]} onPress={play}>
+                                <Icon name="play" color={textColor} type="material-community" />
                             </TouchableOpacity>
                         )}
                         <Button onPress={playNextItem} type="clear">
-                            <Icon name="skip-next" color={primary} type="material-community" />
+                            <Icon name="skip-next" color={textColor} type="material-community" />
                         </Button>
                         <Button onPress={incrVolume} type="clear">
-                            <Icon name="volume-high" color={primary} type="material-community" />
+                            <Icon name="volume-high" color={textColor} type="material-community" />
                         </Button>
                     </View>
                 </View>
@@ -142,7 +146,8 @@ const styles = StyleSheet.create({
     },
     cont: {
         flex: 1,
-        paddingBottom: 40
+        paddingBottom: 40,
+        paddingTop: 10
     },
     trackStyle: {
         height: 5,

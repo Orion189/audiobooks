@@ -19,7 +19,7 @@ const ACTIONS_CONT_WIDTH = 130;
 const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer, width }) => {
     const {
         theme: {
-            colors: { primary, white }
+            colors: { primary, background, divider, textColor }
         }
     } = useTheme();
     const { t } = useTranslation();
@@ -57,15 +57,29 @@ const Collapsed: FC<CollapsedProps> = observer(({ onClose, expandPlayer, width }
     }, [t, showActionSheetWithOptions]);
 
     return (
-        <Pressable onPress={expandPlayer} style={[styles.overlay, { backgroundColor: white }]}>
-            <View style={[styles.mainCont, { width }]}>
-                <Text numberOfLines={1} ellipsizeMode="tail" style={{ width: width - ACTIONS_CONT_WIDTH }}>
+        <Pressable
+            onPress={expandPlayer}
+            style={[styles.overlay, { backgroundColor: background, borderTopColor: divider, borderTopWidth: 1 }]}
+        >
+            <View style={[styles.mainCont, { width, marginTop: 5 }]}>
+                <Text
+                    h4
+                    h4Style={{ color: textColor, fontSize: 16 }}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{ width: width - ACTIONS_CONT_WIDTH }}
+                >
                     {store.player.itemName}
                 </Text>
                 <View style={styles.actionsCont}>
-                    <Button type="clear" title={store.player.rate?.toString()} onPress={onChangeRate} />
+                    <Button
+                        type="clear"
+                        title={store.player.rate?.toString()}
+                        onPress={onChangeRate}
+                        titleStyle={{ color: textColor }}
+                    />
                     <Button type="clear" onPress={onClose}>
-                        <Icon name="close" color={primary} type="material-community" />
+                        <Icon name="close" color={textColor} type="material-community" />
                     </Button>
                 </View>
             </View>

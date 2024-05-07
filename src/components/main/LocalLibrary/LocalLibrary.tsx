@@ -66,7 +66,7 @@ const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: Loca
 const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ openFolder, deleteItem, item }) => {
     const {
         theme: {
-            colors: { primary }
+            colors: { textColor }
         }
     } = useTheme();
     const { openLocalFile } = usePlayer();
@@ -93,13 +93,13 @@ const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ 
                 <Icon
                     name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
                     type="material-community"
-                    color={primary}
+                    color={textColor}
                 />
                 <ListItem.Content>
                     <ListItem.Title
                         numberOfLines={1}
                         ellipsizeMode="tail"
-                        style={{ color: primary, fontWeight: '400' }}
+                        style={{ color: textColor, fontWeight: '400' }}
                     >
                         {item.name}
                     </ListItem.Title>
@@ -114,7 +114,7 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
     ({ openFolder, deleteItem, isRefreshing, onRefresh }) => {
         const {
             theme: {
-                colors: { primary }
+                colors: { textColor, background }
             }
         } = useTheme();
         const getSubItems = useMemo(
@@ -142,9 +142,9 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
         );
 
         return (
-            <SafeAreaView style={commonStyles.safeAreaView}>
+            <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
                 <View style={commonStyles.activityView}>
-                    <ActivityIndicator animating={isRefreshing} size="small" color={primary} />
+                    <ActivityIndicator animating={isRefreshing} size="small" color={textColor} />
                 </View>
                 <ScrollView
                     refreshControl={

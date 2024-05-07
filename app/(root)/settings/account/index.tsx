@@ -10,7 +10,7 @@ import { View } from 'react-native';
 const Header = memo(() => {
     const {
         theme: {
-            colors: { primary, white, background }
+            colors: { headerBgColor, white, background }
         }
     } = useTheme();
     const router = useRouter();
@@ -32,7 +32,7 @@ const Header = memo(() => {
                         {t('app.settings.account.title')}
                     </Text>
                 }
-                backgroundColor={primary}
+                backgroundColor={headerBgColor}
             />
             <ProgressBar />
         </View>

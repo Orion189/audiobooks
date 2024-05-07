@@ -15,7 +15,7 @@ type ItemProps = {
 const Item: FC<ItemProps> = memo(({ item }) => {
     const {
         theme: {
-            colors: { primary }
+            colors: { textColor }
         }
     } = useTheme();
     const { openRemoteFile, openLocalFile } = usePlayer();
@@ -30,7 +30,7 @@ const Item: FC<ItemProps> = memo(({ item }) => {
     return (
         <ListItem bottomDivider onPress={onItemPress}>
             <ListItem.Content>
-                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>{item.name}</ListItem.Title>
+                <ListItem.Title style={{ color: textColor, fontWeight: '400' }}>{item.name}</ListItem.Title>
             </ListItem.Content>
         </ListItem>
     );
@@ -40,12 +40,12 @@ const Home = observer(() => {
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { primary, secondary, divider }
+            colors: { textColor, secondary, divider, background }
         }
     } = useTheme();
 
     return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
             <ScrollView>
                 <View>
                     <ListItem
@@ -58,7 +58,7 @@ const Home = observer(() => {
                         }}
                     >
                         <ListItem.Content style={styles.itemContent}>
-                            <ListItem.Title style={{ color: primary, fontWeight: 'bold' }}>
+                            <ListItem.Title style={{ color: textColor, fontWeight: 'bold' }}>
                                 {t('src.components.main.Home.sections.recently.title')}
                             </ListItem.Title>
                         </ListItem.Content>

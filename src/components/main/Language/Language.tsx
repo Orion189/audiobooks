@@ -20,7 +20,7 @@ const LocaleItem: FC<LocaleItemProps> = observer(({ locale, changeLanguage }) =>
     const { t } = useTranslation();
     const {
         theme: {
-            colors: { primary, secondary, background }
+            colors: { textColor, secondary, background }
         }
     } = useTheme();
     const getAvatarSrc = useCallback(() => {
@@ -43,7 +43,7 @@ const LocaleItem: FC<LocaleItemProps> = observer(({ locale, changeLanguage }) =>
         >
             <Avatar size={40} rounded source={getAvatarSrc()} />
             <ListItem.Content>
-                <ListItem.Title style={{ color: primary, fontWeight: '400' }}>
+                <ListItem.Title style={{ color: textColor, fontWeight: '400' }}>
                     {t(`src.components.main.Language.locales.${locale}`)}
                 </ListItem.Title>
             </ListItem.Content>
@@ -51,14 +51,22 @@ const LocaleItem: FC<LocaleItemProps> = observer(({ locale, changeLanguage }) =>
     );
 });
 
-const Language: FC<LanguageProps> = memo(({ changeLanguage }) => (
-    <SafeAreaView style={commonStyles.safeAreaView}>
-        <ScrollView>
-            {[LOCALE.EN, LOCALE.UK, LOCALE.RU].map((locale) => (
-                <LocaleItem key={locale} locale={locale} changeLanguage={changeLanguage} />
-            ))}
-        </ScrollView>
-    </SafeAreaView>
-));
+const Language: FC<LanguageProps> = memo(({ changeLanguage }) => {
+    const {
+        theme: {
+            colors: { background }
+        }
+    } = useTheme();
+
+    return (
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
+            <ScrollView>
+                {[LOCALE.EN, LOCALE.UK, LOCALE.RU].map((locale) => (
+                    <LocaleItem key={locale} locale={locale} changeLanguage={changeLanguage} />
+                ))}
+            </ScrollView>
+        </SafeAreaView>
+    );
+});
 
 export default Language;

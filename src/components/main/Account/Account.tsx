@@ -14,13 +14,13 @@ type AccountProps = {
 const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
     const {
         theme: {
-            colors: { background, primary, white }
+            colors: { background, textColor, white }
         }
     } = useTheme();
     const { t } = useTranslation();
 
     return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
             <ScrollView>
                 {store.userInfo.user.photo ? (
                     <View style={styles.mainCont}>
@@ -31,7 +31,7 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
                             containerStyle={{ backgroundColor: background }}
                         />
                         <View style={styles.nameCont}>
-                            <Text h4 h4Style={{ color: primary }}>
+                            <Text h4 h4Style={{ color: textColor }}>
                                 {store.userInfo.user.name}
                             </Text>
                         </View>
@@ -48,7 +48,7 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
                 ) : (
                     <View style={styles.mainCont}>
                         <View style={styles.logInInfoCont}>
-                            <Text h4 h4Style={{ color: primary, fontSize: 14 }}>
+                            <Text h4 h4Style={{ color: textColor, fontSize: 14 }}>
                                 {'sdhf sdfhksbd fhbs dhfh sbdfjhb sdhbfh bsdjhf hsdbfh bdsjhfb jdsbfj bsdjhfb jsbdf jsdf'}
                             </Text>
                         </View>

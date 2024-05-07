@@ -1,7 +1,7 @@
 import { theme } from '@src/themes/default';
 import { StyleSheet, Dimensions, Platform } from 'react-native';
 
-const themeColors = theme.mode === 'dark' ? theme.darkColors : theme.lightColors;
+const themeColors = theme.mode === 'light' ? theme.lightColors : theme.darkColors;
 
 const commonStyles = StyleSheet.create({
     inputContainer: {
@@ -33,14 +33,12 @@ const commonStyles = StyleSheet.create({
         marginTop: 50
     },
     linkText: {
-        color: themeColors?.primary,
         textDecorationLine: 'underline'
     },
     safeAreaView: {
         flex: 1,
         justifyContent: 'flex-start',
-        alignContent: 'center',
-        backgroundColor: themeColors?.background
+        alignContent: 'center'
     },
     scrollView: {
         paddingTop: 20,
@@ -59,21 +57,6 @@ const commonStyles = StyleSheet.create({
         height: 60,
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    appBar: {
-        height: 44,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: themeColors?.white,
-        borderBottomWidth: 1,
-        borderBottomColor: '#EBEBEB',
-        borderStyle: 'solid'
-    },
-    appBarModal: {
-        height: 44,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: themeColors?.white
     },
     appBarHeaderTitle: {
         fontFamily: 'SuisseIntl-Bold',

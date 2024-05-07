@@ -51,7 +51,7 @@ const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloadin
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFolder, item }) => {
     const {
         theme: {
-            colors: { primary }
+            colors: { primary, textColor }
         }
     } = useTheme();
     const { openRemoteFile } = usePlayer();
@@ -79,10 +79,10 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
             <Icon
                 name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
                 type="material-community"
-                color={primary}
+                color={textColor}
             />
             <ListItem.Content>
-                <ListItem.Title numberOfLines={1} ellipsizeMode="tail" style={{ color: primary, fontWeight: '400' }}>
+                <ListItem.Title numberOfLines={1} ellipsizeMode="tail" style={{ color: textColor, fontWeight: '400' }}>
                     {item.name}
                 </ListItem.Title>
             </ListItem.Content>
@@ -98,7 +98,7 @@ const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(
 const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(({ openFolder, isRefreshing, onRefresh }) => {
     const {
         theme: {
-            colors: { primary }
+            colors: { textColor, background }
         }
     } = useTheme();
     const getSubItems = useMemo(
@@ -126,9 +126,9 @@ const RemoteLibrary: FC<RemoteLibraryProps & RefreshingProps> = observer(({ open
     );
 
     return (
-        <SafeAreaView style={commonStyles.safeAreaView}>
+        <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
             <View style={commonStyles.activityView}>
-                <ActivityIndicator animating={isRefreshing} size="small" color={primary} />
+                <ActivityIndicator animating={isRefreshing} size="small" color={textColor} />
             </View>
             <ScrollView
                 refreshControl={
