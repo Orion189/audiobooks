@@ -201,6 +201,25 @@
                         "light": "Light",
                         "dark": "Dark"
                     }
+                },
+                "Account": {
+                    "signIn": {
+                        "logInError": "Ошибка входа",
+                        "scopeNotEnabledError": "Вы должны предоставить доступ ко всем запрошенным привилегиям"
+                    },
+                    "logInBtnLabel": "Вход",
+                    "logOutBtnLabel": "Выход"
+                },
+                "ChangeLibPopup": {
+                    "title": "Сменить библиотеку",
+                    "libTypes": {
+                        "none": "Не выбрано",
+                        "local": "Локальная",
+                        "remote": "Удаленная"
+                    }
+                },
+                "Library": {
+                    "chooseLibMsg": "Выберите библиотеку (локальную или удаленную)"
                 }
             },
             "shared": {

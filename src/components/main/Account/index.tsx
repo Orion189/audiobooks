@@ -1,6 +1,6 @@
 import { GoogleSignin, statusCodes, NativeModuleError } from '@react-native-google-signin/google-signin';
 import AccountView from '@src/components/main/Account/Account';
-import { SnackBarVariant } from '@src/enums';
+import { SnackBarVariant, LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
 import NewRelic from 'newrelic-react-native-agent';
@@ -8,6 +8,7 @@ import { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const EXPO_PUBLIC_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_WEB_CLIENT_ID;
+const SCOPES = ['https://www.googleapis.com/auth/drive.file', 'https://www.googleapis.com/auth/drive.readonly'];
 
 const Account = observer(() => {
     const { t } = useTranslation();
@@ -18,12 +19,34 @@ const Account = observer(() => {
             const userInfo = await GoogleSignin.signIn();
 
             if (userInfo) {
-                store.set('userInfo', { ...store.userInfo, ...userInfo });
+                const userScopes = userInfo?.scopes;
 
-                const authInfo = await GoogleSignin.getTokens();
+                if (userScopes) {
+                    const isRequiredScopesChecked = SCOPES.every((curScope) => userScopes.includes(curScope));
 
-                if (authInfo) {
-                    store.set('authInfo', { ...store.authInfo, ...authInfo });
+                    if (isRequiredScopesChecked) {
+                        store.set('userInfo', { ...store.userInfo, ...userInfo });
+
+                        const authInfo = await GoogleSignin.getTokens();
+
+                        if (authInfo) {
+                            store.set('authInfo', { ...store.authInfo, ...authInfo });
+                        }
+                    } else {
+                        try {
+                            await GoogleSignin.revokeAccess();
+                        } catch (error) {
+                            console.error(error);
+                        }
+
+                        store.set('app', {
+                            ...store.app,
+                            snackbar: {
+                                type: SnackBarVariant.ERROR,
+                                message: t('src.components.main.Account.signIn.scopeNotEnabledError')
+                            }
+                        });
+                    }
                 }
             }
         } catch (error) {
@@ -44,8 +67,8 @@ const Account = observer(() => {
             store.set('app', {
                 ...store.app,
                 snackbar: {
-                    type: SnackBarVariant.SUCCESS,
-                    message: t('src.components.main.Account.signIn.error')
+                    type: SnackBarVariant.ERROR,
+                    message: t('src.components.main.Account.signIn.logInError')
                 }
             });
             store.reset('userInfo');
@@ -57,6 +80,7 @@ const Account = observer(() => {
             await GoogleSignin.signOut();
             await GoogleSignin.clearCachedAccessToken(store.authInfo.accessToken);
 
+            store.reset(LIB_TYPE.REMOTE);
             store.reset('userInfo');
             store.reset('authInfo');
         } catch (e) {
@@ -66,7 +90,7 @@ const Account = observer(() => {
 
     useEffect(() => {
         GoogleSignin.configure({
-            scopes: ['https://www.googleapis.com/auth/drive.file'], // what API you want to access on behalf of the user, default is email and profile
+            scopes: SCOPES, // what API you want to access on behalf of the user, default is email and profile
             webClientId: EXPO_PUBLIC_WEB_CLIENT_ID, // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
             offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
             hostedDomain: '', // specifies a hosted domain restriction

@@ -33,7 +33,7 @@ const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
 const Layout = memo(() => {
     const {
         theme: {
-            colors: { primary, tabBarBgColor, divider, tabBarDefaultColor, tabBarActiveColor }
+            colors: { tabBarBgColor, divider, tabBarDefaultColor, tabBarActiveColor }
         }
     } = useTheme();
     const { t } = useTranslation();

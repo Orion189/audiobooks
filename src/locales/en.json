@@ -126,7 +126,8 @@
                 },
                 "Account": {
                     "signIn": {
-                        "error": "Log in error"
+                        "logInError": "Log in error",
+                        "scopeNotEnabledError": "You must provide access to all requested permissions"
                     },
                     "logInBtnLabel": "Log in",
                     "logOutBtnLabel": "Log out"

@@ -201,6 +201,25 @@
                         "light": "Light",
                         "dark": "Dark"
                     }
+                },
+                "Account": {
+                    "signIn": {
+                        "logInError": "Помилка входу",
+                        "scopeNotEnabledError": "Ви маєте надати доступ до всіх запитаних привілеїв"
+                    },
+                    "logInBtnLabel": "Вхід",
+                    "logOutBtnLabel": "Вихід"
+                },
+                "ChangeLibPopup": {
+                    "title": "Змінити бібліотеку",
+                    "libTypes": {
+                        "none": "Не обрано",
+                        "local": "Локальна",
+                        "remote": "Віддалена"
+                    }
+                },
+                "Library": {
+                    "chooseLibMsg": "Оберіть бібліотеку (локальну або віддалену)"
                 }
             },
             "shared": {

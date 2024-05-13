@@ -21,9 +21,9 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
 
     return (
         <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
-            <ScrollView>
+            <ScrollView contentContainerStyle={styles.mainCont}>
                 {store.userInfo.user.photo ? (
-                    <View style={styles.mainCont}>
+                    <View style={styles.accountInfoCont}>
                         <Avatar
                             rounded
                             size={120}
@@ -46,28 +46,19 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
                         </View>
                     </View>
                 ) : (
-                    <View style={styles.mainCont}>
-                        <View style={styles.logInInfoCont}>
-                            <Text h4 h4Style={{ color: textColor, fontSize: 14 }}>
-                                {'sdhf sdfhksbd fhbs dhfh sbdfjhb sdhbfh bsdjhf hsdbfh bdsjhfb jdsbfj bsdjhfb jsbdf jsdf'}
-                            </Text>
-                        </View>
-                        <View style={styles.actionCont}>
-                            <Button
-                                onPress={signIn}
-                                color="btnPrimary"
-                                icon={{
-                                    name: 'google',
-                                    type: 'material-community',
-                                    size: 15,
-                                    color: white
-                                }}
-                                buttonStyle={styles.btn}
-                                containerStyle={styles.btnCont}
-                                title={t('src.components.main.Account.logInBtnLabel')}
-                            />
-                        </View>
-                    </View>
+                    <Button
+                        onPress={signIn}
+                        color="btnPrimary"
+                        icon={{
+                            name: 'google',
+                            type: 'material-community',
+                            size: 15,
+                            color: white
+                        }}
+                        buttonStyle={styles.btn}
+                        containerStyle={styles.btnCont}
+                        title={t('src.components.main.Account.logInBtnLabel')}
+                    />
                 )}
             </ScrollView>
         </SafeAreaView>
@@ -76,15 +67,17 @@ const Account: FC<AccountProps> = observer(({ signIn, signOut }) => {
 
 const styles = StyleSheet.create({
     mainCont: {
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        padding: 30
+        justifyContent: 'center'
+    },
+    accountInfoCont: {
+        alignItems: 'center'
+    },
+    actionCont: {
+        marginTop: 50
     },
     nameCont: {
-        marginTop: 20
-    },
-    logInInfoCont: {},
-    actionCont: {
         marginTop: 20
     },
     btnCont: {
