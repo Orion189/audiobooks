@@ -6,7 +6,7 @@
   "scripts": {
     "start": "expo start",
     "dev": "npx expo start --dev-client",
-    "android": "expo start --android --clear --go",
+    "android": "expo start --android --clear --dev-client",
     "ios": "expo start --ios --clear --dev-client",
     "prebuild": "npx expo prebuild --clean",
     "build:android": "expo run:android",

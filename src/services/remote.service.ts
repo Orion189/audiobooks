@@ -66,7 +66,7 @@ const invalidateAccessToken = async () => {
             ...store.app,
             snackbar: {
                 type: SnackBarVariant.ERROR,
-                message: i18n.t('src.components.main.Account.signIn.error')
+                message: i18n.t('src.components.main.Account.signIn.logInError')
             }
         });
         store.reset('userInfo');

@@ -48,7 +48,7 @@ const useAuth = () => {
                 ...store.app,
                 snackbar: {
                     type: SnackBarVariant.ERROR,
-                    message: t('src.components.main.Account.signIn.error')
+                    message: t('src.components.main.Account.signIn.logInError')
                 }
             });
             store.reset('userInfo');
