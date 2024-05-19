@@ -4,7 +4,7 @@ import store from '@src/store';
 import { observer } from 'mobx-react-lite';
 import NewRelic from 'newrelic-react-native-agent';
 import { useCallback, FC, useMemo } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 
 type ExpandedProps = {
     onCollapse: () => void;
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     },
     cont: {
         flex: 1,
-        paddingBottom: 40,
+        paddingBottom: Platform.OS === 'ios' ? 40 : 10,
         paddingTop: 10
     },
     trackStyle: {

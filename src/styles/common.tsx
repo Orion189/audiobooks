@@ -1,7 +1,4 @@
-import { theme } from '@src/themes/default';
 import { StyleSheet, Dimensions, Platform } from 'react-native';
-
-const themeColors = theme.mode === 'light' ? theme.lightColors : theme.darkColors;
 
 const commonStyles = StyleSheet.create({
     inputContainer: {
@@ -121,7 +118,7 @@ const commonStyles = StyleSheet.create({
         marginBottom: 0
     },
     header: {
-        height: 120
+        height: Platform.OS === 'ios' ? 120 : 100
     },
     centerComponentCont: {
         alignItems: 'center',

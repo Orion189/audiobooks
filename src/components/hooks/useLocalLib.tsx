@@ -5,6 +5,7 @@ import store from '@src/store';
 import { getInfoAsync, readDirectoryAsync, deleteAsync, documentDirectory } from 'expo-file-system';
 import NewRelic from 'newrelic-react-native-agent';
 import { useCallback } from 'react';
+import { Platform } from 'react-native';
 
 type ConfigType = {
     onStart?: () => void;
@@ -27,7 +28,7 @@ const useLocalLib = () => {
                         curItem: {
                             name: '',
                             isDirectory,
-                            uri,
+                            uri: Platform.OS === 'ios' ? uri : uri + '/',
                             isRemote: false
                         },
                         subItems: []

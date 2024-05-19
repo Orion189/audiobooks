@@ -8,29 +8,6 @@
         "home": {
             "index": {
                 "title": "Home"
-            },
-            "add": {
-                "title": "Create item"
-            },
-            "edit": {
-                "title": "Edit item",
-                "fields": {
-                    "title": {
-                        "label": "Item title",
-                        "placeholder": "Enter item title here"
-                    },
-                    "description": {
-                        "label": "Item description",
-                        "placeholder": "Enter item description here"
-                    },
-                    "url": {
-                        "label": "Item url",
-                        "placeholder": "Enter item url here, e.g. example.com/item"
-                    }
-                },
-                "buttons": {
-                    "save": "Save"
-                }
             }
         },
         "library": {
@@ -101,9 +78,6 @@
                                 "rateApp": {
                                     "title": "Rate application"
                                 },
-                                "about": {
-                                    "title": "About"
-                                },
                                 "privacy": {
                                     "title": "Privacy Policy"
                                 }
@@ -145,19 +119,6 @@
                 }
             },
             "shared": {
-                "ConfirmationPopup": {
-                    "title1": "Remove items",
-                    "description1": "Are you sure you want to remove these items from the list?",
-                    "title2": "Remove list",
-                    "description2": "Are you sure you want to remove this list?",
-                    "title3": "Remove item",
-                    "description3": "Are you sure you want to remove this item?",
-                    "cancelBtnLabel": "Cancel",
-                    "okBtnLabel": "OK"
-                },
-                "ItemInfoPopup": {
-                    "title": "Item info"
-                },
                 "PlayerPopup": {
                     "Collapsed": {
                         "actionSheet": {

@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import NewRelic from 'newrelic-react-native-agent';
 import { FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, Pressable } from 'react-native';
+import { View, StyleSheet, Pressable, Platform } from 'react-native';
 
 type CollapsedProps = {
     onClose: () => void;
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: 100,
+        bottom: Platform.OS === 'ios' ? 100 : 70,
         margin: 'auto',
         width: '100%',
         borderRadius: 0,

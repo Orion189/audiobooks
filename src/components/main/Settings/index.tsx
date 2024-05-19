@@ -1,4 +1,3 @@
-import { color } from '@rneui/base';
 import { useTheme, ListItem, Icon } from '@rneui/themed';
 import { SnackBarVariant } from '@src/enums';
 import store from '@src/store';
@@ -190,15 +189,6 @@ const Settings = observer(() => {
                     title: t('src.components.main.Settings.sections.support.items.rateApp.title'),
                     hasChevron: false,
                     onPress: reviewApp
-                },
-                {
-                    title: t('src.components.main.Settings.sections.support.items.about.title'),
-                    hasChevron: true,
-                    onPress: () =>
-                        gotToLink({
-                            url: `${SERVER_HOSTNAME}/about`,
-                            isExternal: true
-                        })
                 },
                 {
                     title: t('src.components.main.Settings.sections.support.items.privacy.title'),

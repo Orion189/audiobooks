@@ -8,63 +8,11 @@
         "home": {
             "index": {
                 "title": "Home"
-            },
-            "add": {
-                "title": "Create item"
-            },
-            "edit": {
-                "title": "Edit item",
-                "fields": {
-                    "title": {
-                        "label": "Item title",
-                        "placeholder": "Enter item title here"
-                    },
-                    "description": {
-                        "label": "Item description",
-                        "placeholder": "Enter item description here"
-                    },
-                    "url": {
-                        "label": "Item url",
-                        "placeholder": "Enter item url here, e.g. example.com/item"
-                    }
-                },
-                "buttons": {
-                    "save": "Save"
-                }
             }
         },
         "library": {
             "index": {
-                "title": "Lists",
-                "subheader": "Active lists"
-            },
-            "add": {
-                "title": "Create list"
-            },
-            "edit": {
-                "title": "Edit list",
-                "fields": {
-                    "title": {
-                        "label": "Title",
-                        "placeholder": "Enter list title here"
-                    },
-                    "description": {
-                        "label": "Description",
-                        "placeholder": "Enter list description here"
-                    }
-                },
-                "buttons": {
-                    "save": "Save"
-                }
-            },
-            "list": {
-                "index": {
-                    "title": "List items"
-                },
-                "edit": {
-                    "title": "Edit list items",
-                    "search": "Search"
-                }
+                "title": "Библиотека"
             }
         },
         "settings": {
@@ -76,63 +24,13 @@
             },
             "theme": {
                 "title": "Тема"
+            },
+            "account": {
+                "title": "Аккаунт"
             }
         },
         "errors": {
-            "list": {
-                "title": {
-                    "required": "'Title' is mandatory field"
-                },
-                "insert": "Create list error",
-                "update": "Update list error",
-                "delete": "Delete list error",
-                "noIdProvided": "Missing list ID",
-                "listNotFound": "List not found"
-            },
-            "item": {
-                "title": {
-                    "required": "'Title' is mandatory field"
-                },
-                "url": {
-                    "regex": "Invalid URL"
-                },
-                "insert": "Create item error",
-                "update": "Update item error",
-                "delete": "Delete item error",
-                "noIdProvided": "Missing item ID",
-                "itemNotFound": "Item not found"
-            },
-            "login": {
-                "email": {
-                    "required": "'Email' field is required",
-                    "regex": "Invalid email"
-                },
-                "password": {
-                    "required": "'Password' field is required"
-                }
-            },
-            "logout": {
-                "deleteSession": "User session has not been removed"
-            },
-            "register": {
-                "email": {
-                    "required": "'Email' field is required",
-                    "regex": "Invalid email",
-                    "unavailable": "This email has already in use",
-                    "confirm": "Email confirmation error"
-                },
-                "password": {
-                    "required": "'Password' field is required"
-                },
-                "verifyPassword": {
-                    "required": "'Verify password' field is required",
-                    "dontMatch": "'Password' and 'Verify password' fields don't match"
-                }
-            },
-            "common": {
-                "offline": "Connection has been lost",
-                "loggedIn": "You are already logged in"
-            }
+            "emailClientNotConfigured": "Почта по умолчанию не настроена"
         }
     },
     "src": {
@@ -171,19 +69,16 @@
                             }
                         },
                         "support": {
-                            "title": "Support",
+                            "title": "Поддержка",
                             "items": {
                                 "techSupport": {
-                                    "title": "Technical support"
+                                    "title": "Техническая поддержка"
                                 },
                                 "rateApp": {
-                                    "title": "Rate application"
-                                },
-                                "about": {
-                                    "title": "About"
+                                    "title": "Оценить приложение"
                                 },
                                 "privacy": {
-                                    "title": "Privacy Policy"
+                                    "title": "Политика безопасности"
                                 }
                             }
                         }
@@ -191,15 +86,15 @@
                 },
                 "Language": {
                     "locales": {
-                        "en": "English",
-                        "uk": "Ukrainian",
-                        "ru": "Russian"
+                        "en": "Английский",
+                        "uk": "Украинский",
+                        "ru": "Русский"
                     }
                 },
                 "Theme": {
                     "themes": {
-                        "light": "Light",
-                        "dark": "Dark"
+                        "light": "Светлая",
+                        "dark": "Темная"
                     }
                 },
                 "Account": {
@@ -223,19 +118,6 @@
                 }
             },
             "shared": {
-                "ConfirmationPopup": {
-                    "title1": "Remove items",
-                    "description1": "Are you sure you want to remove these items from the list?",
-                    "title2": "Remove list",
-                    "description2": "Are you sure you want to remove this list?",
-                    "title3": "Remove item",
-                    "description3": "Are you sure you want to remove this item?",
-                    "cancelBtnLabel": "Cancel",
-                    "okBtnLabel": "OK"
-                },
-                "ItemInfoPopup": {
-                    "title": "Item info"
-                },
                 "PlayerPopup": {
                     "Collapsed": {
                         "actionSheet": {

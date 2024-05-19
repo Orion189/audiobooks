@@ -10,7 +10,7 @@ import { usePathname, useGlobalSearchParams, Tabs } from 'expo-router';
 import NewRelic from 'newrelic-react-native-agent';
 import { memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
@@ -25,7 +25,7 @@ const getTabBarIcon = ({ color, size }: TabBarItemProps, iconName: IconType) => 
 );
 
 const getTabBarLabel = ({ color }: TabBarItemProps, label: string) => (
-    <Text h4 style={{ color }}>
+    <Text h4 h4Style={{ color, fontSize: 18 }}>
         {label}
     </Text>
 );
@@ -59,7 +59,8 @@ const Layout = memo(() => {
                         alignItems: 'center',
                         backgroundColor: tabBarBgColor,
                         borderTopWidth: 1,
-                        borderTopColor: divider
+                        borderTopColor: divider,
+                        paddingBottom: Platform.OS === 'ios' ? 25 : 5
                     },
                     tabBarIconStyle: styles.tabBarIconStyle,
                     tabBarLabelStyle: styles.tabBarLabelStyle
@@ -113,10 +114,7 @@ const styles = StyleSheet.create({
         marginRight: Device.deviceType === Device.DeviceType.TABLET ? 20 : 0
     },
     tabBarLabelStyle: {
-        fontFamily: 'SuisseIntl-Regular',
-        fontSize: 12,
-        lineHeight: 16,
-        fontWeight: '400'
+        fontFamily: 'SuisseIntl-Regular'
     }
 });
 
