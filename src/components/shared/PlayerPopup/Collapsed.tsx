@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: Platform.OS === 'ios' ? 100 : 70,
+        bottom: Platform.OS === 'ios' ? 90 : 70,
         margin: 'auto',
         width: '100%',
         borderRadius: 0,

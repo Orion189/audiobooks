@@ -20,6 +20,7 @@ module.exports = {
             config: {
                 usesNonExemptEncryption: false
             },
+            requireFullScreen: true,
             googleServicesFile: process.env.GOOGLE_SERVICES_FILE_IOS,
             buildNumber: '1.2.0'
         },
@@ -55,6 +56,12 @@ module.exports = {
                     ios: {
                         deploymentTarget: '13.4'
                     }
+                }
+            ],
+            [
+                'expo-screen-orientation',
+                {
+                    initialOrientation: 'DEFAULT'
                 }
             ]
         ],

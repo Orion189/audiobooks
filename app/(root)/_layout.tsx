@@ -110,9 +110,7 @@ const Layout = memo(() => {
 });
 
 const styles = StyleSheet.create({
-    tabBarIconStyle: {
-        marginRight: Device.deviceType === Device.DeviceType.TABLET ? 20 : 0
-    },
+    tabBarIconStyle: {},
     tabBarLabelStyle: {
         fontFamily: 'SuisseIntl-Regular'
     }

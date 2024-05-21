@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start",
+    "start:android": "expo start --android --clear --dev-client",
+    "start:ios": "expo start --ios --clear --dev-client",
     "dev": "npx expo start --dev-client",
-    "android": "expo start --android --clear --dev-client",
-    "ios": "expo start --ios --clear --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "prebuild": "npx expo prebuild --clean",
     "build:android": "expo run:android",
     "build:ios": "expo run:ios",
@@ -89,7 +91,8 @@
     "react-native-screens": "~3.22.0",
     "react-native-vector-icons": "^10.0.3",
     "uuid": "^9.0.1",
-    "yup": "^1.3.3"
+    "yup": "^1.3.3",
+    "expo-screen-orientation": "~6.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

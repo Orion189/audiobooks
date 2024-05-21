@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import NewRelic from 'newrelic-react-native-agent';
 import { useEffect, useCallback, memo } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 import * as appVersion from '../package.json';
 
@@ -94,9 +95,13 @@ const Index = memo(() => {
             await SplashScreen.hideAsync();
         }
     }, [fontsLoaded, fontError]);
+    const lockOrientation = useCallback(async () => {
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    }, []);
 
     useEffect(() => {
         onFontLoaded();
+        lockOrientation();
     }, []);
 
     return !fontsLoaded && !fontError ? null : (
