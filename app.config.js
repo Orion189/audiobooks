@@ -48,12 +48,10 @@ module.exports = {
                 'expo-build-properties',
                 {
                     android: {
-                        ndkVersion: 34,
                         minSdkVersion: 34,
                         compileSdkVersion: 34,
                         targetSdkVersion: 34,
-                        buildToolsVersion: '34.0.0',
-                        suppressUnsupportedCompileSdk: 34
+                        buildToolsVersion: '34.0.0'
                     },
                     ios: {
                         deploymentTarget: '13.4'
