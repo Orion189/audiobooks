@@ -11,8 +11,6 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "prebuild": "npx expo prebuild --clean",
-    "build:android": "expo run:android",
-    "build:ios": "expo run:ios",
     "prepare": "husky install",
     "react-devtools": "react-devtools",
     "test": "jest --passWithNoTests",

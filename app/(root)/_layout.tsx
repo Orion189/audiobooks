@@ -5,7 +5,6 @@ import PlayerPopup from '@src/components/shared/PlayerPopup';
 import SnackBar from '@src/components/shared/SnackBar';
 import { TAB_BAR_HEIGHT } from '@src/constants';
 import { NEW_RELIC } from '@src/enums';
-import * as Device from 'expo-device';
 import { usePathname, useGlobalSearchParams, Tabs } from 'expo-router';
 import NewRelic from 'newrelic-react-native-agent';
 import { memo, useEffect } from 'react';

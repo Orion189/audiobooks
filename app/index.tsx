@@ -1,11 +1,11 @@
 import { useTheme } from '@rneui/themed';
 import { useFonts } from 'expo-font';
 import { Redirect } from 'expo-router';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as SplashScreen from 'expo-splash-screen';
 import NewRelic from 'newrelic-react-native-agent';
 import { useEffect, useCallback, memo } from 'react';
 import { Platform, View, StyleSheet } from 'react-native';
-import * as ScreenOrientation from 'expo-screen-orientation';
 
 import * as appVersion from '../package.json';
 
@@ -96,7 +96,7 @@ const Index = memo(() => {
         }
     }, [fontsLoaded, fontError]);
     const lockOrientation = useCallback(async () => {
-        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
     }, []);
 
     useEffect(() => {
