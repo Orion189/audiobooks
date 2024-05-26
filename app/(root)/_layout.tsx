@@ -5,11 +5,12 @@ import PlayerPopup from '@src/components/shared/PlayerPopup';
 import SnackBar from '@src/components/shared/SnackBar';
 import { TAB_BAR_HEIGHT } from '@src/constants';
 import { NEW_RELIC } from '@src/enums';
+import * as Device from 'expo-device';
 import { usePathname, useGlobalSearchParams, Tabs } from 'expo-router';
 import NewRelic from 'newrelic-react-native-agent';
 import { memo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
@@ -18,6 +19,8 @@ type TabBarItemProps = {
     color: string;
     size?: number;
 };
+
+const IS_BIG_TABLET = Device.DeviceType.TABLET && Dimensions.get('window').width > 600;
 
 const getTabBarIcon = ({ color, size }: TabBarItemProps, iconName: IconType) => (
     <Icon size={size} color={color} type="material-community" name={iconName} />
@@ -109,7 +112,9 @@ const Layout = memo(() => {
 });
 
 const styles = StyleSheet.create({
-    tabBarIconStyle: {},
+    tabBarIconStyle: {
+        marginRight: IS_BIG_TABLET ? 20 : 0
+    },
     tabBarLabelStyle: {
         fontFamily: 'SuisseIntl-Regular'
     }

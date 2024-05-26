@@ -1,11 +1,8 @@
 import { GoogleSignin, statusCodes, NativeModuleError } from '@react-native-google-signin/google-signin';
-import { SnackBarVariant } from '@src/enums';
 import store from '@src/store';
 import { useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
 
 const useAuth = () => {
-    const { t } = useTranslation();
     const signInCheck = useCallback(async () => {
         try {
             await GoogleSignin.hasPlayServices();
@@ -44,13 +41,6 @@ const useAuth = () => {
                     console.log('sign in error:', error);
             }
 
-            store.set('app', {
-                ...store.app,
-                snackbar: {
-                    type: SnackBarVariant.ERROR,
-                    message: t('src.components.main.Account.signIn.logInError')
-                }
-            });
             store.reset('userInfo');
             store.reset('authInfo');
         }
