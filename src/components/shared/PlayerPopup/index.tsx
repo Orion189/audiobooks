@@ -23,22 +23,26 @@ const PlayerPopup = observer(() => {
     }, [store.player]);
     const onClose = useCallback(async () => {
         try {
-            await store.player.sound?.stopAsync?.();
-            await store.player.sound?.unloadAsync?.();
+            const curStatus = await store.player.sound?.getStatusAsync?.();
+
+            if (curStatus?.isLoaded === true) {
+                await store.player.sound?.stopAsync?.();
+                await store.player.sound?.unloadAsync?.();
+
+                store.set('player', {
+                    ...store.player,
+                    isVisible: false,
+                    sound: null,
+                    duration: 0,
+                    position: 0,
+                    itemId: '',
+                    itemName: '',
+                    itemURI: ''
+                });
+            }
         } catch (e) {
             NewRelic.recordError(new Error('[PlayerPopup] - onClose', e as Error));
         }
-
-        store.set('player', {
-            ...store.player,
-            isVisible: false,
-            sound: null,
-            duration: 0,
-            position: 0,
-            itemId: '',
-            itemName: '',
-            itemURI: ''
-        });
     }, [store.player.sound]);
     const expandPlayer = useCallback(() => {
         store.set('player', { ...store.player, isCollapsed: false });

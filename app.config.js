@@ -1,9 +1,9 @@
 module.exports = {
     expo: {
-        name: 'ABooks',
+        name: 'My ABooks',
         slug: 'audiobooks',
         version: '1.0.0',
-        orientation: 'portrait',
+        autoIncrement: 'version',
         icon: './assets/icon.png',
         userInterfaceStyle: 'light',
         splash: {
@@ -16,13 +16,13 @@ module.exports = {
         ios: {
             supportsTablet: true,
             bundleIdentifier: 'com.orion189.audiobooks',
-            appStoreUrl: 'https://apps.apple.com/app/my-common-lists/id6469620691',
+            appStoreUrl: process.env.APP_STORE_LINK,
             config: {
                 usesNonExemptEncryption: false
             },
             requireFullScreen: true,
             googleServicesFile: process.env.GOOGLE_SERVICES_FILE_IOS,
-            buildNumber: '1.2.0'
+            buildNumber: '1.0.0'
         },
         android: {
             icon: './assets/icon.png',
@@ -31,10 +31,10 @@ module.exports = {
                 backgroundColor: '#F6EEE4'
             },
             package: 'com.orion189.audiobooks',
-            playStoreUrl: 'https://play.google.com/store/apps/details?id=com.orion189.shopping',
+            playStoreUrl: process.env.GOOGLE_PLAY_LINK,
             softwareKeyboardLayoutMode: 'pan',
             googleServicesFile: process.env.GOOGLE_SERVICES_FILE_ANDROID,
-            versionCode: 2
+            versionCode: 4
         },
         web: {
             favicon: './assets/favicon.png'

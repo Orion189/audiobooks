@@ -51,7 +51,7 @@ const DownloadItemBtn: FC<DownloadItemBtnProps> = observer(({ name, isDownloadin
 const RemoteLibraryItem: FC<RemoteLibraryProps & RemoteLibraryItemProps> = memo(({ openFolder, item }) => {
     const {
         theme: {
-            colors: { primary, textColor }
+            colors: { textColor }
         }
     } = useTheme();
     const { openRemoteFile } = usePlayer();

@@ -2,6 +2,7 @@ import { LibItemType } from '@src/@types';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { AVPlaybackStatus, Audio } from 'expo-av';
+import throttle from 'lodash.throttle';
 import NewRelic from 'newrelic-react-native-agent';
 import { useCallback } from 'react';
 
@@ -89,7 +90,7 @@ const usePlayer = () => {
         }
     }, []);
     const openRemoteFile = useCallback(
-        async (item: LibItemType) => {
+        throttle(async (item: LibItemType) => {
             const accessToken = store.authInfo.accessToken;
             const { volume, rate } = store.player;
             const options = {
@@ -104,6 +105,17 @@ const usePlayer = () => {
             }
 
             try {
+                store.set('player', {
+                    ...store.player,
+                    isVisible: true,
+                    isCollapsed: false,
+                    duration: 0,
+                    position: 0,
+                    itemId: '',
+                    itemName: '',
+                    itemURI: ''
+                });
+
                 const curStatus = await store.player.sound?.getStatusAsync?.();
 
                 if (curStatus?.isLoaded === true) {
@@ -111,7 +123,7 @@ const usePlayer = () => {
                     await store.player.sound?.unloadAsync?.();
                 }
 
-                if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
+                if (curStatus?.isLoaded !== false) {
                     const { sound, status } = await Audio.Sound.createAsync(
                         { uri: item.uri, ...options },
                         { isLooping: false, volume, rate, positionMillis: 0, shouldPlay: true },
@@ -122,7 +134,6 @@ const usePlayer = () => {
                         store.set('history', [item, ...store.history.filter((libItem) => libItem.uri !== item.uri)]);
                         store.set('player', {
                             ...store.player,
-                            isVisible: true,
                             sound,
                             itemURI: item.uri,
                             itemId: item.id,
@@ -131,9 +142,20 @@ const usePlayer = () => {
                     }
                 }
             } catch (e) {
+                store.set('player', {
+                    ...store.player,
+                    isVisible: false,
+                    sound: null,
+                    duration: 0,
+                    position: 0,
+                    itemId: '',
+                    itemName: '',
+                    itemURI: ''
+                });
+
                 NewRelic.recordError(new Error('[usePlayer] - openRemoteFile', e as Error));
             }
-        },
+        }, 3000),
         [store.player.volume, store.player.sound, store.authInfo.accessToken]
     );
     const onDidJustFinish = useCallback(async () => {
@@ -203,7 +225,7 @@ const usePlayer = () => {
         }
     }, [store.authInfo.accessToken, store.player.volume, store.player.itemId, store.player.position]);
     const openLocalFile = useCallback(
-        async (item: LibItemType) => {
+        throttle(async (item: LibItemType) => {
             const { volume, rate } = store.player;
 
             if (!item.uri) {
@@ -218,7 +240,7 @@ const usePlayer = () => {
                     await store.player.sound?.unloadAsync?.();
                 }
 
-                if (curStatus?.isLoaded === true || curStatus?.isLoaded === undefined) {
+                if (curStatus?.isLoaded !== false) {
                     const { sound, status } = await Audio.Sound.createAsync(
                         { uri: item.uri },
                         { isLooping: false, volume, rate, positionMillis: 0, shouldPlay: true },
@@ -238,9 +260,20 @@ const usePlayer = () => {
                     }
                 }
             } catch (e) {
+                store.set('player', {
+                    ...store.player,
+                    isVisible: false,
+                    sound: null,
+                    duration: 0,
+                    position: 0,
+                    itemId: '',
+                    itemName: '',
+                    itemURI: ''
+                });
+
                 NewRelic.recordError(new Error('[usePlayer] - openLocalFile', e as Error));
             }
-        },
+        }, 3000),
         [store.player.volume, store.player.sound, store.history]
     );
     const createLocalSound = useCallback(async () => {
