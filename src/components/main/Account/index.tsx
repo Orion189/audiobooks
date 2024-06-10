@@ -14,38 +14,40 @@ const Account = observer(() => {
     const { t } = useTranslation();
     const signIn = useCallback(async () => {
         try {
-            await GoogleSignin.hasPlayServices();
+            const isHasPlayServices = await GoogleSignin.hasPlayServices();
 
-            const userInfo = await GoogleSignin.signIn();
+            if (isHasPlayServices) {
+                const userInfo = await GoogleSignin.signIn();
 
-            if (userInfo) {
-                const userScopes = userInfo?.scopes;
+                if (userInfo) {
+                    const userScopes = userInfo?.scopes;
 
-                if (userScopes) {
-                    const isRequiredScopesChecked = SCOPES.every((curScope) => userScopes.includes(curScope));
+                    if (userScopes) {
+                        const isRequiredScopesChecked = SCOPES.every((curScope) => userScopes.includes(curScope));
 
-                    if (isRequiredScopesChecked) {
-                        store.set('userInfo', { ...store.userInfo, ...userInfo });
+                        if (isRequiredScopesChecked) {
+                            store.set('userInfo', { ...store.userInfo, ...userInfo });
 
-                        const authInfo = await GoogleSignin.getTokens();
+                            const authInfo = await GoogleSignin.getTokens();
 
-                        if (authInfo) {
-                            store.set('authInfo', { ...store.authInfo, ...authInfo });
-                        }
-                    } else {
-                        try {
-                            await GoogleSignin.revokeAccess();
-                        } catch (error) {
-                            console.error(error);
-                        }
-
-                        store.set('app', {
-                            ...store.app,
-                            snackbar: {
-                                type: SnackBarVariant.ERROR,
-                                message: t('src.components.main.Account.signIn.scopeNotEnabledError')
+                            if (authInfo) {
+                                store.set('authInfo', { ...store.authInfo, ...authInfo });
                             }
-                        });
+                        } else {
+                            try {
+                                await GoogleSignin.revokeAccess();
+                            } catch (error) {
+                                console.error(error);
+                            }
+
+                            store.set('app', {
+                                ...store.app,
+                                snackbar: {
+                                    type: SnackBarVariant.ERROR,
+                                    message: t('src.components.main.Account.signIn.scopeNotEnabledError')
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -61,8 +63,10 @@ const Account = observer(() => {
                     console.log('PLAY_SERVICES_NOT_AVAILABLE');
                     break;
                 default:
-                    console.log('sign in error');
+                    console.log('sign in error', error);
             }
+
+            await GoogleSignin.signOut();
 
             store.set('app', {
                 ...store.app,
@@ -89,19 +93,21 @@ const Account = observer(() => {
     }, []);
 
     useEffect(() => {
-        GoogleSignin.configure({
-            scopes: SCOPES, // what API you want to access on behalf of the user, default is email and profile
-            webClientId: EXPO_PUBLIC_WEB_CLIENT_ID, // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
-            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-            hostedDomain: '', // specifies a hosted domain restriction
-            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-            //accountName: '', // [Android] specifies an account name on the device that should be used
-            //iosClientId: '', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-            //googleServicePlistPath: './GoogleService-Info.plist', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
-            //openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
-            profileImageSize: 120 // [iOS] The desired height (and width) of the profile image. Defaults to 120px
-        });
-    }, []);
+        if (!store.authInfo.accessToken) {
+            GoogleSignin.configure({
+                scopes: SCOPES, // what API you want to access on behalf of the user, default is email and profile
+                webClientId: EXPO_PUBLIC_WEB_CLIENT_ID, // client ID of type WEB for your server. Required to get the idToken on the user object, and for offline access.
+                offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+                hostedDomain: '', // specifies a hosted domain restriction
+                forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+                //accountName: '', // [Android] specifies an account name on the device that should be used
+                //iosClientId: '', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+                //googleServicePlistPath: './GoogleService-Info.plist', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+                //openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+                profileImageSize: 120 // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+            });
+        }
+    }, [store.authInfo.accessToken]);
 
     return <AccountView signIn={signIn} signOut={signOut} />;
 });
