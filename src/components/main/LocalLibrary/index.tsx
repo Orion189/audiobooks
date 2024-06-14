@@ -2,8 +2,8 @@ import { LibItemType } from '@src/@types';
 import useLocalLib from '@src/components/hooks/useLocalLib';
 import LocalLibraryView from '@src/components/main/LocalLibrary/LocalLibrary';
 import Loading from '@src/components/shared/Loading';
+import { APP_DIR } from '@src/constants';
 import store from '@src/store';
-import { documentDirectory } from 'expo-file-system';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -53,13 +53,13 @@ const LocalLibrary = observer(() => {
     );
 
     useEffect(() => {
-        if (documentDirectory) {
-            getItem(documentDirectory, {
+        if (APP_DIR) {
+            getItem(APP_DIR, {
                 onStart,
                 onEnd
             });
         }
-    }, [getItem, onStart, onEnd, documentDirectory]);
+    }, [getItem, onStart, onEnd, APP_DIR]);
 
     useEffect(() => {
         getSubItems({

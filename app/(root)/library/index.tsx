@@ -4,10 +4,10 @@ import useRemoteLib from '@src/components/hooks/useRemoteLib';
 import ChangeLibPopup from '@src/components/main/ChangeLibPopup';
 import Library from '@src/components/main/Library';
 import ProgressBar from '@src/components/shared/ProgressBar';
+import { APP_DIR } from '@src/constants';
 import { LIB_TYPE, LIB_ICON, LIB_ORDER, ORDER_ICON } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
-import { documentDirectory } from 'expo-file-system';
 import { Stack } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useCallback, memo } from 'react';
@@ -27,11 +27,11 @@ const BackBtn = observer(() => {
     const isBackBtnShown = useCallback(() => {
         switch (store.lib.curLib) {
             case LIB_TYPE.LOCAL:
-                return store[LIB_TYPE.LOCAL].curItem?.uri !== documentDirectory;
+                return store[LIB_TYPE.LOCAL].curItem?.uri !== APP_DIR;
             case LIB_TYPE.REMOTE:
                 return store[LIB_TYPE.REMOTE].curItem?.parents?.length;
         }
-    }, [documentDirectory, store.lib.curLib]);
+    }, [APP_DIR, store.lib.curLib]);
     const onBackBtnPress = useCallback(() => {
         if (!isBackBtnShown()) {
             return;
@@ -39,8 +39,8 @@ const BackBtn = observer(() => {
 
         switch (store.lib.curLib) {
             case LIB_TYPE.LOCAL: {
-                if (documentDirectory) {
-                    return getLocalItem(documentDirectory, {
+                if (APP_DIR) {
+                    return getLocalItem(APP_DIR, {
                         onStart,
                         onEnd
                     });

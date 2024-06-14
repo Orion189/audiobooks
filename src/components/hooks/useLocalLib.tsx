@@ -1,8 +1,8 @@
 import { LibItemType } from '@src/@types';
-import { LOCAL_ITEMS_TO_HIDE } from '@src/constants';
+import { LOCAL_ITEMS_TO_HIDE, APP_DIR } from '@src/constants';
 import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
-import { getInfoAsync, readDirectoryAsync, deleteAsync, documentDirectory } from 'expo-file-system';
+import { getInfoAsync, readDirectoryAsync, deleteAsync } from 'expo-file-system';
 import NewRelic from 'newrelic-react-native-agent';
 import { useCallback } from 'react';
 import { Platform } from 'react-native';
@@ -71,7 +71,7 @@ const useLocalLib = () => {
                         );
                         let subItems = await Promise.all(subItemsPromises);
                         const downloadedItemNames =
-                            uri === documentDirectory
+                            uri === APP_DIR
                                 ? subItems.filter((subItem) => !subItem.isDirectory).map((subItem) => subItem.name)
                                 : store[LIB_TYPE.LOCAL].downloadedItemNames;
 

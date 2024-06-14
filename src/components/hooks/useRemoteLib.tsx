@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LibItemType } from '@src/@types';
+import { APP_DIR } from '@src/constants';
 import { REMOTE_LIB_ITEM_TYPE, LIB_TYPE } from '@src/enums';
 import * as remoteService from '@src/services/remote.service';
 import store from '@src/store';
@@ -8,7 +9,6 @@ import {
     DownloadResumable,
     createDownloadResumable,
     cacheDirectory,
-    documentDirectory,
     moveAsync,
     FileSystemDownloadResult
 } from 'expo-file-system';
@@ -44,11 +44,11 @@ const useRemoteLib = () => {
     const downloadResultHandler = useCallback(
         async (result: FileSystemDownloadResult, item: LibItemType) => {
             try {
-                if (result?.uri && documentDirectory) {
+                if (result?.uri && APP_DIR) {
                     AsyncStorage.removeItem(item.name).then(() => {
                         moveAsync({
                             from: result?.uri,
-                            to: documentDirectory + item.name
+                            to: APP_DIR + item.name
                         }).then(() => {
                             const downloadedItemNamesOld = store[LIB_TYPE.LOCAL].downloadedItemNames || [];
                             const isExistedItem = downloadedItemNamesOld?.find((itemName) => itemName === item.name);
