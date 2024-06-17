@@ -34,7 +34,7 @@ module.exports = {
             playStoreUrl: process.env.GOOGLE_PLAY_LINK,
             softwareKeyboardLayoutMode: 'pan',
             googleServicesFile: process.env.GOOGLE_SERVICES_FILE_ANDROID,
-            versionCode: 5
+            versionCode: 6
         },
         web: {
             favicon: './assets/favicon.png'
