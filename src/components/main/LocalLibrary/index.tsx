@@ -3,6 +3,7 @@ import useLocalLib from '@src/components/hooks/useLocalLib';
 import LocalLibraryView from '@src/components/main/LocalLibrary/LocalLibrary';
 import Loading from '@src/components/shared/Loading';
 import { APP_DIR } from '@src/constants';
+import { LIB_TYPE } from '@src/enums';
 import store from '@src/store';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useEffect, useState } from 'react';
@@ -44,6 +45,17 @@ const LocalLibrary = observer(() => {
                 onEnd: onEndAlt
             });
 
+            const downloadedItemNames = store[LIB_TYPE.LOCAL].downloadedItemNames?.filter(
+                (itemName) => itemName !== item.name
+            );
+
+            if (downloadedItemNames) {
+                store.set(LIB_TYPE.LOCAL, {
+                    ...store[LIB_TYPE.LOCAL],
+                    downloadedItemNames
+                });
+            }
+
             getSubItems({
                 onStart: onStartAlt,
                 onEnd: onEndAlt
@@ -59,14 +71,14 @@ const LocalLibrary = observer(() => {
                 onEnd
             });
         }
-    }, [getItem, onStart, onEnd, APP_DIR]);
+    }, [getItem, onStart, onEnd, deleteItem, APP_DIR]);
 
     useEffect(() => {
         getSubItems({
             onStart,
             onEnd
         });
-    }, [getSubItems, onStart, onEnd]);
+    }, [getSubItems, onStart, onEnd, deleteItem]);
 
     return store.app.isLoadingVisible ? (
         <Loading />

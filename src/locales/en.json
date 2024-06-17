@@ -116,6 +116,10 @@
                 },
                 "Library": {
                     "chooseLibMsg": "Choose library (local or remote)"
+                },
+                "LocalLibrary": {
+                    "noItemsMsg1": "You don't have downloaded items",
+                    "noItemsMsg2": "Please, go to Remote Library first and download some audio book"
                 }
             },
             "shared": {

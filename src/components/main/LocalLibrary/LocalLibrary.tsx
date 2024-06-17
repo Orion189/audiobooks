@@ -1,13 +1,13 @@
-import { ListItem, Icon, useTheme } from '@rneui/themed';
+import { ListItem, Icon, Text, useTheme } from '@rneui/themed';
 import { LibItemType } from '@src/@types';
 import usePlayer from '@src/components/hooks/usePlayer';
 import { LIB_TYPE, LIB_ORDER } from '@src/enums';
 import store from '@src/store';
 import commonStyles from '@src/styles/common';
 import { observer } from 'mobx-react-lite';
-import { useCallback, useMemo, FC, memo } from 'react';
+import { useCallback, useMemo, FC, memo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView, ScrollView, RefreshControl, View, ActivityIndicator, Animated, StyleSheet } from 'react-native';
-import { RectButton } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 type LocalLibraryProps = {
@@ -27,10 +27,9 @@ type LocalLibraryItemProps = {
 type LocalLibraryItemActionProps = {
     swipeable: Swipeable;
     progress: Animated.AnimatedInterpolation<number>;
-    pressHandler: (pointerInside: boolean) => void;
 };
 
-const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: LocalLibraryItemActionProps) => {
+const LocalLibraryItemAction = memo(({ swipeable, progress }: LocalLibraryItemActionProps) => {
     const translateX = progress.interpolate({
         inputRange: [0, 1],
         outputRange: [1, 0],
@@ -41,24 +40,10 @@ const LocalLibraryItemAction = memo(({ swipeable, progress, pressHandler }: Loca
             colors: { white, error }
         }
     } = useTheme();
-    const onPress = useCallback(
-        (pointerInside: boolean) => {
-            swipeable.close();
-
-            pressHandler(pointerInside);
-        },
-        [pressHandler]
-    );
 
     return (
-        <Animated.View style={{ flex: 1, transform: [{ translateX }] }} testID="localLibraryItemAction">
-            <RectButton
-                onPress={onPress}
-                testID="localLibraryItemActionnBtn"
-                style={[styles.rightAction, { backgroundColor: error }]}
-            >
-                <Icon size={25} color={white} type="material-community" name="trash-can-outline" />
-            </RectButton>
+        <Animated.View style={[styles.rightAction, { backgroundColor: error, transform: [{ translateX }] }]}>
+            <Icon size={25} color={white} type="material-community" name="trash-can-outline" />
         </Animated.View>
     );
 });
@@ -69,6 +54,7 @@ const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ 
             colors: { textColor }
         }
     } = useTheme();
+    const swipeableRef = useRef<Swipeable>(null);
     const { openLocalFile } = usePlayer();
     const onItemPress = useCallback(() => {
         if (item.isDirectory) {
@@ -77,18 +63,27 @@ const LocalLibraryItem: FC<LocalLibraryProps & LocalLibraryItemProps> = memo(({ 
             openLocalFile(item);
         }
     }, [openLocalFile, item]);
-    const onDeleteItem = useCallback(() => deleteItem(item), [deleteItem, item]);
+    const onDeleteItem = useCallback(() => {
+        //swipeableRef.current?.close();
+
+        deleteItem(item);
+    }, [deleteItem, item]);
     const renderRightAction = useCallback(
         (
             progress: Animated.AnimatedInterpolation<number>,
             drag: Animated.AnimatedInterpolation<string | number>,
             swipeable: Swipeable
-        ) => <LocalLibraryItemAction progress={progress} swipeable={swipeable} pressHandler={onDeleteItem} />,
+        ) => <LocalLibraryItemAction progress={progress} swipeable={swipeable} />,
         [onDeleteItem]
     );
 
     return (
-        <Swipeable enableTrackpadTwoFingerGesture onSwipeableOpen={onDeleteItem} renderRightActions={renderRightAction}>
+        <Swipeable
+            ref={swipeableRef}
+            enableTrackpadTwoFingerGesture
+            onSwipeableOpen={onDeleteItem}
+            renderRightActions={renderRightAction}
+        >
             <ListItem bottomDivider onPress={onItemPress}>
                 <Icon
                     name={item.isDirectory ? 'folder-outline' : 'file-music-outline'}
@@ -117,6 +112,7 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
                 colors: { textColor, background }
             }
         } = useTheme();
+        const { t } = useTranslation();
         const getSubItems = useMemo(
             () => () => {
                 switch (store.lib.order) {
@@ -140,27 +136,50 @@ const LocalLibrary: FC<LocalLibraryProps & RefreshingProps> = observer(
             },
             [store.lib.order, store[LIB_TYPE.LOCAL].subItems]
         );
+        const subItems = getSubItems() || [];
 
         return (
             <SafeAreaView style={[commonStyles.safeAreaView, { backgroundColor: background }]}>
                 <View style={commonStyles.activityView}>
                     <ActivityIndicator animating={isRefreshing} size="small" color={textColor} />
                 </View>
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl onRefresh={onRefresh} tintColor="transparent" refreshing={isRefreshing} />
-                    }
-                >
-                    {getSubItems()?.map((item) => (
-                        <LocalLibraryItem key={item.name} item={item} openFolder={openFolder} deleteItem={deleteItem} />
-                    ))}
-                </ScrollView>
+                {subItems.length ? (
+                    <ScrollView
+                        refreshControl={
+                            <RefreshControl onRefresh={onRefresh} tintColor="transparent" refreshing={isRefreshing} />
+                        }
+                    >
+                        {subItems.map((item) => (
+                            <LocalLibraryItem
+                                key={item.name}
+                                item={item}
+                                openFolder={openFolder}
+                                deleteItem={deleteItem}
+                            />
+                        ))}
+                    </ScrollView>
+                ) : (
+                    <View style={styles.msgCont}>
+                        <Text h4 h4Style={{ color: textColor, fontSize: 14 }}>
+                            {t('src.components.main.LocalLibrary.noItemsMsg1')}
+                        </Text>
+                        <View style={{ height: 20 }} />
+                        <Text h4 h4Style={{ color: textColor, fontSize: 14 }}>
+                            {t('src.components.main.LocalLibrary.noItemsMsg2')}
+                        </Text>
+                    </View>
+                )}
             </SafeAreaView>
         );
     }
 );
 
 const styles = StyleSheet.create({
+    msgCont: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     rightAction: {
         flex: 1,
         alignItems: 'flex-end',

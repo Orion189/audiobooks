@@ -88,6 +88,12 @@ const useLocalLib = () => {
                             subItems,
                             downloadedItemNames
                         });
+                    } else {
+                        store.set(LIB_TYPE.LOCAL, {
+                            ...store[LIB_TYPE.LOCAL],
+                            subItems: [],
+                            downloadedItemNames: []
+                        });
                     }
                 } catch (e) {
                     NewRelic.recordError(new Error('[useLocalLib] - getSubItems', e as Error));
@@ -105,7 +111,6 @@ const useLocalLib = () => {
             onStart?.();
 
             try {
-
                 await deleteAsync(itemURI, { idempotent: true });
             } catch (e) {
                 NewRelic.recordError(new Error('[useLocalLib] - deleteItem', e as Error));
