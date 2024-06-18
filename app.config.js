@@ -1,6 +1,6 @@
 module.exports = {
     expo: {
-        name: 'My ABooks',
+        name: 'ABooks',
         slug: 'audiobooks',
         version: '1.0.0',
         autoIncrement: 'version',
@@ -30,11 +30,11 @@ module.exports = {
                 foregroundImage: './assets/adaptive-icon.png',
                 backgroundColor: '#F6EEE4'
             },
-            package: 'com.orion189.audiobooks',
+            package: 'com.orion189.abooks',
             playStoreUrl: process.env.GOOGLE_PLAY_LINK,
             softwareKeyboardLayoutMode: 'pan',
             googleServicesFile: process.env.GOOGLE_SERVICES_FILE_ANDROID,
-            versionCode: 6
+            versionCode: 1
         },
         web: {
             favicon: './assets/favicon.png'
