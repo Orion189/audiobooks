@@ -3,7 +3,7 @@ import { autorun } from 'mobx';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-const useAppTheme = () => {
+const useAppLang = () => {
     const { i18n } = useTranslation();
 
     useEffect(() => {
@@ -13,4 +13,4 @@ const useAppTheme = () => {
     return null;
 };
 
-export default useAppTheme;
+export default useAppLang;
