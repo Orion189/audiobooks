@@ -1,6 +1,6 @@
 import { useThemeMode } from '@rneui/themed';
 import store from '@src/store';
-import { autorun } from 'mobx';
+import { reaction } from 'mobx';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 
@@ -9,7 +9,10 @@ const useAppTheme = () => {
     const deviceTheme = useColorScheme();
 
     useEffect(() => {
-        autorun(() => setMode(store.app.theme || deviceTheme));
+        reaction(
+            () => store.app.theme,
+            (theme) => setMode(theme || deviceTheme)
+        );
     }, []);
 
     return null;
