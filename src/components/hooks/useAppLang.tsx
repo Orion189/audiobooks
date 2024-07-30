@@ -1,5 +1,5 @@
 import store from '@src/store';
-import { autorun } from 'mobx';
+import { reaction } from 'mobx';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,10 @@ const useAppLang = () => {
     const { i18n } = useTranslation();
 
     useEffect(() => {
-        autorun(() => i18n.changeLanguage(store.app.language));
+        reaction(
+            () => store.app.language,
+            (language) => i18n.changeLanguage(language)
+        );
     }, []);
 
     return null;
